@@ -1,0 +1,107 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'DM Sans', 'Open Sans', sans-serif;
+
+  /* Semantic palettes consumed by Nuxt UI (11 shades required).
+     Source: Figma page website — Landing Page 50:4530 */
+
+  /* Primary — ButtonPrimary / --ui-primary #ff763c */
+  --color-heya-50: #fff5f0;
+  --color-heya-100: #ffe4d9;
+  --color-heya-200: #ffc9b3;
+  --color-heya-300: #ffa882;
+  --color-heya-400: #ff8a5c;
+  --color-heya-500: #ff763c;
+  --color-heya-600: #ff6900;
+  --color-heya-700: #e85a1f;
+  --color-heya-800: #c44a18;
+  --color-heya-900: #9a3a14;
+  --color-heya-950: #4d1c08;
+
+  /* Secondary — violet CTA #a684ff / wordmark #8b7ab8 */
+  --color-heya-violet-50: #f7f3fb;
+  --color-heya-violet-100: #ede9fe;
+  --color-heya-violet-200: #d4c8f5;
+  --color-heya-violet-300: #c4b0e0;
+  --color-heya-violet-400: #a684ff;
+  --color-heya-violet-500: #8b7ab8;
+  --color-heya-violet-600: #7a68a8;
+  --color-heya-violet-700: #655590;
+  --color-heya-violet-800: #4e4270;
+  --color-heya-violet-900: #382f52;
+  --color-heya-violet-950: #1f1a2e;
+
+  /* Neutral — cream #fbf7f0 / text #2a2520 */
+  --color-heya-neutral-50: #fbf7f0;
+  --color-heya-neutral-100: #f5efe6;
+  --color-heya-neutral-200: #e5dcd0;
+  --color-heya-neutral-300: #d4c9b8;
+  --color-heya-neutral-400: #aaa297;
+  --color-heya-neutral-500: #6b6258;
+  --color-heya-neutral-600: #555048;
+  --color-heya-neutral-700: #3d3833;
+  --color-heya-neutral-800: #2a2520;
+  --color-heya-neutral-900: #1f1b17;
+  --color-heya-neutral-950: #141210;
+
+  /* Activity color coding (not semantic UI colors)
+     Bleu = jeux, Jaune = extérieur, Orange = manuel, Violet = café */
+  --color-activity-blue: #03a9f4;
+  --color-activity-yellow: #e8c547;
+  --color-activity-orange: #f79007;
+  --color-activity-violet: #8b7ab8;
+  --color-activity-teal: #00bf87;
+
+  --color-step-blue: #e1edf3;
+  --color-step-blue-fg: #5b8fb9;
+  --color-step-gold: #f6e8c6;
+  --color-step-gold-fg: #e0a542;
+  --color-step-green: #deede2;
+  --color-step-green-fg: #6b9b7a;
+
+  /* Aliases for pages still using the previous token names */
+  --color-heya-cream: var(--color-heya-neutral-50);
+  --color-heya-accent: var(--color-heya-500);
+  --color-heya-purple-cta: var(--color-heya-violet-400);
+  --color-heya-violet: var(--color-heya-violet-500);
+  --color-heya-dark: var(--color-heya-neutral-800);
+  --color-heya-dark-muted: #38332e;
+  --color-heya-dark-border: var(--color-heya-neutral-500);
+  --color-heya-dark-footer: var(--color-heya-neutral-900);
+  --color-heya-terracotta: #c66b3d;
+  --color-heya-orange: var(--color-activity-orange);
+  --color-heya-blue: var(--color-activity-blue);
+  --color-heya-yellow: var(--color-activity-yellow);
+  --color-heya-teal: var(--color-activity-teal);
+  --color-heya-step-blue: var(--color-step-blue);
+  --color-heya-step-blue-fg: var(--color-step-blue-fg);
+  --color-heya-step-gold: var(--color-step-gold);
+  --color-heya-step-gold-fg: var(--color-step-gold-fg);
+  --color-heya-step-green: var(--color-step-green);
+  --color-heya-step-green-fg: var(--color-step-green-fg);
+}
+
+:root {
+  --ui-radius: 0.375rem;
+  --ui-header-height: 4rem;
+  --ui-container: 80rem;
+  --ui-primary: var(--color-heya-500);
+  --ui-secondary: var(--color-heya-violet-400);
+  --ui-bg: var(--color-heya-neutral-50);
+  --ui-bg-muted: var(--color-heya-neutral-100);
+  --ui-bg-elevated: #ffffff;
+  --ui-bg-accented: var(--color-heya-neutral-200);
+  --ui-bg-inverted: var(--color-heya-neutral-800);
+  --ui-text: var(--color-heya-neutral-700);
+  --ui-text-highlighted: var(--color-heya-neutral-800);
+  --ui-text-muted: var(--color-heya-neutral-500);
+  --ui-text-toned: var(--color-heya-neutral-600);
+  --ui-text-dimmed: var(--color-heya-neutral-400);
+  --ui-text-inverted: #ffffff;
+  --ui-border: var(--color-heya-neutral-200);
+  --ui-border-muted: var(--color-heya-neutral-100);
+  --ui-border-accented: #cad5e2;
+  --ui-border-inverted: var(--color-heya-neutral-800);
+}

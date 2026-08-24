@@ -1,0 +1,10 @@
+allowBuilds:
+  '@parcel/watcher': false
+  '@tailwindcss/oxide': false
+  esbuild: false
+  unrs-resolver: false
+  vue-demi: false
+
+overrides:
+  '@vueuse/core': '14.3.0'
+  oxc-parser: '0.142.0'
