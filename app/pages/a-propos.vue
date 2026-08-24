@@ -164,13 +164,13 @@ const ctaLinks: ButtonProps[] = [
           Designer à l'École de Design de Nantes, Elise imagine des solutions pour recréer du lien dans les habitats partagés. Convaincue que le bien-vivre collectif passe par des objets simples, elle a conçu Heya autour du totem et de la lampe relay.
         </p>
       </template>
-      <div class="overflow-hidden rounded-3xl bg-primary">
+      <div class="flex h-[450px] items-center justify-center overflow-hidden rounded-3xl bg-primary">
         <img
           src="/images/about/elise.png"
           alt="Elise Furnon, fondatrice de Heya"
-          class="h-[450px] w-full object-cover object-[center_20%]"
-          width="640"
-          height="450"
+          class="h-full w-full object-cover object-center"
+          width="695"
+          height="745"
         >
       </div>
     </UPageSection>

@@ -110,3 +110,7 @@
 .contact-form-dark [data-slot="label"] {
   color: #f1ede6;
 }
+
+.contact-form-dark [data-slot="label"]::after {
+  color: #ef4444;
+}

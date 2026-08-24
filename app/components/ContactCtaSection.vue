@@ -22,11 +22,11 @@ const links: ButtonProps[] = [
     :links="links"
     class="rounded-none"
     :ui="{
-      root: 'bg-inverted py-20',
-      container: 'items-start gap-16',
-      title: 'text-3xl font-semibold text-inverted',
-      description: 'text-[#e2e8f0]',
-      links: 'mt-2'
+      root: 'bg-[#1e1a17] py-20',
+      container: 'items-start gap-12 lg:gap-16',
+      title: 'text-3xl font-semibold text-white sm:text-4xl',
+      description: 'text-[#e8e2d8]',
+      links: 'mt-4'
     }"
   >
     <template #body>
@@ -44,13 +44,13 @@ const links: ButtonProps[] = [
           {{ item }}
         </li>
       </ul>
-      <p class="mt-2 text-xs text-[#90a1b9]">
+      <p class="mt-2 text-xs text-[#aaa293]">
         Une réponse sous 24h. Vos données sont protégées.
       </p>
     </template>
 
-    <div class="w-full rounded-2xl bg-heya-dark-muted p-8">
-      <h3 class="mb-6 text-lg font-semibold text-inverted">
+    <div class="w-full rounded-[2rem] bg-[#2d2925] p-6 sm:p-8">
+      <h3 class="mb-6 text-xl font-semibold text-white">
         Demandez une démo
       </h3>
       <ContactForm />

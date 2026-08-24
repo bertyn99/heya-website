@@ -88,6 +88,9 @@ const installSteps = [
           :description="product.description"
           :ui="{
             root: 'rounded-[20px] p-8 text-center',
+            header: 'flex w-full flex-col items-center',
+            wrapper: 'items-center text-center',
+            leading: 'justify-center',
             title: 'text-xl font-semibold',
             description: 'text-muted'
           }"
@@ -96,7 +99,7 @@ const installSteps = [
             <img
               :src="product.image"
               :alt="product.imageAlt"
-              class="mx-auto h-[220px] w-auto max-w-[280px] object-contain"
+              class="mx-auto block h-[220px] w-auto max-w-full object-contain"
               width="280"
               height="220"
             >
