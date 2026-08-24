@@ -1,15 +1,14 @@
 <template>
   <div
-    class="relative mx-auto flex w-full max-w-[280px] flex-col items-center"
+    class="relative mx-auto w-full max-w-[280px]"
     aria-hidden="true"
   >
     <svg
-      viewBox="0 0 280 300"
+      viewBox="0 0 280 320"
       class="h-auto w-full"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <!-- Disconnected relays (left) -->
       <line
         x1="48"
         y1="72"
@@ -41,36 +40,34 @@
         stroke-opacity="0.6"
       />
 
-      <!-- Connected relays (right) -->
       <line
         x1="162"
         y1="118"
         x2="228"
         y2="68"
-        stroke="var(--color-heya-teal)"
+        stroke="var(--color-heya-step-blue-fg)"
         stroke-width="2"
-        stroke-opacity="0.7"
+        stroke-opacity="0.85"
       />
       <line
         x1="162"
         y1="150"
         x2="232"
         y2="150"
-        stroke="var(--color-heya-teal)"
+        stroke="var(--color-heya-step-gold-fg)"
         stroke-width="2"
-        stroke-opacity="0.7"
+        stroke-opacity="0.85"
       />
       <line
         x1="162"
         y1="182"
         x2="224"
         y2="232"
-        stroke="var(--color-heya-teal)"
+        stroke="var(--color-heya-step-green-fg)"
         stroke-width="2"
-        stroke-opacity="0.7"
+        stroke-opacity="0.85"
       />
 
-      <!-- Dim relay nodes -->
       <circle
         cx="38"
         cy="68"
@@ -93,7 +90,6 @@
         fill-opacity="0.5"
       />
 
-      <!-- Lit relay nodes — How It Works pastels -->
       <circle
         cx="236"
         cy="64"
@@ -113,27 +109,32 @@
         fill="var(--color-heya-step-green-fg)"
       />
 
-      <!-- Totem hub -->
       <defs>
-        <linearGradient
-          id="totem-gradient"
-          x1="0"
-          y1="0"
-          x2="1"
-          y2="1"
+        <radialGradient
+          id="totem-glow"
+          cx="0"
+          cy="0"
+          r="1"
         >
-          <stop stop-color="var(--color-heya-teal)" />
+          <stop stop-color="var(--color-heya-accent)" />
           <stop
             offset="1"
-            stop-color="var(--color-heya-step-blue-fg)"
+            stop-color="var(--color-heya-orange)"
           />
-        </linearGradient>
+        </radialGradient>
       </defs>
       <circle
         cx="140"
         cy="150"
         r="36"
-        fill="url(#totem-gradient)"
+        fill="url(#totem-glow)"
+      />
+      <circle
+        cx="140"
+        cy="150"
+        r="48"
+        fill="var(--color-heya-accent)"
+        fill-opacity="0.15"
       />
       <text
         x="140"
@@ -148,9 +149,5 @@
         TOTEM
       </text>
     </svg>
-
-    <p class="mt-2 text-center text-xs font-semibold tracking-wide text-heya-teal">
-      Relais qui s'allument
-    </p>
   </div>
 </template>

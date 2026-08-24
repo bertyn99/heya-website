@@ -27,7 +27,37 @@ export default defineAppConfig({
     },
     footer: {
       slots: {
-        root: 'bg-inverted text-dimmed'
+        root: 'bg-heya-dark-footer text-[#aaa293]'
+      }
+    },
+    pricingPlan: {
+      slots: {
+        root: 'rounded-[10px] border border-default bg-elevated p-8',
+        title: 'text-2xl font-normal text-highlighted',
+        description: 'text-base text-muted',
+        price: 'text-3xl font-normal text-highlighted',
+        featureIcon: 'text-primary',
+        featureTitle: 'text-sm text-muted',
+        footer: 'w-full items-stretch',
+        button: 'w-full'
+      },
+      variants: {
+        highlight: {
+          true: {
+            root: 'border-primary bg-primary ring-0',
+            title: 'text-white',
+            description: 'text-white',
+            price: 'text-white',
+            featureIcon: 'text-white',
+            featureTitle: 'text-white'
+          }
+        }
+      }
+    },
+    accordion: {
+      slots: {
+        item: 'border-b border-default bg-elevated',
+        leadingIcon: 'text-primary'
       }
     },
     pageHero: {

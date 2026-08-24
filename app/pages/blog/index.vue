@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import type { ButtonProps } from '@nuxt/ui'
 import { blogCategories, blogPosts } from '~/data/blog'
+import { CAL_COM_URL } from '~/utils/navigation'
 
 useSeoMeta({
   title: 'Blog Heya | Convivialité et habitat partagé',
@@ -7,6 +9,7 @@ useSeoMeta({
 })
 
 const activeCategory = ref('Tous')
+const page = ref(1)
 
 const featuredPost = computed(() => blogPosts.find(p => p.featured))
 
@@ -15,115 +18,148 @@ const filteredPosts = computed(() => {
   if (activeCategory.value === 'Tous') return nonFeatured
   return nonFeatured.filter(p => p.category === activeCategory.value)
 })
+
+const ctaLinks: ButtonProps[] = [
+  { label: 'Demander une démo', to: CAL_COM_URL, target: '_blank' }
+]
 </script>
 
 <template>
-  <div>
-    <!-- Header -->
-    <section class="bg-heya-cream py-16 sm:py-20">
-      <UContainer class="text-center">
-        <p class="mb-4 text-[11px] font-semibold uppercase tracking-widest text-heya-accent">
-          Le blog
-        </p>
-        <h1 class="text-4xl font-bold text-heya-dark">
-          Actualités et inspirations habitat partagé
-        </h1>
-        <p class="mx-auto mt-5 max-w-xl text-lg text-heya-dark-border">
-          Retours d'expérience, conseils pour animer votre résidence, nouveautés produit.
-        </p>
-
-        <div class="mt-8 flex flex-wrap justify-center gap-2">
-          <button
+  <div class="bg-default">
+    <UPageHero
+      headline="Le blog"
+      title="Actualités & inspirations habitat partagé"
+      description="Retours d'expérience, conseils pour animer votre résidence et nouveautés Heya."
+      :ui="{
+        root: 'bg-default pb-8 pt-12',
+        container: 'items-center text-center',
+        headline: 'text-primary text-[11px] font-semibold uppercase tracking-widest',
+        title: 'text-4xl font-semibold text-highlighted max-w-3xl mx-auto',
+        description: 'text-muted max-w-xl mx-auto'
+      }"
+    >
+      <template #links>
+        <div class="flex flex-wrap justify-center gap-2.5">
+          <UBadge
             v-for="cat in blogCategories"
             :key="cat"
-            class="rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
-            :class="activeCategory === cat
-              ? 'bg-heya-accent text-white'
-              : 'border border-heya-dark-border/20 bg-white text-heya-dark-border hover:text-heya-dark'"
+            :label="cat"
+            :variant="activeCategory === cat ? 'solid' : 'subtle'"
+            :color="activeCategory === cat ? 'neutral' : 'neutral'"
+            class="cursor-pointer"
+            :class="activeCategory === cat ? 'bg-inverted text-white' : 'bg-inverted/80 text-white'"
             @click="activeCategory = cat"
-          >
-            {{ cat }}
-          </button>
+          />
         </div>
-      </UContainer>
-    </section>
+      </template>
+    </UPageHero>
 
-    <!-- Featured -->
-    <section
+    <UPageSection
       v-if="featuredPost"
-      class="bg-heya-cream pb-12"
+      :ui="{ root: 'bg-default py-0' }"
     >
-      <UContainer>
-        <article class="overflow-hidden rounded-2xl border border-[#e1d9ca] bg-white sm:flex">
-          <div class="h-64 shrink-0 bg-gradient-to-br from-heya-step-gold/40 to-heya-accent/20 sm:h-auto sm:w-2/5" />
-          <div class="flex flex-col justify-center p-8 sm:w-3/5">
-            <p class="text-[11px] font-semibold uppercase tracking-widest text-heya-accent">
-              À la une
-            </p>
-            <h2 class="mt-3 text-2xl font-bold text-heya-dark">
-              {{ featuredPost.title }}
-            </h2>
-            <p class="mt-3 text-heya-dark-border">
-              {{ featuredPost.excerpt }}
-            </p>
-            <p class="mt-4 text-sm text-heya-dark-border">
-              {{ featuredPost.author }} · {{ featuredPost.date }} · {{ featuredPost.readTime }}
-            </p>
-            <UButton
-              :to="`/blog/${featuredPost.slug}`"
-              class="mt-6 w-fit rounded-full bg-heya-accent text-white"
-            >
-              Lire l'article
-            </UButton>
-          </div>
-        </article>
-      </UContainer>
-    </section>
-
-    <!-- Grid -->
-    <section class="bg-heya-cream pb-16">
-      <UContainer>
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <article
-            v-for="post in filteredPosts"
-            :key="post.slug"
-            class="group"
-          >
-            <div class="mb-4 h-48 rounded-xl bg-[#f0eae0]" />
-            <UBadge
-              :label="post.category"
-              variant="soft"
-              class="mb-2 bg-heya-accent/10 text-heya-accent"
+      <UPageCard
+        :title="featuredPost.title"
+        :description="featuredPost.excerpt"
+        orientation="horizontal"
+        variant="outline"
+        :ui="{
+          root: 'rounded-[20px] overflow-hidden w-full',
+          container: 'p-10',
+          title: 'text-[28px] font-semibold',
+          description: 'text-muted'
+        }"
+      >
+        <template #header>
+          <p class="text-[11px] font-semibold uppercase text-primary">
+            À la une
+          </p>
+          <UBadge
+            :label="featuredPost.category"
+            color="neutral"
+            variant="solid"
+            class="bg-inverted"
+          />
+        </template>
+        <template #footer>
+          <div class="flex items-center gap-3">
+            <UAvatar
+              src="/images/blog/elise.png"
+              :alt="featuredPost.author"
+              size="sm"
             />
-            <h3 class="text-lg font-bold text-heya-dark group-hover:text-heya-accent">
-              <NuxtLink :to="`/blog/${post.slug}`">
-                {{ post.title }}
-              </NuxtLink>
-            </h3>
-            <p class="mt-2 text-sm text-heya-dark-border">
-              {{ post.excerpt }}
-            </p>
-            <p class="mt-3 text-xs text-heya-dark-border">
-              {{ post.date }} · {{ post.readTime }}
-            </p>
-          </article>
-        </div>
-      </UContainer>
-    </section>
-
-    <!-- CTA -->
-    <section class="bg-heya-dark py-16">
-      <UContainer class="text-center">
-        <h2 class="text-2xl font-bold text-[#f1ede6]">
-          Envie d'essayer Heya dans votre résidence ?
-        </h2>
-        <UButton
-          to="/contact"
-          class="mt-6 rounded-full bg-heya-accent px-8 text-white"
+            <div>
+              <p class="text-sm font-semibold">
+                {{ featuredPost.author }}
+              </p>
+              <p class="text-xs text-muted">
+                {{ featuredPost.date }} · {{ featuredPost.readTime }} de lecture
+              </p>
+            </div>
+          </div>
+          <UButton
+            :to="`/blog/${featuredPost.slug}`"
+            size="xs"
+            class="mt-2 w-fit"
+          >
+            Lire l'article
+          </UButton>
+        </template>
+        <img
+          :src="featuredPost.image"
+          :alt="featuredPost.title"
+          class="h-full min-h-[280px] w-full object-cover sm:w-[560px]"
+          width="560"
+          height="360"
         >
-          Demander une démo
-        </UButton>
-      </UContainer>
-    </section>
+      </UPageCard>
+    </UPageSection>
+
+    <UPageSection :ui="{ root: 'bg-default pt-8' }">
+      <div class="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <UBlogPost
+          v-for="post in filteredPosts"
+          :key="post.slug"
+          :title="post.title"
+          :description="post.excerpt"
+          :date="`${post.date} · ${post.readTime}`"
+          :image="{ src: post.image, alt: post.title }"
+          :to="`/blog/${post.slug}`"
+          :badge="{ label: post.category, color: 'neutral', variant: 'solid', class: 'bg-inverted' }"
+          variant="outline"
+          :ui="{
+            root: 'rounded-2xl',
+            title: 'text-lg font-semibold',
+            description: 'text-sm text-muted'
+          }"
+        >
+          <template #footer>
+            <span class="text-[13px] font-semibold text-primary">
+              Lire l'article →
+            </span>
+          </template>
+        </UBlogPost>
+      </div>
+
+      <UPagination
+        v-model:page="page"
+        :total="50"
+        :items-per-page="6"
+        class="mt-8"
+      />
+    </UPageSection>
+
+    <UPageCTA
+      variant="solid"
+      title="Envie d'essayer Heya dans votre résidence ?"
+      description="On installe, on forme, on accompagne. Vous observez le lien se recréer."
+      :links="ctaLinks"
+      class="rounded-none"
+      :ui="{
+        root: 'bg-inverted py-20',
+        title: 'text-3xl font-semibold text-inverted',
+        description: 'text-[#e2e8f0]'
+      }"
+    />
   </div>
 </template>

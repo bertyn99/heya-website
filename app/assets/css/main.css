@@ -105,3 +105,8 @@
   --ui-border-accented: #cad5e2;
   --ui-border-inverted: var(--color-heya-neutral-800);
 }
+
+.contact-form-dark label,
+.contact-form-dark [data-slot="label"] {
+  color: #f1ede6;
+}

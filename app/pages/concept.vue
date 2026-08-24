@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ButtonProps } from '@nuxt/ui'
 import { CAL_COM_URL } from '~/utils/navigation'
 
 useSeoMeta({
@@ -6,187 +7,220 @@ useSeoMeta({
   description: 'Découvrez le concept Heya : totem dans l\'espace commun, lampe relay dans chaque logement, 4 couleurs d\'activités, dashboard pour les équipes.'
 })
 
+const links: ButtonProps[] = [
+  { label: 'Découvrir le produit', to: '#produits' },
+  {
+    label: 'Voir une démo',
+    to: CAL_COM_URL,
+    target: '_blank',
+    color: 'neutral',
+    variant: 'outline'
+  }
+]
+
 const products = [
   {
     label: 'Le boîtier',
     title: 'Le totem interactif',
-    description: 'Installé dans l\'espace commun, le totem permet de proposer une activité en quelques secondes grâce à 4 emplacements couleur.',
-    features: ['Interface physique, sans menu compliqué', 'Accessible à tous les profils', 'Point central de la vie collective'],
-    bg: 'bg-heya-step-blue',
-    icon: 'i-lucide-box'
+    description: 'Installé dans l\'espace commun, le totem permet aux résidents de proposer une activité en quelques secondes grâce à 4 emplacements couleur.',
+    image: '/images/concept/totem.png',
+    imageAlt: 'Totem Heya avec quatre emplacements couleur'
   },
   {
     label: 'La lampe',
-    title: 'La lampe relay',
-    description: 'Dans chaque appartement, la lampe relay s\'allume dans la couleur de l\'activité proposée. Un signal simple et visible.',
-    features: ['Signal discret mais impossible à manquer', 'Pas de compte, pas de WiFi côté résident', 'Relie le logement privé à la vie commune'],
-    bg: 'bg-heya-step-gold',
-    icon: 'i-lucide-lamp'
+    title: 'La lampe relais',
+    description: 'Dans chaque appartement, la lampe s\'allume dans la couleur de l\'activité proposée. Un signal simple et visible pour créer du lien.',
+    image: '/images/concept/lampe.png',
+    imageAlt: 'Lampe relais Heya allumée'
   }
 ]
 
+const stats = [
+  { value: '-32%', title: 'Sollicitations conciergerie', description: 'Moins de questions répétitives', featured: true, valueClass: 'text-primary' },
+  { value: '+45%', title: 'Participation résidents', description: 'Plus d\'activités proposées', valueClass: 'text-heya-teal' },
+  { value: '1h', title: 'Formation équipe', description: 'Prise en main rapide', valueClass: 'text-heya-blue' },
+  { value: '0', title: 'Maintenance', description: 'Fonctionne en autonomie', valueClass: 'text-heya-violet' }
+]
+
 const activities = [
-  { color: 'bg-heya-blue', label: 'Jeux de société', examples: 'Cartes, échecs, jeux de plateau' },
-  { color: 'bg-heya-yellow', label: 'Activité extérieure', examples: 'Balades, jardinage, sorties' },
-  { color: 'bg-heya-orange', label: 'Activité manuelle', examples: 'Ateliers créatifs, bricolage' },
-  { color: 'bg-heya-violet', label: 'Café / discussions', examples: 'Moments conviviaux, échanges' }
+  { title: 'Jeux de société', description: 'Parties de cartes, échecs, jeux de plateau entre voisins.', icon: 'i-lucide-gamepad-2', cardClass: 'bg-[#e6f5ff] border-heya-blue', iconClass: 'bg-heya-blue' },
+  { title: 'Activité extérieure', description: 'Balades, jardinage, sorties dans le quartier.', icon: 'i-lucide-map-pin', cardClass: 'bg-[#fff8e6] border-heya-yellow', iconClass: 'bg-heya-yellow' },
+  { title: 'Activité manuelle', description: 'Ateliers créatifs, bricolage, cuisine ensemble.', icon: 'i-lucide-paintbrush', cardClass: 'bg-[#fff2e6] border-heya-orange', iconClass: 'bg-heya-orange' },
+  { title: 'Café / discussions', description: 'Moments conviviaux autour d\'un café ou d\'un thé.', icon: 'i-lucide-coffee', cardClass: 'bg-[#f3eeff] border-heya-violet', iconClass: 'bg-heya-violet' }
+]
+
+const installSteps = [
+  { title: 'Audit sur site', description: 'Identification des espaces communs et du nombre d\'appartements.', image: '/images/concept/install-1.png' },
+  { title: 'Pose des boîtiers', description: 'Installation du totem et des lampes par notre équipe.', image: '/images/concept/install-2.png' },
+  { title: 'Formation & lancement', description: '1h de formation conciergerie, puis les résidents prennent le relais.', image: '/images/concept/install-3.png' }
 ]
 </script>
 
 <template>
   <div>
-    <!-- Hero -->
-    <section class="bg-heya-cream py-16 sm:py-20">
-      <UContainer>
-        <div class="mx-auto max-w-3xl text-center">
-          <p class="mb-4 text-[11px] font-semibold uppercase tracking-widest text-heya-accent">
-            Le concept
-          </p>
-          <h1 class="text-4xl font-bold text-heya-dark sm:text-5xl">
-            Créer du lien en habitat partagé
-          </h1>
-          <p class="mt-6 text-lg leading-relaxed text-heya-dark-border">
-            Un totem dans l'espace commun, des lampes dans chaque logement. Les résidents proposent des activités, les lampes s'allument, le lien se crée. Sans écran complexe, sans application obligatoire.
-          </p>
-          <div class="mt-8 flex flex-wrap justify-center gap-4">
-            <UButton
-              to="#produits"
-              class="rounded-full bg-heya-accent text-white"
-            >
-              Découvrir le produit
-            </UButton>
-            <UButton
-              :to="CAL_COM_URL"
-              target="_blank"
-              variant="outline"
-              class="rounded-full border-heya-dark text-heya-dark"
-            >
-              Voir une démo
-            </UButton>
-          </div>
-        </div>
-      </UContainer>
-    </section>
+    <UPageHero
+      headline="Le concept"
+      title="Créer du lien en habitat partagé"
+      description="Un totem dans l'espace commun, des lampes dans chaque appartement. Les résidents proposent des activités, les lampes s'allument, le lien se crée."
+      :links="links"
+      :ui="{
+        root: 'bg-default py-24',
+        container: 'items-center text-center',
+        headline: 'border border-primary/50 text-primary text-[10px] font-semibold uppercase',
+        title: 'text-5xl font-bold text-highlighted max-w-3xl mx-auto',
+        description: 'text-xl text-muted max-w-2xl mx-auto',
+        links: 'justify-center'
+      }"
+    />
 
-    <!-- Products -->
-    <section
+    <UPageSection
       id="produits"
-      class="bg-white py-16 sm:py-20"
+      headline="Les produits"
+      title="Deux objets, un seul objectif"
+      description="Le totem dans l'espace commun et la lampe dans chaque logement."
+      :ui="{ root: 'bg-white' }"
     >
-      <UContainer>
-        <SectionHeader
-          label="Les produits"
-          title="Deux objets, un seul objectif"
-          description="Le totem dans l'espace commun et la lampe relay dans chaque logement. Ensemble, ils transforment une intention en moment partagé."
-          align="center"
-          class="mx-auto mb-14"
-        />
-        <div class="grid gap-8 md:grid-cols-2">
-          <article
-            v-for="product in products"
-            :key="product.title"
-            class="rounded-2xl p-8"
-            :class="product.bg"
-          >
-            <div class="mb-6 flex size-16 items-center justify-center rounded-2xl bg-white/80">
-              <UIcon :name="product.icon" class="size-8 text-heya-dark" />
-            </div>
-            <p class="text-xs font-semibold uppercase tracking-widest text-heya-dark-border">
+      <div class="grid w-full gap-8 md:grid-cols-2">
+        <UPageCard
+          v-for="product in products"
+          :key="product.title"
+          :title="product.title"
+          :description="product.description"
+          :ui="{
+            root: 'rounded-[20px] p-8 text-center',
+            title: 'text-xl font-semibold',
+            description: 'text-muted'
+          }"
+        >
+          <template #header>
+            <img
+              :src="product.image"
+              :alt="product.imageAlt"
+              class="mx-auto h-[220px] w-auto max-w-[280px] object-contain"
+              width="280"
+              height="220"
+            >
+            <p class="mt-5 text-[11px] font-semibold uppercase tracking-widest text-primary">
               {{ product.label }}
             </p>
-            <h3 class="mt-2 text-2xl font-bold text-heya-dark">
-              {{ product.title }}
-            </h3>
-            <p class="mt-3 text-sm leading-relaxed text-heya-dark-border">
-              {{ product.description }}
-            </p>
-            <ul class="mt-4 space-y-2">
-              <li
-                v-for="feature in product.features"
-                :key="feature"
-                class="flex items-center gap-2 text-sm text-heya-dark-border"
-              >
-                <UIcon name="i-lucide-check" class="size-4 text-heya-teal" />
-                {{ feature }}
-              </li>
-            </ul>
-          </article>
-        </div>
-      </UContainer>
-    </section>
+          </template>
+        </UPageCard>
+      </div>
+    </UPageSection>
 
-  <!-- How it works -->
     <HowItWorksSection />
 
-    <!-- Activities -->
-    <section class="bg-[#deede2] py-16 sm:py-20">
-      <UContainer>
-        <SectionHeader
-          label="Les activités"
-          title="4 couleurs, 4 types d'activités"
-          description="Chaque résidence définit le sens de chaque couleur. Configuration éditable par l'équipe."
-          align="center"
-          class="mx-auto mb-14"
-        />
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <article
-            v-for="activity in activities"
-            :key="activity.label"
-            class="rounded-2xl bg-white p-6 text-center"
-          >
-            <div
-              class="mx-auto mb-4 size-12 rounded-full"
-              :class="activity.color"
-            />
-            <h3 class="font-bold text-heya-dark">
-              {{ activity.label }}
-            </h3>
-            <p class="mt-2 text-sm text-heya-dark-border">
-              {{ activity.examples }}
-            </p>
-          </article>
-        </div>
-      </UContainer>
-    </section>
+    <UPageSection
+      headline="Dashboard"
+      title="Suivez la vie de votre résidence"
+      description="Données réelles des résidences équipées"
+      :ui="{
+        root: 'bg-inverted',
+        headline: 'text-primary',
+        title: 'text-inverted',
+        description: 'text-[#aaa297]'
+      }"
+    >
+      <img
+        src="/images/concept/dashboard.png"
+        alt="Aperçu du dashboard Heya"
+        class="w-full rounded-[20px] object-cover shadow-xl"
+        width="1040"
+        height="616"
+      >
+    </UPageSection>
 
-    <!-- Dashboard preview -->
-    <section class="bg-heya-dark py-16 sm:py-20">
-      <UContainer>
-        <SectionHeader
-          label="Nos solutions"
-          title="Un dashboard pour piloter la vie collective"
-          description="Participation en temps réel, activités en cours, indicateurs pour la direction."
-          align="center"
-          label-class="text-heya-teal"
-          class="mx-auto mb-14 [&_h2]:text-[#f1ede6] [&_p]:text-[#a39e96]"
-        />
-        <div class="mx-auto max-w-4xl rounded-2xl bg-heya-dark-muted p-8">
-          <div class="grid gap-4 sm:grid-cols-4">
-            <div
-              v-for="(color, i) in ['bg-heya-yellow', 'bg-heya-step-green-fg', 'bg-heya-step-blue-fg', 'bg-heya-violet']"
-              :key="i"
-              class="rounded-xl bg-white/10 p-4"
+    <UPageSection
+      headline="Qualité & impact"
+      title="Des résultats mesurables"
+    >
+      <div class="grid w-full gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <UPageCard
+          v-for="stat in stats"
+          :key="stat.title"
+          :title="stat.title"
+          :description="stat.description"
+          :class="stat.featured ? 'bg-[#deede2]' : 'bg-elevated'"
+          :ui="{
+            root: 'rounded-[20px] text-center',
+            title: 'text-sm font-semibold',
+            description: 'text-sm text-muted'
+          }"
+        >
+          <template #header>
+            <p
+              class="text-4xl font-bold lg:text-5xl"
+              :class="stat.valueClass"
             >
-              <div class="mb-2 h-2 w-12 rounded" :class="color" />
-              <div class="h-16 rounded bg-white/5" />
+              {{ stat.value }}
+            </p>
+          </template>
+        </UPageCard>
+      </div>
+    </UPageSection>
+
+    <UPageSection
+      headline="Les activités"
+      title="4 couleurs, 4 types d'activités"
+      description="Ces activités sont personnalisables et peuvent évoluer selon vos envies."
+      :ui="{ root: 'bg-default' }"
+    >
+      <div class="grid w-full gap-8 md:grid-cols-2">
+        <UPageCard
+          v-for="activity in activities"
+          :key="activity.title"
+          :title="activity.title"
+          :description="activity.description"
+          :class="activity.cardClass"
+          :ui="{
+            root: 'rounded-2xl border-2 p-10 ring-0',
+            title: 'text-[22px] font-bold',
+            description: 'text-muted'
+          }"
+        >
+          <template #leading>
+            <div
+              class="flex size-[72px] items-center justify-center rounded-full text-white"
+              :class="activity.iconClass"
+            >
+              <UIcon
+                :name="activity.icon"
+                class="size-7"
+              />
             </div>
-          </div>
-          <div class="mt-4 grid gap-4 lg:grid-cols-2">
-            <div class="h-48 rounded-xl bg-white/10" />
-            <div class="space-y-2">
-              <div
-                v-for="j in 5"
-                :key="j"
-                class="flex items-center gap-2 rounded-lg bg-white/5 p-3"
-              >
-                <span class="size-2 rounded-full bg-heya-orange" />
-                <span class="h-2 flex-1 rounded bg-white/10" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </UContainer>
-    </section>
+          </template>
+        </UPageCard>
+      </div>
+    </UPageSection>
+
+    <UPageSection
+      headline="Installation"
+      title="Opérationnel en une demi-journée"
+    >
+      <div class="grid w-full gap-8 md:grid-cols-3">
+        <UPageCard
+          v-for="step in installSteps"
+          :key="step.title"
+          :title="step.title"
+          :description="step.description"
+          :ui="{
+            root: 'rounded-2xl border border-[#c8e6d7] p-6 text-center',
+            title: 'text-lg font-semibold',
+            description: 'text-sm text-muted'
+          }"
+        >
+          <template #header>
+            <img
+              :src="step.image"
+              :alt="step.title"
+              class="mx-auto h-40 w-full rounded-xl object-cover"
+              width="240"
+              height="160"
+            >
+          </template>
+        </UPageCard>
+      </div>
+    </UPageSection>
 
     <ContactCtaSection />
   </div>

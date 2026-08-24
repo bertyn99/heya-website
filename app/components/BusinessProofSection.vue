@@ -1,12 +1,24 @@
+<script setup lang="ts">
+const partners = [
+  { name: 'Gérontopôle Autonomie Longévité', logo: '/images/partners/gerontopole.png' },
+  { name: 'Nantes Métropole Habitat', logo: '/images/partners/nantes-metropole-habitat.png' },
+  { name: 'Pépite Pays de la Loire', logo: '/images/partners/pepite-pays-de-la-loire.png' },
+  { name: 'Startups & Innovation Day', logo: '/images/partners/startups-innovation-day.png' }
+]
+</script>
+
 <template>
   <UPageSection>
     <UPageLogos title="Ils nous font confiance">
-      <div class="flex flex-wrap items-center justify-center gap-8 opacity-60 grayscale">
-        <div
-          v-for="i in 4"
-          :key="i"
-          class="h-12 w-28 rounded-lg bg-accented"
-          aria-hidden="true"
+      <div class="flex flex-wrap items-center justify-center gap-8">
+        <NuxtImg
+          v-for="partner in partners"
+          :key="partner.name"
+          :src="partner.logo"
+          :alt="partner.name"
+          class="h-12 w-auto max-w-28 object-contain opacity-60 grayscale"
+          width="120"
+          height="60"
         />
       </div>
     </UPageLogos>

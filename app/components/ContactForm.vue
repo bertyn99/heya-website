@@ -28,7 +28,7 @@ function onSubmit() {
 
 <template>
   <form
-    class="space-y-6"
+    class="contact-form-dark space-y-6"
     @submit.prevent="onSubmit"
   >
     <div class="grid gap-4 sm:grid-cols-2">

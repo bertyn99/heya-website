@@ -3,14 +3,14 @@ const testimonials = [
   {
     quote: 'Depuis l\'installation de Heya, les voisins se retrouvent vraiment. On se propose des activités, on s\'entraide. C\'est exactement ce qu\'il nous fallait.',
     name: 'Marie Dupont',
-    role: 'Résidente',
+    role: 'Résidente *(placeholder)*',
     badge: 'Résidente',
     image: '/images/testimonials/portrait-1.png'
   },
   {
     quote: 'On ne court plus après l\'info. Les résidents se retrouvent d\'eux-mêmes, et on voit enfin ce qui mobilise.',
     name: 'Sophie Martin',
-    role: 'Directrice de résidence',
+    role: 'Directrice de résidence *(placeholder)*',
     badge: 'Directrice de résidence',
     image: '/images/testimonials/portrait-1.png'
   }
@@ -32,67 +32,68 @@ const active = computed(() => testimonials[current.value]!)
 <template>
   <UPageSection
     id="temoignages"
+    :ui="{
+      headline: 'text-primary font-semibold normal-case tracking-normal text-base'
+    }"
     headline="Témoignages"
     title="Ce qu'en disent les équipes et les résidents"
-    description="Découvrez les retours de structures équipées Heya. (Contenu réel à fournir par la cliente.)"
+    description="Découvrez les retours de structures équipées Heya. *(Contenu réel à fournir par la cliente.)*"
   >
-    <UPageCard
-      variant="subtle"
-      orientation="horizontal"
-      :ui="{
-        root: 'overflow-hidden rounded-2xl bg-muted',
-        container: 'p-0 sm:p-0 lg:grid-cols-[380px_1fr]',
-        title: 'text-xl font-bold sm:text-2xl',
-        description: 'hidden'
-      }"
+    <div
+      class="flex h-[684px] overflow-hidden rounded-2xl bg-muted max-lg:h-auto max-lg:flex-col"
     >
       <img
         :src="active.image"
         :alt="`Portrait de ${active.name}`"
-        class="hidden h-full min-h-[400px] w-full object-cover lg:block"
+        class="h-[280px] w-full shrink-0 object-cover lg:h-auto lg:w-[380px]"
         width="380"
         height="684"
       >
 
-      <template #header>
+      <div
+        class="flex min-h-[400px] flex-1 flex-col gap-6 border border-[#e5dcd0] bg-white px-8 py-10 sm:px-12 sm:py-14 lg:min-h-0 lg:border-y lg:border-r lg:border-l-0"
+      >
         <UBadge
           :label="active.badge"
           color="primary"
           variant="soft"
-          class="rounded-full"
+          class="w-fit rounded-full bg-primary/10 text-primary"
         />
-      </template>
 
-      <template #title>
-        « {{ active.quote }} »
-      </template>
+        <blockquote class="text-xl font-bold leading-snug text-highlighted sm:text-[22px] lg:text-2xl">
+          « {{ active.quote }} »
+        </blockquote>
 
-      <template #footer>
-        <div class="flex items-end justify-between gap-4">
-          <UUser
-            :name="active.name"
-            :description="active.role"
+        <div class="mt-auto flex justify-end gap-2">
+          <UButton
+            icon="i-lucide-arrow-left"
+            variant="outline"
+            color="neutral"
+            square
+            class="rounded-full"
+            aria-label="Témoignage précédent"
+            @click="prev"
           />
-          <div class="flex gap-2">
-            <UButton
-              icon="i-lucide-arrow-left"
-              variant="outline"
-              color="neutral"
-              square
-              aria-label="Témoignage précédent"
-              @click="prev"
-            />
-            <UButton
-              icon="i-lucide-arrow-right"
-              variant="outline"
-              color="neutral"
-              square
-              aria-label="Témoignage suivant"
-              @click="next"
-            />
-          </div>
+          <UButton
+            icon="i-lucide-arrow-right"
+            variant="outline"
+            color="neutral"
+            square
+            class="rounded-full"
+            aria-label="Témoignage suivant"
+            @click="next"
+          />
         </div>
-      </template>
-    </UPageCard>
+      </div>
+
+      <div class="flex flex-col gap-3 bg-muted px-8 py-10 lg:w-[304px] lg:px-8 lg:py-14">
+        <p class="font-semibold text-highlighted">
+          {{ active.name }}
+        </p>
+        <p class="text-sm text-muted">
+          {{ active.role }}
+        </p>
+      </div>
+    </div>
   </UPageSection>
 </template>

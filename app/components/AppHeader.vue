@@ -33,7 +33,7 @@ const items = computed<NavigationMenuItem[]>(() =>
         :to="CAL_COM_URL"
         target="_blank"
         size="sm"
-        class="hidden rounded-full px-6 sm:inline-flex"
+        class="hidden rounded-md px-6 sm:inline-flex"
       >
         Prendre rendez-vous
       </UButton>
@@ -49,7 +49,7 @@ const items = computed<NavigationMenuItem[]>(() =>
         :to="CAL_COM_URL"
         target="_blank"
         block
-        class="mt-4 rounded-full"
+        class="mt-4 rounded-md"
       >
         Prendre rendez-vous
       </UButton>

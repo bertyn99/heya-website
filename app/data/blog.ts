@@ -4,8 +4,10 @@ export interface BlogPost {
   excerpt: string
   category: string
   author: string
+  authorRole: string
   date: string
   readTime: string
+  image: string
   featured?: boolean
 }
 
@@ -24,8 +26,10 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'Retour sur le déploiement Heya dans une résidence de 80 logements : totem, lampes, premières activités et impact sur l\'isolement.',
     category: 'Convivialité',
     author: 'Élise Furnon',
+    authorRole: 'Fondatrice, Heya',
     date: '12 juin 2026',
     readTime: '5 min',
+    image: '/images/blog/featured.png',
     featured: true
   },
   {
@@ -34,44 +38,65 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'Des idées simples pour lancer les premières rencontres dans les espaces communs.',
     category: 'Convivialité',
     author: 'Élise Furnon',
+    authorRole: 'Fondatrice, Heya',
     date: '28 mai 2026',
-    readTime: '4 min'
+    readTime: '4 min',
+    image: '/images/blog/thumb-1.png'
   },
   {
     slug: 'totem-mode-emploi-equipes',
     title: 'Le totem Heya : mode d\'emploi pour les équipes',
-    excerpt: 'Comment former votre conciergerie en 1h et lancer les premières activités.',
+    excerpt: 'Comment proposer une activité, choisir une couleur et lancer l\'animation en 30 secondes.',
     category: 'Produit',
     author: 'Élise Furnon',
+    authorRole: 'Fondatrice, Heya',
     date: '15 mai 2026',
-    readTime: '6 min'
+    readTime: '3 min',
+    image: '/images/blog/thumb-2.png'
   },
   {
     slug: 'co-living-lien-spontane',
-    title: 'Co-living : créer du lien sans WhatsApp',
-    excerpt: 'Pourquoi les groupes de messagerie ne suffisent pas et comment Heya complète la vie collective.',
+    title: 'Co-living : créer du lien entre colocataires',
+    excerpt: 'Retour d\'expérience d\'un foyer jeunes travailleurs qui a adopté Heya.',
     category: 'Résidences',
     author: 'Élise Furnon',
+    authorRole: 'Fondatrice, Heya',
     date: '2 mai 2026',
-    readTime: '4 min'
+    readTime: '6 min',
+    image: '/images/blog/thumb-3.png'
   },
   {
-    slug: 'etudiants-internationaux',
-    title: 'Étudiants internationaux : un signal universel',
-    excerpt: 'Comment la lampe relay dépasse les barrières de langue dans les résidences étudiantes.',
-    category: 'Résidences',
+    slug: 'lutter-contre-isolement-etudes',
+    title: 'Lutter contre l\'isolement : ce que disent les études',
+    excerpt: 'Chiffres clés et bonnes pratiques pour les résidences et habitats partagés.',
+    category: 'Convivialité',
     author: 'Élise Furnon',
-    date: '20 avril 2026',
-    readTime: '5 min'
+    authorRole: 'Fondatrice, Heya',
+    date: '18 avr. 2026',
+    readTime: '7 min',
+    image: '/images/blog/thumb-4.png'
   },
   {
-    slug: 'habitat-inclusif-accessibilite',
-    title: 'Habitat inclusif : au-delà de la fracture numérique',
-    excerpt: 'Des outils physiques pour une inclusion réelle, sans écran ni application obligatoire.',
+    slug: 'couleurs-activites-code-heya',
+    title: 'Couleurs d\'activités : le code Heya expliqué',
+    excerpt: 'Bleu, jaune, orange, violet : chaque couleur correspond à un type d\'activité.',
+    category: 'Produit',
+    author: 'Élise Furnon',
+    authorRole: 'Fondatrice, Heya',
+    date: '5 avr. 2026',
+    readTime: '2 min',
+    image: '/images/blog/thumb-5.png'
+  },
+  {
+    slug: 'temoignage-conciergerie',
+    title: 'Témoignage : une conciergerie qui a changé de rythme',
+    excerpt: '« On ne court plus après l\'info, les résidents se retrouvent d\'eux-mêmes. »',
     category: 'Témoignages',
     author: 'Élise Furnon',
-    date: '8 avril 2026',
-    readTime: '5 min'
+    authorRole: 'Fondatrice, Heya',
+    date: '22 mars 2026',
+    readTime: '5 min',
+    image: '/images/blog/thumb-6.png'
   }
 ]
 

@@ -3,53 +3,72 @@ import type { PricingPlanProps } from '@nuxt/ui'
 
 const plans: PricingPlanProps[] = [
   {
-    badge: 'Idéal pour valider sur site',
-    title: 'Test',
-    description: 'Prêtez le dispositif Heya (totem + lampes relay) sur 3, 6 ou 12 mois, sans engagement long terme.',
+    title: 'Essentiel',
+    description: 'Idéal pour démarrer et animer votre résidence.',
+    price: '390€/mois',
     features: [
-      'Totem + lampes relay selon le nombre de logements',
-      'Installation et formation équipe (1h)',
-      'Dashboard de participation',
-      'Accompagnement pendant la période de test'
+      'Jusqu\'à 50 résidents',
+      'Animateur communautaire IA',
+      'Tableau de bord équipe',
+      'Support email',
+      'Onboarding guidé'
     ],
     button: {
-      label: 'Demander un devis test',
+      label: 'Commencer',
       to: '/contact',
-      color: 'neutral',
-      variant: 'outline'
+      block: true
     }
   },
   {
-    badge: 'Recommandé',
-    title: 'Location',
-    description: 'Location du dispositif Heya avec maintenance et mises à jour. Pour animer votre habitat sans investissement initial lourd.',
+    badge: {
+      label: 'Recommandé',
+      color: 'neutral',
+      variant: 'solid',
+      class: 'bg-inverted text-white'
+    },
+    title: 'Pro',
+    description: 'Pour les équipes qui veulent aller plus loin.',
+    price: '490€/mois',
     features: [
-      'Matériel en location',
-      'Maintenance incluse',
-      'Dashboard et support email',
-      'Renouvellement ou passage à l\'achat possible'
+      'Résidents illimités',
+      'Animateur IA avancé',
+      'Analytics & rapports',
+      'Support prioritaire',
+      'Intégrations API'
     ],
     highlight: true,
+    ui: {
+      root: 'rounded-[10px] border border-primary bg-primary p-8 ring-0',
+      title: 'text-2xl font-normal text-white',
+      description: 'text-base text-white',
+      price: 'text-3xl font-normal text-white',
+      featureIcon: 'text-white',
+      featureTitle: 'text-sm text-white'
+    },
     button: {
-      label: 'Demander un devis location',
-      to: '/contact'
+      label: 'Commencer',
+      to: '/contact',
+      block: true,
+      color: 'neutral',
+      variant: 'solid',
+      class: 'bg-white text-primary hover:bg-white/90'
     }
   },
   {
-    badge: 'Pour un déploiement durable',
-    title: 'Achat',
-    description: 'Acquisition du dispositif Heya pour votre structure. Accompagnement dédié, formation sur site, support prioritaire.',
+    title: 'Sur Mesure',
+    description: 'Pour les grandes structures multi-résidences.',
+    price: 'Sur devis',
     features: [
-      'Totem et lampes relay en propriété',
-      'Formation sur site',
-      'Support prioritaire',
-      'Dashboard complet'
+      'Multi-résidences',
+      'IA personnalisée',
+      'Accompagnement dédié',
+      'SLA garanti',
+      'Formation sur site'
     ],
     button: {
       label: 'Nous contacter',
       to: '/contact',
-      color: 'neutral',
-      variant: 'outline'
+      block: true
     }
   }
 ]
@@ -57,19 +76,23 @@ const plans: PricingPlanProps[] = [
 const faq = [
   {
     label: 'Combien de temps dure l\'installation ?',
-    content: 'Une demi-journée pour poser le totem et les lampes relay, plus 1h de formation avec l\'équipe sur site.'
+    content: 'Une demi-journée pour poser le totem et les lampes relay, plus 1h de formation avec l\'équipe sur site.',
+    icon: 'i-lucide-info'
   },
   {
     label: 'Puis-je essayer avant de m\'engager ?',
-    content: 'Oui. L\'offre Test prête le dispositif sur 3, 6 ou 12 mois, sans engagement au-delà de la période choisie.'
+    content: 'Oui. L\'offre Test prête le dispositif sur 3, 6 ou 12 mois, sans engagement au-delà de la période choisie.',
+    icon: 'i-lucide-info'
   },
   {
     label: 'Quels types de résidences ?',
-    content: 'Résidences seniors, foyers jeunes travailleurs, co-living, copropriétés, résidences étudiantes, habitats inclusifs.'
+    content: 'Résidences seniors, foyers jeunes travailleurs, co-living, copropriétés, résidences étudiantes, habitats inclusifs.',
+    icon: 'i-lucide-info'
   },
   {
     label: 'Y a-t-il un support dédié ?',
-    content: 'Support email pour la Location. Support prioritaire et formation sur site pour l\'Achat.'
+    content: 'Support email pour la Location. Support prioritaire et formation sur site pour l\'Achat.',
+    icon: 'i-lucide-info'
   }
 ]
 </script>
@@ -77,18 +100,38 @@ const faq = [
 <template>
   <UPageSection
     id="offres"
+    :ui="{
+      root: 'bg-default',
+      headline: 'border border-primary/50 text-primary text-[10px] font-semibold uppercase tracking-widest',
+      title: 'text-3xl font-semibold text-highlighted',
+      footer: 'mt-8 w-full'
+    }"
     headline="Nos offres"
     title="Tester, louer ou acheter"
-    description="Trois formules pour adapter Heya à votre structure et à votre rythme de déploiement."
   >
-    <UPricingPlans :plans="plans" />
+    <template #body>
+      <UPricingPlans
+        :plans="plans"
+        class="w-full"
+      />
+    </template>
 
     <template #footer>
-      <div class="mx-auto w-full max-w-2xl">
-        <h3 class="mb-6 text-center text-xl font-bold text-highlighted">
-          Questions fréquentes
-        </h3>
-        <UAccordion :items="faq" />
+      <div class="w-full overflow-hidden rounded-lg bg-elevated ring ring-default">
+        <UAccordion
+          :items="faq"
+          type="single"
+          :default-value="'0'"
+          class="w-full"
+          :ui="{
+            root: 'w-full',
+            item: 'border-b border-default bg-elevated px-3.5 last:border-b-0',
+            trigger: 'py-3.5 font-semibold text-highlighted',
+            leadingIcon: 'text-primary size-5',
+            trailingIcon: 'text-dimmed size-5',
+            body: 'pb-3.5 text-muted'
+          }"
+        />
       </div>
     </template>
   </UPageSection>

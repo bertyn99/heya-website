@@ -6,7 +6,6 @@ const useCases = [
     to: '/solutions/residences-seniors',
     image: '/images/use-cases/seniors.png',
     icon: 'i-lucide-users-round',
-    spotlightColor: 'secondary' as const,
     iconClass: 'bg-secondary-100 text-secondary'
   },
   {
@@ -15,7 +14,6 @@ const useCases = [
     to: '/solutions/co-living',
     image: '/images/use-cases/coliving.png',
     icon: 'i-lucide-house',
-    spotlightColor: 'success' as const,
     iconClass: 'bg-success/15 text-success'
   },
   {
@@ -24,7 +22,6 @@ const useCases = [
     to: '/solutions/residences-etudiantes',
     image: '/images/use-cases/etudiants.png',
     icon: 'i-lucide-graduation-cap',
-    spotlightColor: 'info' as const,
     iconClass: 'bg-info/15 text-info'
   },
   {
@@ -33,7 +30,6 @@ const useCases = [
     to: '/solutions/habitat-inclusif',
     image: '/images/use-cases/inclusif.png',
     icon: 'i-lucide-heart-handshake',
-    spotlightColor: 'primary' as const,
     iconClass: 'bg-primary-100 text-primary'
   }
 ]
@@ -45,49 +41,94 @@ const useCases = [
     headline="Pour qui ?"
     title="Heya pour tous les habitats partagés"
   >
-    <UPageGrid class="gap-8 lg:grid-cols-2">
-      <div
-        v-for="item in useCases"
-        :key="item.to"
-        class="group relative min-h-[280px] overflow-hidden rounded-3xl shadow-[0_18px_40px_-12px_rgba(15,23,43,0.12)] sm:min-h-[358px]"
-      >
-        <img
-          :src="item.image"
-          :alt="item.title"
-          class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-        >
-        <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/15 via-[35%] to-black/75" />
-
-        <UPageCard
+    <div class="flex flex-col gap-8">
+      <div class="grid gap-8 lg:grid-cols-2">
+        <NuxtLink
+          v-for="item in useCases.slice(0, 2)"
+          :key="item.to"
           :to="item.to"
-          :title="item.title"
-          :description="item.description"
-          :icon="item.icon"
-          variant="naked"
-          spotlight
-          :spotlight-color="item.spotlightColor"
-          class="relative h-full min-h-[280px] bg-transparent sm:min-h-[358px]"
-          :ui="{
-            container: 'justify-end p-6 sm:p-8',
-            leading: `flex size-10 items-center justify-center rounded-full ${item.iconClass}`,
-            leadingIcon: 'size-5',
-            title: 'text-[22px] font-semibold text-white',
-            description: 'text-base leading-relaxed text-white',
-            footer: 'pt-2'
-          }"
+          class="group relative flex h-[280px] flex-col justify-end overflow-hidden rounded-3xl p-6 shadow-[0_18px_40px_-12px_rgba(15,23,43,0.12)] sm:h-[358px] sm:p-8"
         >
-          <template #footer>
-            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-white">
+          <img
+            :src="item.image"
+            :alt="item.title"
+            class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          >
+          <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/15 via-[35%] to-black/75" />
+
+          <div class="relative space-y-3">
+            <div class="flex items-center gap-3.5">
+              <div
+                class="flex size-10 shrink-0 items-center justify-center rounded-full"
+                :class="item.iconClass"
+              >
+                <UIcon
+                  :name="item.icon"
+                  class="size-5"
+                />
+              </div>
+              <h3 class="text-[22px] font-semibold text-white">
+                {{ item.title }}
+              </h3>
+            </div>
+            <p class="text-base leading-relaxed text-white">
+              {{ item.description }}
+            </p>
+            <span class="inline-flex items-center gap-1.5 pt-2 text-xs font-medium text-white">
               Découvrir
               <UIcon
                 name="i-lucide-arrow-right"
                 class="size-4"
               />
             </span>
-          </template>
-        </UPageCard>
+          </div>
+        </NuxtLink>
       </div>
-    </UPageGrid>
+
+      <div class="grid gap-8 lg:grid-cols-2">
+        <NuxtLink
+          v-for="item in useCases.slice(2)"
+          :key="item.to"
+          :to="item.to"
+          class="group relative flex h-[280px] flex-col justify-end overflow-hidden rounded-3xl p-6 shadow-[0_18px_40px_-12px_rgba(15,23,43,0.12)] sm:h-[358px] sm:p-8"
+        >
+          <img
+            :src="item.image"
+            :alt="item.title"
+            class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          >
+          <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/15 via-[35%] to-black/75" />
+
+          <div class="relative space-y-3">
+            <div class="flex items-center gap-3.5">
+              <div
+                class="flex size-10 shrink-0 items-center justify-center rounded-full"
+                :class="item.iconClass"
+              >
+                <UIcon
+                  :name="item.icon"
+                  class="size-5"
+                />
+              </div>
+              <h3 class="text-[22px] font-semibold text-white">
+                {{ item.title }}
+              </h3>
+            </div>
+            <p class="text-base leading-relaxed text-white">
+              {{ item.description }}
+            </p>
+            <span class="inline-flex items-center gap-1.5 pt-2 text-xs font-medium text-white">
+              Découvrir
+              <UIcon
+                name="i-lucide-arrow-right"
+                class="size-4"
+              />
+            </span>
+          </div>
+        </NuxtLink>
+      </div>
+    </div>
   </UPageSection>
 </template>

@@ -22,9 +22,11 @@ const links: ButtonProps[] = [
     :links="links"
     class="rounded-none"
     :ui="{
-      root: 'bg-inverted',
-      title: 'text-inverted',
-      description: 'text-dimmed'
+      root: 'bg-inverted py-20',
+      container: 'items-start gap-16',
+      title: 'text-3xl font-semibold text-inverted',
+      description: 'text-[#e2e8f0]',
+      links: 'mt-2'
     }"
   >
     <template #body>
@@ -42,18 +44,16 @@ const links: ButtonProps[] = [
           {{ item }}
         </li>
       </ul>
+      <p class="mt-2 text-xs text-[#90a1b9]">
+        Une réponse sous 24h. Vos données sont protégées.
+      </p>
     </template>
 
-    <UPageCard
-      variant="subtle"
-      title="Demandez une démo"
-      class="bg-neutral-800 ring-0"
-      :ui="{
-        title: 'text-inverted',
-        container: 'p-8'
-      }"
-    >
+    <div class="w-full rounded-2xl bg-heya-dark-muted p-8">
+      <h3 class="mb-6 text-lg font-semibold text-inverted">
+        Demandez une démo
+      </h3>
       <ContactForm />
-    </UPageCard>
+    </div>
   </UPageCTA>
 </template>
