@@ -20,7 +20,7 @@ function selectHelpStep(index: number) {
       <UContainer>
         <div class="grid items-center gap-12 lg:grid-cols-2">
           <div class="space-y-5">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-heya-violet">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
               {{ data.badge }}
             </p>
             <h1 class="text-3xl font-bold leading-tight text-heya-dark sm:text-5xl">
@@ -34,14 +34,14 @@ function selectHelpStep(index: number) {
               <UButton
                 :to="CAL_COM_URL"
                 target="_blank"
-                class="rounded-md bg-heya-purple-cta font-semibold text-white hover:bg-heya-purple-cta/90"
+                class="rounded-md bg-secondary font-semibold text-white hover:bg-secondary/90"
               >
                 Demander une démo
               </UButton>
               <UButton
                 to="/#offres"
                 variant="outline"
-                class="rounded-md border-heya-purple-cta/55 text-heya-purple-cta/85"
+                class="rounded-md border-secondary/55 text-secondary/85"
               >
                 Voir les offres
               </UButton>
@@ -53,13 +53,13 @@ function selectHelpStep(index: number) {
                 :key="chip"
                 class="flex items-center gap-2 text-sm text-[#6b7380]"
               >
-                <span class="size-1.5 shrink-0 rounded-full bg-heya-accent" />
+                <span class="size-1.5 shrink-0 rounded-full bg-primary" />
                 {{ chip }}
               </li>
             </ul>
           </div>
 
-          <div class="overflow-hidden rounded-3xl border-[3px] border-heya-violet shadow-lg">
+          <div class="overflow-hidden rounded-3xl border-[3px] border-secondary shadow-lg">
             <img
               :src="data.heroImage"
               :alt="data.title"
