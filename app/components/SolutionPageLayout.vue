@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AnimatePresence, motion } from 'motion-v'
 import type { SolutionPageData } from '~/data/solutions'
 import { CAL_COM_URL } from '~/utils/navigation'
 import { heyaEyebrow, heyaSectionHeadline } from '~/utils/heya-ui'
@@ -7,13 +8,35 @@ const props = defineProps<{
   data: SolutionPageData
 }>()
 
+const MotionLi = motion.li
+const MotionArticle = motion.article
+const MotionP = motion.p
+const MotionButton = motion.button
+const MotionSpan = motion.span
+
 const activeHelpStep = ref(0)
 const activeTestimonial = ref(0)
+const hoveredBenefit = ref<string | null>(null)
+
+const inView = { once: true, amount: 0.4, margin: '-48px 0px' }
+
+function enterTransition(index: number) {
+  return {
+    type: 'spring' as const,
+    stiffness: 280,
+    damping: 24,
+    delay: index * 0.08
+  }
+}
+
+function isBenefitActive(title: string) {
+  return hoveredBenefit.value === title
+}
 
 const challengeSurfaces = [
-  { card: 'bg-step-blue', num: 'text-step-blue-fg bg-step-blue-fg/20' },
-  { card: 'bg-step-gold', num: 'text-step-gold-fg bg-step-gold-fg/20' },
-  { card: 'bg-step-green', num: 'text-step-green-fg bg-step-green-fg/20' }
+  'bg-step-blue',
+  'bg-step-gold',
+  'bg-step-green'
 ] as const
 
 const highlightSurfaces = [
@@ -146,8 +169,8 @@ function nextTestimonial() {
       </UContainer>
     </section>
 
-    <!-- Défis: colored bands, not another divider list -->
-    <section class="bg-default py-20 sm:pb-28 sm:pt-24">
+    <!-- Défis: staggered color bands, no numbering -->
+    <section class="bg-default py-20 sm:pb-32 sm:pt-24">
       <UContainer>
         <header class="mb-12 max-w-2xl">
           <p :class="heyaSectionHeadline">
@@ -161,35 +184,33 @@ function nextTestimonial() {
           </p>
         </header>
 
-        <ol class="flex flex-col gap-5">
-          <li
+        <ul class="flex flex-col gap-5">
+          <MotionLi
             v-for="(challenge, index) in data.challenges"
             :key="challenge.num"
-            class="grid items-start gap-5 rounded-[1.25rem] p-7 sm:grid-cols-[5.5rem_1fr] sm:gap-8 sm:p-9"
-            :class="challengeSurfaces[index % challengeSurfaces.length]?.card"
+            class="rounded-[1.25rem] p-7 sm:max-w-[54rem] sm:p-9"
+            :class="[
+              challengeSurfaces[index % challengeSurfaces.length],
+              index % 2 === 1 ? 'sm:ml-12 lg:ml-24' : ''
+            ]"
+            :initial="{ opacity: 0, x: index % 2 === 1 ? 28 : -28 }"
+            :while-in-view="{ opacity: 1, x: 0 }"
+            :viewport="inView"
+            :transition="enterTransition(index)"
           >
-            <span
-              class="inline-flex size-12 items-center justify-center rounded-full text-sm font-semibold tabular"
-              :class="challengeSurfaces[index % challengeSurfaces.length]?.num"
-              aria-hidden="true"
-            >
-              {{ challenge.num }}
-            </span>
-            <div class="min-w-0">
-              <h3 class="text-xl font-semibold tracking-tight text-highlighted sm:text-2xl">
-                {{ challenge.title }}
-              </h3>
-              <p class="mt-3 max-w-[58ch] text-base leading-relaxed text-muted">
-                {{ challenge.description }}
-              </p>
-            </div>
-          </li>
-        </ol>
+            <h3 class="text-xl font-semibold tracking-tight text-highlighted sm:text-2xl">
+              {{ challenge.title }}
+            </h3>
+            <p class="mt-3 max-w-[58ch] text-base leading-relaxed text-muted">
+              {{ challenge.description }}
+            </p>
+          </MotionLi>
+        </ul>
       </UContainer>
     </section>
 
-    <!-- Comment Heya aide: interactive steps + illustration -->
-    <section class="bg-white py-20 sm:py-24">
+    <!-- Comment Heya aide: the only numbered sequence -->
+    <section class="bg-white py-24 sm:py-32">
       <UContainer>
         <div class="grid items-start gap-12 lg:grid-cols-2">
           <div class="space-y-8">
@@ -206,17 +227,20 @@ function nextTestimonial() {
             </div>
 
             <div>
-              <button
+              <MotionButton
                 v-for="(step, index) in data.helpSteps"
                 :key="step.num"
                 type="button"
-                class="flex w-full gap-5 border-b border-default py-6 text-left transition-colors duration-200"
+                class="flex w-full gap-5 border-b border-default py-6 text-left"
                 :class="activeHelpStep === index ? 'text-highlighted' : 'text-muted'"
                 :aria-expanded="activeHelpStep === index"
+                :while-hover="{ x: 4 }"
+                :while-press="{ scale: 0.995 }"
+                :transition="{ type: 'spring', stiffness: 420, damping: 28 }"
                 @click="selectHelpStep(index)"
               >
                 <div
-                  class="w-1 shrink-0 rounded-full"
+                  class="w-1 shrink-0 rounded-full transition-colors duration-200"
                   :class="activeHelpStep === index ? 'bg-primary' : 'bg-heya-neutral-200'"
                 />
                 <div class="min-w-0 space-y-1">
@@ -226,14 +250,21 @@ function nextTestimonial() {
                   <p class="text-base font-semibold">
                     {{ step.title }}
                   </p>
-                  <p
-                    v-if="activeHelpStep === index"
-                    class="pt-1 text-sm leading-relaxed text-muted"
-                  >
-                    {{ step.description }}
-                  </p>
+                  <AnimatePresence>
+                    <MotionP
+                      v-if="activeHelpStep === index"
+                      :key="step.num"
+                      class="overflow-hidden pt-1 text-sm leading-relaxed text-muted"
+                      :initial="{ opacity: 0, height: 0 }"
+                      :animate="{ opacity: 1, height: 'auto' }"
+                      :exit="{ opacity: 0, height: 0 }"
+                      :transition="{ duration: 0.22, ease: 'easeOut' }"
+                    >
+                      {{ step.description }}
+                    </MotionP>
+                  </AnimatePresence>
                 </div>
-              </button>
+              </MotionButton>
             </div>
 
             <UButton
@@ -259,10 +290,10 @@ function nextTestimonial() {
       </UContainer>
     </section>
 
-    <!-- Bénéfices: matrix table or staggered highlights -->
-    <section class="bg-muted py-20 sm:pb-28 sm:pt-24">
+    <!-- Bénéfices: two audiences, not another numbered list -->
+    <section class="bg-muted py-24 sm:pb-32 sm:pt-28">
       <UContainer>
-        <header class="mb-12 max-w-2xl">
+        <header class="mb-14 max-w-2xl">
           <p :class="heyaSectionHeadline">
             Bénéfices
           </p>
@@ -273,74 +304,128 @@ function nextTestimonial() {
 
         <div
           v-if="data.benefitsLayout === 'matrix' && data.benefitRows"
+          class="grid gap-12 lg:grid-cols-2 lg:gap-20"
         >
-          <div
-            class="mb-3 hidden grid-cols-12 gap-8 lg:grid"
-            aria-hidden="true"
-          >
-            <div class="col-span-4" />
-            <p class="col-span-4 text-sm font-medium text-highlighted">
+          <article>
+            <p class="text-sm font-medium text-highlighted">
               L'équipe
             </p>
-            <p class="col-span-4 text-sm font-medium text-highlighted">
+            <p class="mt-1 text-sm text-muted">
+              Conciergerie, animation, terrain.
+            </p>
+            <ul class="mt-8 space-y-6">
+              <MotionLi
+                v-for="(row, index) in data.benefitRows"
+                :key="`team-${row.title}`"
+                class="list-none"
+                :initial="{ opacity: 0, y: 18 }"
+                :while-in-view="{ opacity: 1, y: 0 }"
+                :viewport="inView"
+                :transition="enterTransition(index)"
+              >
+                <div
+                  class="-m-2 flex cursor-default gap-4 rounded-2xl p-2 transition-opacity duration-300"
+                  :class="hoveredBenefit && !isBenefitActive(row.title) ? 'opacity-40' : 'opacity-100'"
+                  @mouseenter="hoveredBenefit = row.title"
+                  @mouseleave="hoveredBenefit = null"
+                  @focusin="hoveredBenefit = row.title"
+                  @focusout="hoveredBenefit = null"
+                >
+                  <MotionSpan
+                    :while-hover="{ scale: 1.08, rotate: -4 }"
+                    :animate="isBenefitActive(row.title) ? { scale: 1.06 } : { scale: 1 }"
+                    :transition="{ type: 'spring', stiffness: 420, damping: 18 }"
+                  >
+                    <BenefitMark
+                      :kind="row.mark"
+                      :active="isBenefitActive(row.title)"
+                    />
+                  </MotionSpan>
+                  <div class="min-w-0 pt-0.5">
+                    <h3 class="font-semibold tracking-tight text-highlighted">
+                      {{ row.title }}
+                    </h3>
+                    <p class="mt-1 max-w-[36ch] text-base leading-relaxed text-muted">
+                      {{ row.team }}
+                    </p>
+                  </div>
+                </div>
+              </MotionLi>
+            </ul>
+          </article>
+
+          <article class="lg:border-l lg:border-heya-neutral-300 lg:pl-20">
+            <p class="text-sm font-medium text-highlighted">
               La direction
             </p>
-          </div>
-
-          <ol class="border-t border-heya-neutral-300">
-            <li
-              v-for="(row, index) in data.benefitRows"
-              :key="row.title"
-              class="grid gap-4 border-b border-heya-neutral-300 py-8 sm:py-10 lg:grid-cols-12 lg:items-start lg:gap-8"
-            >
-              <h3 class="flex items-baseline gap-4 text-lg font-semibold tracking-tight text-highlighted sm:text-xl lg:col-span-4">
-                <span
-                  class="shrink-0 text-sm font-semibold tabular text-primary/50"
-                  aria-hidden="true"
+            <p class="mt-1 text-sm text-muted">
+              Pilotage, impact, parties prenantes.
+            </p>
+            <ul class="mt-8 space-y-6">
+              <MotionLi
+                v-for="(row, index) in data.benefitRows"
+                :key="`direction-${row.title}`"
+                class="list-none"
+                :initial="{ opacity: 0, y: 18 }"
+                :while-in-view="{ opacity: 1, y: 0 }"
+                :viewport="inView"
+                :transition="enterTransition(index + 2)"
+              >
+                <div
+                  class="-m-2 flex cursor-default gap-4 rounded-2xl p-2 transition-opacity duration-300"
+                  :class="hoveredBenefit && !isBenefitActive(row.title) ? 'opacity-40' : 'opacity-100'"
+                  @mouseenter="hoveredBenefit = row.title"
+                  @mouseleave="hoveredBenefit = null"
+                  @focusin="hoveredBenefit = row.title"
+                  @focusout="hoveredBenefit = null"
                 >
-                  {{ String(index + 1).padStart(2, '0') }}
-                </span>
-                {{ row.title }}
-              </h3>
-
-              <div class="lg:col-span-4">
-                <p class="mb-1 text-sm font-medium text-highlighted lg:hidden">
-                  L'équipe
-                </p>
-                <p class="max-w-[32ch] text-base leading-relaxed text-muted">
-                  {{ row.team }}
-                </p>
-              </div>
-
-              <div class="lg:col-span-4">
-                <p class="mb-1 text-sm font-medium text-highlighted lg:hidden">
-                  La direction
-                </p>
-                <p class="max-w-[32ch] text-base leading-relaxed text-muted">
-                  {{ row.direction }}
-                </p>
-              </div>
-            </li>
-          </ol>
+                  <MotionSpan
+                    :while-hover="{ scale: 1.08, rotate: 4 }"
+                    :animate="isBenefitActive(row.title) ? { scale: 1.06 } : { scale: 1 }"
+                    :transition="{ type: 'spring', stiffness: 420, damping: 18 }"
+                  >
+                    <BenefitMark
+                      :kind="row.mark"
+                      :active="isBenefitActive(row.title)"
+                    />
+                  </MotionSpan>
+                  <div class="min-w-0 pt-0.5">
+                    <h3 class="font-semibold tracking-tight text-highlighted">
+                      {{ row.title }}
+                    </h3>
+                    <p class="mt-1 max-w-[36ch] text-base leading-relaxed text-muted">
+                      {{ row.direction }}
+                    </p>
+                  </div>
+                </div>
+              </MotionLi>
+            </ul>
+          </article>
         </div>
 
         <div
           v-else-if="data.benefitsLayout === 'highlights' && data.benefitHighlights"
           class="grid gap-5 md:grid-cols-2"
         >
-          <article
+          <MotionArticle
             v-for="(item, index) in data.benefitHighlights"
             :key="item.title"
             class="rounded-[1.25rem] p-8"
             :class="[highlightSurfaces[index % highlightSurfaces.length], highlightOffsets[index % highlightOffsets.length]]"
+            :initial="{ opacity: 0, y: 24 }"
+            :while-in-view="{ opacity: 1, y: 0 }"
+            :while-hover="{ y: -6 }"
+            :viewport="inView"
+            :transition="enterTransition(index)"
           >
-            <h3 class="text-2xl font-bold tracking-tight text-highlighted">
+            <BenefitMark :kind="item.mark" />
+            <h3 class="mt-5 text-2xl font-bold tracking-tight text-highlighted">
               {{ item.title }}
             </h3>
             <p class="mt-3 max-w-[36ch] text-sm leading-relaxed text-toned">
               {{ item.description }}
             </p>
-          </article>
+          </MotionArticle>
         </div>
 
         <p

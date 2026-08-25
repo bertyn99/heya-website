@@ -16,15 +16,19 @@ export interface SolutionPersona {
   description: string
 }
 
+export type BenefitMarkKind = 'lamp' | 'gesture' | 'together' | 'chart' | 'spaces' | 'spark'
+
 export interface SolutionBenefitRow {
   title: string
   team: string
   direction: string
+  mark: BenefitMarkKind
 }
 
 export interface SolutionHighlight {
   title: string
   description: string
+  mark: BenefitMarkKind
 }
 
 export interface SolutionUseCase {
@@ -172,10 +176,10 @@ export const solutions: Record<string, SolutionPageData> = {
     benefitsTitle: 'Ce que votre résidence gagne concrètement',
     benefitsLayout: 'matrix',
     benefitRows: [
-      { title: 'Visibilité des activités', team: 'Moins de relances manuelles', direction: 'Meilleure fréquentation des animations' },
-      { title: 'Simplicité d\'usage', team: 'Moins de charge conciergerie', direction: 'Adoption rapide par les résidents' },
-      { title: 'Inclusivité', team: 'Accessible sans smartphone', direction: 'Image résidence engagée sur le lien social' },
-      { title: 'Pilotage', team: 'Retours terrain plus clairs', direction: 'Données de participation exploitables' }
+      { title: 'Visibilité des activités', team: 'Moins de relances manuelles', direction: 'Meilleure fréquentation des animations', mark: 'lamp' },
+      { title: 'Simplicité d\'usage', team: 'Moins de charge conciergerie', direction: 'Adoption rapide par les résidents', mark: 'gesture' },
+      { title: 'Inclusivité', team: 'Accessible sans smartphone', direction: 'Image résidence engagée sur le lien social', mark: 'together' },
+      { title: 'Pilotage', team: 'Retours terrain plus clairs', direction: 'Données de participation exploitables', mark: 'chart' }
     ],
     benefitsFootnote: 'Heya ne remplace pas votre équipe d\'animation. Il amplifie ce qu\'elle fait déjà : rendre visible l\'envie de partager un moment ensemble.',
     useCase: {
@@ -321,10 +325,10 @@ export const solutions: Record<string, SolutionPageData> = {
     benefitsTitle: 'Pourquoi les opérateurs choisissent Heya',
     benefitsLayout: 'highlights',
     benefitHighlights: [
-      { title: 'Rétention des colocataires', description: 'Une vie collective visible améliore l\'expérience et réduit le turnover perçu.' },
-      { title: 'Valorisation des espaces communs', description: 'Le ROI des aménagements partagés devient tangible.' },
-      { title: 'Charge réduite pour l\'équipe', description: 'Moins de relances, plus de propositions spontanées.' },
-      { title: 'Différenciation commerciale', description: '« Habitat partagé qui vit vraiment » devient un argument de vente.' }
+      { title: 'Rétention des colocataires', description: 'Une vie collective visible améliore l\'expérience et réduit le turnover perçu.', mark: 'together' },
+      { title: 'Valorisation des espaces communs', description: 'Le ROI des aménagements partagés devient tangible.', mark: 'spaces' },
+      { title: 'Charge réduite pour l\'équipe', description: 'Moins de relances, plus de propositions spontanées.', mark: 'gesture' },
+      { title: 'Différenciation commerciale', description: '« Habitat partagé qui vit vraiment » devient un argument de vente.', mark: 'spark' }
     ],
     useCase: {
       title: 'Exemple concret : un dîner du mardi dans la cuisine commune',
@@ -463,10 +467,10 @@ export const solutions: Record<string, SolutionPageData> = {
     benefitsTitle: 'Impact pour la résidence et les étudiants',
     benefitsLayout: 'highlights',
     benefitHighlights: [
-      { title: 'Réduction de l\'isolement', description: 'Surtout en début de semestre, quand le réseau n\'existe pas encore.' },
-      { title: 'Espaces communs utilisés', description: 'Cuisine, salle détente, cour : les lieux aménagés redeviennent des lieux de rencontre.' },
-      { title: 'Inclusion des internationaux', description: 'Sans outil numérique exclusif, ni affiche à déchiffrer.' },
-      { title: 'Preuve d\'action vie sociale', description: 'Des données pour le CROUS, le bailleur ou la direction.' }
+      { title: 'Réduction de l\'isolement', description: 'Surtout en début de semestre, quand le réseau n\'existe pas encore.', mark: 'lamp' },
+      { title: 'Espaces communs utilisés', description: 'Cuisine, salle détente, cour : les lieux aménagés redeviennent des lieux de rencontre.', mark: 'spaces' },
+      { title: 'Inclusion des internationaux', description: 'Sans outil numérique exclusif, ni affiche à déchiffrer.', mark: 'together' },
+      { title: 'Preuve d\'action vie sociale', description: 'Des données pour le CROUS, le bailleur ou la direction.', mark: 'chart' }
     ],
     useCase: {
       title: 'Exemple concret : un café multilingue un jeudi soir',
@@ -605,10 +609,10 @@ export const solutions: Record<string, SolutionPageData> = {
     benefitsTitle: 'Pourquoi Heya s\'intègre à un projet inclusif',
     benefitsLayout: 'highlights',
     benefitHighlights: [
-      { title: 'Accessibilité universelle', description: 'Pas de prérequis numérique pour participer.' },
-      { title: 'Respect des différences', description: 'Langue, génération, handicap ne bloquent plus l\'information.' },
-      { title: 'Vie sociale objectivée', description: 'Des données pour les bilans, les ARS, les financeurs.' },
-      { title: 'Cohérence avec les valeurs API', description: 'Un logement partagé qui crée du lien, pas seulement de la cohabitation.' }
+      { title: 'Accessibilité universelle', description: 'Pas de prérequis numérique pour participer.', mark: 'gesture' },
+      { title: 'Respect des différences', description: 'Langue, génération, handicap ne bloquent plus l\'information.', mark: 'together' },
+      { title: 'Vie sociale objectivée', description: 'Des données pour les bilans, les ARS, les financeurs.', mark: 'chart' },
+      { title: 'Cohérence avec les valeurs API', description: 'Un logement partagé qui crée du lien, pas seulement de la cohabitation.', mark: 'spark' }
     ],
     useCase: {
       title: 'Exemple concret : un atelier jardinage un samedi matin',
