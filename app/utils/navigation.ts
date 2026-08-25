@@ -5,7 +5,7 @@ export interface NavItem {
 }
 
 export const mainNav: NavItem[] = [
-  { label: 'Comment ça marche', to: '/#comment-ca-marche' },
+  { label: 'Accueil', to: '/' },
   { label: 'Heya c\'est quoi', to: '/concept' },
   { label: 'Notre engagement', to: '/a-propos' },
   { label: 'Blog', to: '/blog' },
