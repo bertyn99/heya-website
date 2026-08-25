@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { ButtonProps } from '@nuxt/ui'
 import { CAL_COM_URL } from '~/utils/navigation'
+import { heyaEyebrow, heyaHeroSplit } from '~/utils/heya-ui'
 
 useSeoMeta({
-  title: 'Notre engagement | Heya — Réenchanter le quotidien en habitat partagé',
+  title: 'Notre engagement | Réenchanter le quotidien en habitat partagé',
   description: 'Heya, né à Nantes en 2023 : mission, valeurs et parcours d\'Elise Furnon. Lutter contre l\'isolement, créer du lien en habitat partagé.'
 })
 
@@ -11,14 +12,14 @@ const heroLinks: ButtonProps[] = [
   {
     label: 'Découvrir notre mission',
     to: '#mission',
-    icon: 'i-lucide-rocket'
+    icon: 'i-lucide-arrow-down'
   }
 ]
 
 const sectionUi = {
   root: '!py-16 sm:!py-20',
   container: '!gap-10',
-  headline: 'border border-primary/50 text-primary rounded-full text-[10px] font-semibold uppercase tracking-widest'
+  headline: heyaEyebrow
 }
 
 const timeline = [
@@ -46,29 +47,23 @@ const partners = [
   { name: 'Nantes Métropole Habitat', src: '/images/partners/nantes-metropole-habitat.png' },
   { name: 'Pépite Pays de la Loire', src: '/images/partners/pepite-pays-de-la-loire.png' },
   { name: 'Startups & Innovation Day', src: '/images/partners/startups-innovation-day.png' },
-  { name: 'Équipe Heya', src: '/images/partners/equipe.png' },
-  { name: 'Gérontopôle Pays de la Loire', src: '/images/partners/gerontopole.png' }
+  { name: 'Équipe Heya', src: '/images/partners/equipe.png' }
 ]
 
 const ctaLinks: ButtonProps[] = [
-  { label: 'Demander une démo', to: CAL_COM_URL, target: '_blank' }
+  { label: 'Prendre rendez-vous', to: CAL_COM_URL, target: '_blank' }
 ]
 </script>
 
 <template>
   <div>
     <UPageHero
+      headline="Notre engagement"
       title="Une aventure née d'une conviction"
       description="Heya est né d'une conviction simple : en habitat partagé, le lien social ne devrait pas dépendre d'un affichage mal lu ou d'une application de plus. Notre mission est de rendre la convivialité visible, accessible et mesurable."
       orientation="horizontal"
       :links="heroLinks"
-      :ui="{
-        root: 'bg-default !py-16 sm:!py-20',
-        container: 'lg:!gap-12 items-center',
-        wrapper: '!gap-6',
-        title: 'text-4xl sm:text-5xl font-bold text-highlighted',
-        description: 'text-muted text-base max-w-xl'
-      }"
+      :ui="heyaHeroSplit"
     >
       <img
         src="/images/about/hero-circle.png"
@@ -82,17 +77,17 @@ const ctaLinks: ButtonProps[] = [
     <UPageSection
       headline="La genèse"
       title="Notre parcours pas à pas"
-      :ui="{ ...sectionUi, root: `${sectionUi.root} bg-[#f7f2e8]` }"
+      :ui="{ ...sectionUi, root: `${sectionUi.root} bg-muted` }"
     >
       <div class="relative grid w-full gap-6 lg:grid-cols-4">
-        <div class="pointer-events-none absolute inset-x-0 top-16 hidden h-0.5 bg-[#e8e1d5] lg:block" />
+        <div class="pointer-events-none absolute inset-x-0 top-16 hidden h-0.5 bg-heya-neutral-200 lg:block" />
         <UPageCard
           v-for="item in timeline"
           :key="item.year"
           :title="item.title"
           :description="item.description"
           :ui="{
-            root: 'rounded-[20px] p-8 gap-5',
+            root: 'rounded-[1.25rem] p-8 gap-5',
             header: 'mb-0 gap-2',
             body: 'gap-3',
             title: 'text-[22px] font-bold',
@@ -101,7 +96,7 @@ const ctaLinks: ButtonProps[] = [
         >
           <template #header>
             <span
-              class="size-3 rounded-full ring-8 ring-[#f7f2e8]"
+              class="size-3 rounded-full ring-8 ring-muted"
               :class="item.dotClass"
             />
             <p class="text-[40px] font-bold leading-none text-primary sm:text-5xl">
@@ -184,7 +179,7 @@ const ctaLinks: ButtonProps[] = [
         <article
           v-for="award in awards"
           :key="award.title"
-          class="overflow-hidden rounded-[20px] border border-default bg-white shadow-md"
+          class="overflow-hidden rounded-[1.25rem] border border-default bg-white shadow-(--shadow-heya) transition-transform duration-200 hover:-translate-y-1"
         >
           <img
             :src="award.image"
@@ -218,18 +213,18 @@ const ctaLinks: ButtonProps[] = [
       title="Ils nous soutiennent"
       description="Des partenaires institutionnels et des experts qui croient en notre mission de transformer la vie collective en habitat partagé."
       :ui="{
-        root: 'bg-[#deede2] !py-16 sm:!py-20',
+        root: 'bg-step-green !py-16 sm:!py-20',
         container: '!gap-10',
         title: 'text-3xl font-semibold text-highlighted',
         description: 'text-muted max-w-xl mx-auto'
       }"
     >
-      <div class="grid w-full grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
+      <div class="grid w-full grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
         <UPageCard
           v-for="partner in partners"
           :key="partner.name"
           :ui="{
-            root: 'rounded-xl bg-default ring-1 ring-[#e1d9ca] h-[160px] sm:h-[200px] p-4 flex items-center justify-center'
+            root: 'rounded-[1.25rem] bg-default ring-1 ring-heya-neutral-200 h-[160px] sm:h-[200px] p-4 flex items-center justify-center'
           }"
         >
           <img
@@ -250,7 +245,7 @@ const ctaLinks: ButtonProps[] = [
       :links="ctaLinks"
       class="rounded-none"
       :ui="{
-        root: 'bg-[#231f1e] !py-16 sm:!py-20',
+        root: 'bg-heya-dark-footer !py-16 sm:!py-20',
         container: 'flex-col items-center text-center !gap-8',
         title: 'text-3xl font-semibold text-white text-center',
         description: 'text-white/90 text-center max-w-xl mx-auto',

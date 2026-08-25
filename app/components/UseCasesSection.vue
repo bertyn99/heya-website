@@ -1,36 +1,32 @@
 <script setup lang="ts">
 const useCases = [
   {
-    title: 'Résidences Seniors',
-    description: 'Animez les espaces communs et créez du lien entre résidents seniors grâce à des activités adaptées.',
+    title: 'Résidences seniors',
+    description: 'Animez les espaces communs et créez du lien entre résidents grâce à des activités adaptées.',
     to: '/solutions/residences-seniors',
     image: '/images/use-cases/seniors.png',
-    icon: 'i-lucide-users-round',
-    iconClass: 'bg-secondary-100 text-secondary'
+    featured: true
   },
   {
     title: 'Co-living',
-    description: 'Renforcez la cohésion de vos colocataires avec des événements et une gestion simplifiée au quotidien.',
+    description: 'Renforcez la cohésion sans recruter un community manager à temps plein.',
     to: '/solutions/co-living',
     image: '/images/use-cases/coliving.png',
-    icon: 'i-lucide-house',
-    iconClass: 'bg-success/15 text-success'
+    featured: false
   },
   {
-    title: 'Étudiants',
-    description: 'Créez une vraie vie de campus en fédérant vos résidents autour d\'activités et d\'échanges spontanés.',
+    title: 'Résidences étudiantes',
+    description: 'Fédérez vos résidents autour d\'activités spontanées, sans application à installer.',
     to: '/solutions/residences-etudiantes',
     image: '/images/use-cases/etudiants.png',
-    icon: 'i-lucide-graduation-cap',
-    iconClass: 'bg-info/15 text-info'
+    featured: false
   },
   {
-    title: 'Inclusif',
-    description: 'Favorisez l\'inclusion et l\'autonomie des résidents avec des outils pensés pour les accompagnants.',
+    title: 'Habitat inclusif',
+    description: 'Un signal visible pour tous les profils, pensé avec les accompagnants.',
     to: '/solutions/habitat-inclusif',
     image: '/images/use-cases/inclusif.png',
-    icon: 'i-lucide-heart-handshake',
-    iconClass: 'bg-primary-100 text-primary'
+    featured: false
   }
 ]
 </script>
@@ -38,97 +34,44 @@ const useCases = [
 <template>
   <UPageSection
     id="pour-qui"
-    headline="Pour qui ?"
+    headline="Pour qui"
     title="Heya pour tous les habitats partagés"
   >
-    <div class="flex flex-col gap-8">
-      <div class="grid gap-8 lg:grid-cols-2">
-        <NuxtLink
-          v-for="item in useCases.slice(0, 2)"
-          :key="item.to"
-          :to="item.to"
-          class="group relative flex h-[280px] flex-col justify-end overflow-hidden rounded-3xl p-6 shadow-[0_18px_40px_-12px_rgba(15,23,43,0.12)] sm:h-[358px] sm:p-8"
+    <div class="grid w-full gap-6 lg:grid-cols-3 lg:grid-rows-3">
+      <NuxtLink
+        v-for="item in useCases"
+        :key="item.to"
+        :to="item.to"
+        class="group relative flex min-h-60 flex-col justify-end overflow-hidden rounded-[1.25rem] p-6 shadow-(--shadow-heya) transition-transform duration-300 hover:-translate-y-1 sm:p-8"
+        :class="item.featured ? 'lg:col-span-2 lg:row-span-3 lg:min-h-130' : 'lg:min-h-0'"
+      >
+        <img
+          :src="item.image"
+          :alt="item.title"
+          class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
         >
-          <img
-            :src="item.image"
-            :alt="item.title"
-            class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
+        <div class="absolute inset-0 bg-linear-to-b from-black/0 via-[#2a2520]/20 to-[#2a2520]/80" />
+
+        <div class="relative space-y-3">
+          <h3
+            class="font-semibold text-white"
+            :class="item.featured ? 'text-2xl sm:text-3xl' : 'text-xl'"
           >
-          <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/15 via-[35%] to-black/75" />
-
-          <div class="relative space-y-3">
-            <div class="flex items-center gap-3.5">
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-full"
-                :class="item.iconClass"
-              >
-                <UIcon
-                  :name="item.icon"
-                  class="size-5"
-                />
-              </div>
-              <h3 class="text-[22px] font-semibold text-white">
-                {{ item.title }}
-              </h3>
-            </div>
-            <p class="text-base leading-relaxed text-white">
-              {{ item.description }}
-            </p>
-            <span class="inline-flex items-center gap-1.5 pt-2 text-xs font-medium text-white">
-              Découvrir
-              <UIcon
-                name="i-lucide-arrow-right"
-                class="size-4"
-              />
-            </span>
-          </div>
-        </NuxtLink>
-      </div>
-
-      <div class="grid gap-8 lg:grid-cols-2">
-        <NuxtLink
-          v-for="item in useCases.slice(2)"
-          :key="item.to"
-          :to="item.to"
-          class="group relative flex h-[280px] flex-col justify-end overflow-hidden rounded-3xl p-6 shadow-[0_18px_40px_-12px_rgba(15,23,43,0.12)] sm:h-[358px] sm:p-8"
-        >
-          <img
-            :src="item.image"
-            :alt="item.title"
-            class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
-          >
-          <div class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/15 via-[35%] to-black/75" />
-
-          <div class="relative space-y-3">
-            <div class="flex items-center gap-3.5">
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-full"
-                :class="item.iconClass"
-              >
-                <UIcon
-                  :name="item.icon"
-                  class="size-5"
-                />
-              </div>
-              <h3 class="text-[22px] font-semibold text-white">
-                {{ item.title }}
-              </h3>
-            </div>
-            <p class="text-base leading-relaxed text-white">
-              {{ item.description }}
-            </p>
-            <span class="inline-flex items-center gap-1.5 pt-2 text-xs font-medium text-white">
-              Découvrir
-              <UIcon
-                name="i-lucide-arrow-right"
-                class="size-4"
-              />
-            </span>
-          </div>
-        </NuxtLink>
-      </div>
+            {{ item.title }}
+          </h3>
+          <p class="max-w-[42ch] text-sm leading-relaxed text-white/90 sm:text-base">
+            {{ item.description }}
+          </p>
+          <span class="inline-flex items-center gap-1.5 pt-1 text-xs font-medium text-white">
+            Découvrir
+            <UIcon
+              name="i-lucide-arrow-right"
+              class="size-4 transition-transform duration-200 group-hover:translate-x-0.5"
+            />
+          </span>
+        </div>
+      </NuxtLink>
     </div>
   </UPageSection>
 </template>

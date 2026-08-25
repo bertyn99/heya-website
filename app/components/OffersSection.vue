@@ -3,18 +3,19 @@ import type { PricingPlanProps } from '@nuxt/ui'
 
 const plans: PricingPlanProps[] = [
   {
-    title: 'Essentiel',
-    description: 'Idéal pour démarrer et animer votre résidence.',
-    price: '390€/mois',
+    title: 'Test',
+    description: 'Prêtez le dispositif sur 3, 6 ou 12 mois, sans engagement long terme.',
+    price: 'Sur devis',
+    billingCycle: '3, 6 ou 12 mois',
+    tagline: 'Pour valider sur site',
     features: [
-      'Jusqu\'à 50 résidents',
-      'Animateur communautaire IA',
-      'Tableau de bord équipe',
-      'Support email',
-      'Onboarding guidé'
+      'Totem + lampes relay selon le nombre de logements',
+      'Installation et formation équipe (1h)',
+      'Dashboard de participation',
+      'Accompagnement pendant la période de test'
     ],
     button: {
-      label: 'Commencer',
+      label: 'Demander un devis',
       to: '/contact',
       block: true
     }
@@ -26,27 +27,31 @@ const plans: PricingPlanProps[] = [
       variant: 'solid',
       class: 'bg-inverted text-white'
     },
-    title: 'Pro',
-    description: 'Pour les équipes qui veulent aller plus loin.',
-    price: '490€/mois',
-    features: [
-      'Résidents illimités',
-      'Animateur IA avancé',
-      'Analytics & rapports',
-      'Support prioritaire',
-      'Intégrations API'
-    ],
+    title: 'Location',
+    description: 'Animer l\'habitat sans investissement initial lourd, maintenance incluse.',
+    price: 'Sur devis',
+    billingCycle: 'mensuel',
+    tagline: 'Le rythme le plus choisi',
     highlight: true,
+    scale: true,
+    features: [
+      'Matériel en location',
+      'Maintenance incluse',
+      'Dashboard et support email',
+      'Renouvellement ou passage à l\'achat'
+    ],
     ui: {
-      root: 'rounded-[10px] border border-primary bg-primary p-8 ring-0',
-      title: 'text-2xl font-normal text-white',
-      description: 'text-base text-white',
-      price: 'text-3xl font-normal text-white',
+      root: 'rounded-[1.25rem] border border-primary bg-primary p-8 ring-0',
+      title: 'text-2xl font-semibold text-white',
+      description: 'text-base text-white/90',
+      price: 'text-3xl font-semibold text-white tabular',
+      billingCycle: 'text-white/80',
+      tagline: 'text-white/80',
       featureIcon: 'text-white',
       featureTitle: 'text-sm text-white'
     },
     button: {
-      label: 'Commencer',
+      label: 'Demander un devis',
       to: '/contact',
       block: true,
       color: 'neutral',
@@ -55,18 +60,18 @@ const plans: PricingPlanProps[] = [
     }
   },
   {
-    title: 'Sur Mesure',
-    description: 'Pour les grandes structures multi-résidences.',
+    title: 'Achat',
+    description: 'Acquisition du dispositif pour un déploiement durable dans votre structure.',
     price: 'Sur devis',
+    tagline: 'Pour un déploiement durable',
     features: [
-      'Multi-résidences',
-      'IA personnalisée',
-      'Accompagnement dédié',
-      'SLA garanti',
-      'Formation sur site'
+      'Totem et lampes relay en propriété',
+      'Formation sur site',
+      'Support prioritaire',
+      'Dashboard complet'
     ],
     button: {
-      label: 'Nous contacter',
+      label: 'Nous écrire',
       to: '/contact',
       block: true
     }
@@ -75,24 +80,20 @@ const plans: PricingPlanProps[] = [
 
 const faq = [
   {
-    label: 'Combien de temps dure l\'installation ?',
-    content: 'Une demi-journée pour poser le totem et les lampes relay, plus 1h de formation avec l\'équipe sur site.',
-    icon: 'i-lucide-info'
+    question: 'Combien de temps dure l\'installation ?',
+    answer: 'Une demi-journée pour poser le totem et les lampes relay, plus 1h de formation avec l\'équipe sur site.'
   },
   {
-    label: 'Puis-je essayer avant de m\'engager ?',
-    content: 'Oui. L\'offre Test prête le dispositif sur 3, 6 ou 12 mois, sans engagement au-delà de la période choisie.',
-    icon: 'i-lucide-info'
+    question: 'Puis-je essayer avant de m\'engager ?',
+    answer: 'Oui. L\'offre Test prête le dispositif sur 3, 6 ou 12 mois, sans engagement au-delà de la période choisie.'
   },
   {
-    label: 'Quels types de résidences ?',
-    content: 'Résidences seniors, foyers jeunes travailleurs, co-living, copropriétés, résidences étudiantes, habitats inclusifs.',
-    icon: 'i-lucide-info'
+    question: 'Quels types de résidences ?',
+    answer: 'Résidences seniors, foyers jeunes travailleurs, co-living, copropriétés, résidences étudiantes, habitats inclusifs.'
   },
   {
-    label: 'Y a-t-il un support dédié ?',
-    content: 'Support email pour la Location. Support prioritaire et formation sur site pour l\'Achat.',
-    icon: 'i-lucide-info'
+    question: 'Y a-t-il un support dédié ?',
+    answer: 'Support email pour la Location. Support prioritaire et formation sur site pour l\'Achat.'
   }
 ]
 </script>
@@ -102,12 +103,13 @@ const faq = [
     id="offres"
     :ui="{
       root: 'bg-default',
-      headline: 'border border-primary/50 text-primary text-[10px] font-semibold uppercase tracking-widest',
-      title: 'text-3xl font-semibold text-highlighted',
-      footer: 'mt-8 w-full'
+      headline: 'text-[11px] font-semibold uppercase tracking-widest text-primary',
+      title: 'text-3xl font-semibold text-highlighted tracking-tight',
+      footer: 'mt-12 w-full'
     }"
     headline="Nos offres"
     title="Tester, louer ou acheter"
+    description="Trois formules pour adapter Heya à votre structure et à votre rythme de déploiement."
   >
     <template #body>
       <UPricingPlans
@@ -117,21 +119,18 @@ const faq = [
     </template>
 
     <template #footer>
-      <div class="w-full overflow-hidden rounded-lg bg-elevated ring ring-default">
-        <UAccordion
-          :items="faq"
-          type="single"
-          :default-value="'0'"
-          class="w-full"
-          :ui="{
-            root: 'w-full',
-            item: 'border-b border-default bg-elevated px-3.5 last:border-b-0',
-            trigger: 'py-3.5 font-semibold text-highlighted',
-            leadingIcon: 'text-primary size-5',
-            trailingIcon: 'text-dimmed size-5',
-            body: 'pb-3.5 text-muted'
-          }"
-        />
+      <div class="grid w-full gap-x-10 gap-y-8 border-t border-default pt-10 sm:grid-cols-2">
+        <div
+          v-for="item in faq"
+          :key="item.question"
+        >
+          <h3 class="text-base font-semibold text-highlighted">
+            {{ item.question }}
+          </h3>
+          <p class="mt-2 max-w-[42ch] text-sm leading-relaxed text-muted">
+            {{ item.answer }}
+          </p>
+        </div>
       </div>
     </template>
   </UPageSection>

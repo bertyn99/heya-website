@@ -52,7 +52,7 @@ const solutions: ProblemItem[] = [
 <template>
   <section
     id="constat"
-    class="relative overflow-hidden bg-inverted py-24 sm:py-28"
+    class="relative overflow-hidden bg-heya-dark-footer py-24 sm:py-28"
   >
     <div
       class="pointer-events-none absolute left-1/2 top-24 size-[480px] -translate-x-1/2 rounded-full bg-activity-teal/10 blur-[120px]"
@@ -62,14 +62,14 @@ const solutions: ProblemItem[] = [
     <UContainer class="relative">
       <div class="mx-auto mb-16 max-w-2xl text-center">
         <UBadge
-          label="LE CONSTAT"
+          label="Le constat"
           color="primary"
           variant="soft"
           size="sm"
-          class="mb-5 bg-primary/10 text-[10px] uppercase tracking-widest text-primary"
+          class="mb-5 bg-primary/10 text-[11px] font-semibold tracking-wide text-primary"
         />
 
-        <h2 class="text-[40px] font-semibold leading-tight text-[#f1ede6]">
+        <h2 class="text-4xl font-semibold leading-tight tracking-tight text-[#f1ede6] sm:text-[40px]">
           Le quotidien des résidences,
           <span class="block font-bold text-primary">
             sans lien entre les habitants
@@ -86,7 +86,7 @@ const solutions: ProblemItem[] = [
           <div
             v-for="item in problems"
             :key="item.title"
-            class="flex items-center gap-4 rounded-2xl border border-heya-dark-border bg-heya-dark-muted/80 p-5 backdrop-blur-sm"
+            class="flex items-center gap-4 rounded-2xl border border-white/10 bg-heya-dark-muted/80 p-5 transition-transform duration-200 hover:-translate-y-0.5"
           >
             <div
               class="flex size-11 shrink-0 items-center justify-center rounded-xl p-2.5"
@@ -116,7 +116,7 @@ const solutions: ProblemItem[] = [
           <div
             v-for="item in solutions"
             :key="item.title"
-            class="flex items-center gap-4 rounded-2xl border-[1.5px] border-activity-teal/35 bg-default p-5 shadow-[0_6px_20px_rgba(0,191,135,0.12)]"
+            class="flex items-center gap-4 rounded-2xl border-[1.5px] border-activity-teal/35 bg-default p-5 shadow-[0_6px_20px_rgba(0,191,135,0.12)] transition-transform duration-200 hover:-translate-y-0.5"
           >
             <div
               class="flex size-11 shrink-0 items-center justify-center rounded-xl p-2.5"

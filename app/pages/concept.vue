@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ButtonProps } from '@nuxt/ui'
 import { CAL_COM_URL } from '~/utils/navigation'
+import { heyaHeroCentered } from '~/utils/heya-ui'
 
 useSeoMeta({
   title: 'Heya c\'est quoi ? | Totem, lampes relay et dashboard',
@@ -10,7 +11,7 @@ useSeoMeta({
 const links: ButtonProps[] = [
   { label: 'Découvrir le produit', to: '#produits' },
   {
-    label: 'Voir une démo',
+    label: 'Prendre rendez-vous',
     to: CAL_COM_URL,
     target: '_blank',
     color: 'neutral',
@@ -63,14 +64,7 @@ const installSteps = [
       title="Créer du lien en habitat partagé"
       description="Un totem dans l'espace commun, des lampes dans chaque appartement. Les résidents proposent des activités, les lampes s'allument, le lien se crée."
       :links="links"
-      :ui="{
-        root: 'bg-default py-24',
-        container: 'items-center text-center',
-        headline: 'border border-primary/50 text-primary text-[10px] font-semibold uppercase',
-        title: 'text-5xl font-bold text-highlighted max-w-3xl mx-auto',
-        description: 'text-xl text-muted max-w-2xl mx-auto',
-        links: 'justify-center'
-      }"
+      :ui="heyaHeroCentered"
     />
 
     <UPageSection
@@ -87,7 +81,7 @@ const installSteps = [
           :title="product.title"
           :description="product.description"
           :ui="{
-            root: 'rounded-[20px] p-8 text-center',
+            root: 'rounded-[1.25rem] p-8 text-center hover:-translate-y-1',
             header: 'flex w-full flex-col items-center',
             wrapper: 'items-center text-center',
             leading: 'justify-center',
@@ -118,7 +112,7 @@ const installSteps = [
       title="Suivez la vie de votre résidence"
       description="Données réelles des résidences équipées"
       :ui="{
-        root: 'bg-inverted',
+        root: 'bg-heya-dark-footer',
         headline: 'text-primary',
         title: 'text-inverted',
         description: 'text-[#aaa297]'
@@ -127,7 +121,7 @@ const installSteps = [
       <img
         src="/images/concept/dashboard.png"
         alt="Aperçu du dashboard Heya"
-        class="w-full rounded-[20px] object-cover shadow-xl"
+        class="w-full rounded-[1.25rem] object-cover shadow-(--shadow-heya)"
         width="1040"
         height="616"
       >
@@ -143,16 +137,16 @@ const installSteps = [
           :key="stat.title"
           :title="stat.title"
           :description="stat.description"
-          :class="stat.featured ? 'bg-[#deede2]' : 'bg-elevated'"
+          :class="stat.featured ? 'bg-step-green' : 'bg-elevated'"
           :ui="{
-            root: 'rounded-[20px] text-center',
+            root: 'rounded-[1.25rem] text-center',
             title: 'text-sm font-semibold',
             description: 'text-sm text-muted'
           }"
         >
           <template #header>
             <p
-              class="text-4xl font-bold lg:text-5xl"
+              class="text-4xl font-bold tabular lg:text-5xl"
               :class="stat.valueClass"
             >
               {{ stat.value }}
@@ -176,7 +170,7 @@ const installSteps = [
           :description="activity.description"
           :class="activity.cardClass"
           :ui="{
-            root: 'rounded-2xl border-2 p-10 ring-0',
+            root: 'rounded-[1.25rem] border-2 p-10 ring-0',
             title: 'text-[22px] font-bold',
             description: 'text-muted'
           }"
@@ -207,7 +201,7 @@ const installSteps = [
           :title="step.title"
           :description="step.description"
           :ui="{
-            root: 'rounded-2xl border border-[#c8e6d7] p-6 text-center',
+            root: 'rounded-[1.25rem] border border-step-green p-6 text-center',
             title: 'text-lg font-semibold',
             description: 'text-sm text-muted'
           }"

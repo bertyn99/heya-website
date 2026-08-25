@@ -24,11 +24,11 @@ const links: ButtonProps[] = [
     orientation="horizontal"
     :links="links"
     :ui="{
-      root: 'bg-default py-20',
-      container: 'gap-8 lg:gap-16',
-      title: 'text-4xl sm:text-5xl font-bold text-highlighted',
-      description: 'text-base text-muted max-w-none',
-      links: 'gap-4'
+      root: 'bg-default pt-16 pb-20 sm:pt-20 sm:pb-24',
+      container: 'gap-8 lg:gap-16 items-center',
+      title: 'text-4xl sm:text-5xl lg:text-[3.25rem] font-bold text-highlighted tracking-tight leading-[1.1]',
+      description: 'text-base sm:text-lg text-muted leading-relaxed max-w-[36rem]',
+      links: 'gap-3'
     }"
   >
     <HeroVisual />

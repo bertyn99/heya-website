@@ -2,9 +2,10 @@
 import type { ButtonProps } from '@nuxt/ui'
 import { blogCategories, blogPosts } from '~/data/blog'
 import { CAL_COM_URL } from '~/utils/navigation'
+import { heyaHeroCentered } from '~/utils/heya-ui'
 
 useSeoMeta({
-  title: 'Blog Heya | Convivialité et habitat partagé',
+  title: 'Blog | Convivialité et habitat partagé',
   description: 'Actualités Heya, retours d\'expérience, conseils pour animer une résidence ou un habitat partagé.'
 })
 
@@ -20,7 +21,7 @@ const filteredPosts = computed(() => {
 })
 
 const ctaLinks: ButtonProps[] = [
-  { label: 'Demander une démo', to: CAL_COM_URL, target: '_blank' }
+  { label: 'Prendre rendez-vous', to: CAL_COM_URL, target: '_blank' }
 ]
 </script>
 
@@ -31,11 +32,8 @@ const ctaLinks: ButtonProps[] = [
       title="Actualités & inspirations habitat partagé"
       description="Retours d'expérience, conseils pour animer votre résidence et nouveautés Heya."
       :ui="{
-        root: 'bg-default pb-8 pt-12',
-        container: 'items-center text-center',
-        headline: 'text-primary text-[11px] font-semibold uppercase tracking-widest',
-        title: 'text-4xl font-semibold text-highlighted max-w-3xl mx-auto',
-        description: 'text-muted max-w-xl mx-auto'
+        ...heyaHeroCentered,
+        root: 'bg-default pb-8 pt-14 sm:pt-16'
       }"
     >
       <template #links>
@@ -44,10 +42,10 @@ const ctaLinks: ButtonProps[] = [
             v-for="cat in blogCategories"
             :key="cat"
             :label="cat"
-            :variant="activeCategory === cat ? 'solid' : 'subtle'"
-            :color="activeCategory === cat ? 'neutral' : 'neutral'"
-            class="cursor-pointer"
-            :class="activeCategory === cat ? 'bg-inverted text-white' : 'bg-inverted/80 text-white'"
+            :variant="activeCategory === cat ? 'solid' : 'outline'"
+            color="neutral"
+            class="cursor-pointer transition-colors duration-200"
+            :class="activeCategory === cat ? 'bg-inverted text-white' : 'bg-transparent'"
             @click="activeCategory = cat"
           />
         </div>
@@ -64,9 +62,9 @@ const ctaLinks: ButtonProps[] = [
         orientation="horizontal"
         variant="outline"
         :ui="{
-          root: 'rounded-[20px] overflow-hidden w-full',
+          root: 'rounded-[1.25rem] overflow-hidden w-full',
           container: 'p-10',
-          title: 'text-[28px] font-semibold',
+          title: 'text-2xl sm:text-[28px] font-semibold',
           description: 'text-muted'
         }"
       >
@@ -128,7 +126,7 @@ const ctaLinks: ButtonProps[] = [
           :badge="{ label: post.category, color: 'neutral', variant: 'solid', class: 'bg-inverted' }"
           variant="outline"
           :ui="{
-            root: 'rounded-2xl',
+            root: 'rounded-[1.25rem]',
             title: 'text-lg font-semibold',
             description: 'text-sm text-muted'
           }"
@@ -142,8 +140,9 @@ const ctaLinks: ButtonProps[] = [
       </div>
 
       <UPagination
+        v-if="filteredPosts.length > 6"
         v-model:page="page"
-        :total="50"
+        :total="filteredPosts.length"
         :items-per-page="6"
         class="mt-8"
       />
@@ -156,9 +155,9 @@ const ctaLinks: ButtonProps[] = [
       :links="ctaLinks"
       class="rounded-none"
       :ui="{
-        root: 'bg-inverted py-20',
-        title: 'text-3xl font-semibold text-inverted',
-        description: 'text-[#e2e8f0]'
+        root: 'bg-heya-dark-footer py-20',
+        title: 'text-3xl font-semibold text-white',
+        description: 'text-[#e8e2d8]'
       }"
     />
   </div>

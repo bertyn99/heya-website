@@ -15,16 +15,16 @@ defineProps<{
   >
     <p
       class="mb-4 text-[11px] font-semibold uppercase tracking-widest"
-      :class="labelClass ?? 'text-heya-violet'"
+      :class="labelClass ?? 'text-primary'"
     >
       {{ label }}
     </p>
-    <h2 class="text-3xl font-bold leading-tight text-heya-dark sm:text-4xl">
+    <h2 class="text-3xl font-bold leading-tight tracking-tight text-heya-dark sm:text-4xl">
       {{ title }}
     </h2>
     <p
       v-if="description"
-      class="mt-4 text-lg leading-relaxed text-heya-dark-border"
+      class="mt-4 max-w-[40rem] text-lg leading-relaxed text-heya-dark-border"
       :class="align === 'center' ? 'mx-auto' : ''"
     >
       {{ description }}

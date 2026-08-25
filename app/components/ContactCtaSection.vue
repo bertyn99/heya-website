@@ -22,8 +22,8 @@ const links: ButtonProps[] = [
     :links="links"
     class="rounded-none"
     :ui="{
-      root: 'bg-[#1e1a17] py-20',
-      container: 'items-start gap-12 lg:gap-16',
+      root: 'bg-heya-dark-footer py-20',
+      container: 'items-center gap-12 lg:gap-16',
       title: 'text-3xl font-semibold text-white sm:text-4xl',
       description: 'text-[#e8e2d8]',
       links: 'mt-4'

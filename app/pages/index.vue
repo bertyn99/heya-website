@@ -13,6 +13,7 @@ useSeoMeta({
     <BusinessProofSection />
     <ProblemSection />
     <HowItWorksSection />
+    <ValuesSection />
     <UseCasesSection />
     <TestimonialsSection />
     <OffersSection />

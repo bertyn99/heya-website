@@ -8,32 +8,41 @@ export interface SolutionChallenge {
   num: string
   title: string
   description: string
-  markerClass: string
 }
 
 export interface SolutionPersona {
   icon: string
   title: string
   description: string
-  iconBgClass: string
 }
 
-export interface SolutionBenefitFeature {
-  icon: string
+export interface SolutionBenefitRow {
   title: string
-  description?: string
+  team: string
+  direction: string
 }
 
-export interface SolutionMetric {
-  icon: string
+export interface SolutionHighlight {
   title: string
   description: string
+}
+
+export interface SolutionUseCase {
+  title: string
+  activityLabel: string
+  activityColorClass: string
+  image: string
+  imageAlt: string
+  story: string
+  outcome: string
 }
 
 export interface SolutionTestimonial {
   quote: string
   name: string
   role: string
+  badge: string
+  initials: string
   avatar?: string
 }
 
@@ -44,10 +53,13 @@ export interface SolutionFAQ {
 
 export interface SolutionPageData {
   slug: string
+  metaTitle: string
+  metaDescription: string
   badge: string
   title: string
   subtitle: string
   heroImage: string
+  heroImageAlt: string
   proofChips: string[]
   audienceTitle: string
   audienceSubtitle: string
@@ -59,11 +71,13 @@ export interface SolutionPageData {
   helpSubtitle: string
   helpSteps: SolutionStep[]
   helpImage: string
+  helpImageAlt: string
   benefitsTitle: string
-  benefitsSubtitle: string
-  teamBenefits: SolutionBenefitFeature[]
-  directionMetrics: SolutionMetric[]
-  benefitsFootnote: string
+  benefitsLayout: 'matrix' | 'highlights'
+  benefitRows?: SolutionBenefitRow[]
+  benefitHighlights?: SolutionHighlight[]
+  benefitsFootnote?: string
+  useCase: SolutionUseCase
   testimonials: SolutionTestimonial[]
   faqTitle: string
   faq: SolutionFAQ[]
@@ -72,124 +86,122 @@ export interface SolutionPageData {
   relatedSolutions: Array<{
     label: string
     to: string
-    dotClass: string
+    image: string
   }>
 }
-
-const defaultHelpSteps: SolutionStep[] = [
-  {
-    num: '01',
-    title: 'Propositions au totem',
-    description: 'Un résident ou l\'équipe propose jeux, sortie, atelier ou café au totem. Interface physique, sans écran complexe.'
-  },
-  {
-    num: '02',
-    title: 'Signal lumineux dans chaque appartement',
-    description: 'Chaque lampe relay s\'allume dans la couleur de l\'activité. Sans affiche à lire ni notification téléphone.'
-  },
-  {
-    num: '03',
-    title: 'Participation spontanée',
-    description: 'Les résidents voient l\'activité et se rejoignent naturellement. Pas d\'inscription ni de QR code.'
-  },
-  {
-    num: '04',
-    title: 'Données pour la direction',
-    description: 'Dashboard en temps réel : activités mobilisées, créneaux qui fonctionnent, évolution de la vie sociale.'
-  }
-]
-
-const defaultTeamBenefits: SolutionBenefitFeature[] = [
-  { icon: 'i-lucide-heading-4', title: 'Agenda partagé', description: 'Planification, relances et suivi en un seul endroit' },
-  { icon: 'i-lucide-layout-grid', title: 'Gestion simplifiée', description: 'Moins de saisies manuelles et moins d\'erreurs' },
-  { icon: 'i-lucide-hand-coins', title: 'Accès terrain', description: 'Accès mobile pour les équipes en déplacement' },
-  { icon: 'i-lucide-heart-handshake', title: 'Feedback terrain', description: 'Retours terrain clairs et centralisés' },
-  { icon: 'i-lucide-circle-check', title: 'Onboarding guidé' }
-]
-
-const defaultDirectionMetrics: SolutionMetric[] = [
-  { icon: 'i-lucide-layout-grid', title: 'Participation', description: 'Données exploitables par activité et par résident.' },
-  { icon: 'i-lucide-grid-3x3', title: 'Adoption', description: 'Suivi de l\'adoption par équipe et par résidence.' },
-  { icon: 'i-lucide-heart-handshake', title: 'Impact social', description: 'Indicateurs pour valoriser l\'action sociale.' },
-  { icon: 'i-lucide-heading-1', title: 'Reporting', description: 'Tableaux de bord prêts à partager aux parties prenantes.' }
-]
 
 export const solutions: Record<string, SolutionPageData> = {
   'residences-seniors': {
     slug: 'residences-seniors',
-    badge: 'HEYA POUR LES RÉSIDENCES SENIORS',
+    metaTitle: 'Animation résidence seniors | Heya — participation sans surcharge conciergerie',
+    metaDescription: 'Heya aide les résidences seniors à lutter contre l\'isolement : totem convivial, signal lumineux dans chaque appartement, dashboard pour la direction. Demandez une démo.',
+    badge: 'Heya pour les résidences seniors',
     title: 'Augmentez la participation aux animations, sans surcharger votre équipe',
-    subtitle: 'Heya connecte le totem des espaces communs aux lampes de chaque appartement. Les résidents proposent des activités en un geste. Votre conciergerie voit enfin ce qui fonctionne.',
+    subtitle: 'Heya connecte le totem des espaces communs aux lampes de chaque appartement. Les résidents proposent des activités en un geste. Votre conciergerie et votre direction voient enfin ce qui fonctionne.',
     heroImage: '/images/solutions/hero-seniors.png',
+    heroImageAlt: 'Résidents seniors en conversation dans un salon partagé',
     proofChips: [
       'Sans écran ni application à installer pour les résidents',
       'Interface accessible, pensée pour tous les profils',
       'Dashboard de participation pour la direction'
     ],
-    audienceTitle: 'Une solution pour les équipes de terrain et la direction',
-    audienceSubtitle: 'Trois profils, trois freins récurrents en résidence seniors.',
+    audienceTitle: 'Une solution pensée pour les équipes de terrain et la direction',
+    audienceSubtitle: 'Trois publics qui portent la vie sociale de la résidence au quotidien.',
     personas: [
       {
         icon: 'i-lucide-users',
-        title: 'Directrice / Directeur',
-        description: 'Pilotez la qualité de vie et la participation avec une vision claire, sans réunions en plus.',
-        iconBgClass: 'bg-[#ffe4d9]'
+        title: 'Directrice / Directeur de résidence',
+        description: 'Vous pilotez la qualité de vie et la fréquentation des animations. Heya vous donne une vision claire de la participation, sans multiplier les réunions avec l\'équipe.'
       },
       {
         icon: 'i-lucide-bell',
-        title: 'Conciergerie & animation',
-        description: 'Moins de relances manuelles : les propositions deviennent visibles dans chaque logement.',
-        iconBgClass: 'bg-[#ffc9b3]'
+        title: 'Conciergerie et équipe d\'animation',
+        description: 'Vous êtes sollicités en permanence, mais les activités peinent à se remplir. Heya rend les propositions visibles dans chaque logement, sans affichage à refaire chaque semaine.'
       },
       {
         icon: 'i-lucide-calendar',
-        title: 'Responsable ANIM',
-        description: 'Un outil simple et inclusif, sans smartphone, qui complète votre programmation.',
-        iconBgClass: 'bg-[#ffa882]'
+        title: 'Responsable ANIM ou coordinateur vie sociale',
+        description: 'Vous cherchez des outils simples, inclusifs, qui ne reposent pas sur le smartphone. Heya complète votre programmation sans la remplacer.'
       }
     ],
-    challengesTitle: 'Les freins récurrents en résidence seniors',
-    challengesSubtitle: 'Des problèmes concrets, identifiables, qui bloquent la qualité de vie et l\'efficacité des équipes.',
+    challengesTitle: 'Les défis du quotidien en résidence seniors',
+    challengesSubtitle: 'Trois freins reviennent dans presque toutes les résidences que nous rencontrons. Heya a été conçu pour y répondre concrètement.',
     challenges: [
       {
         num: '01',
         title: 'Isolement malgré la vie collective',
-        description: 'En résidence, beaucoup croisent du monde dans les couloirs mais restent seuls chez eux. Heya crée des occasions simples de se retrouver.',
-        markerClass: 'bg-[#ffe4d9]'
+        description: 'En résidence, beaucoup de résidents croisent du monde dans les couloirs, mais restent seuls dans leur appartement. L\'isolement touche une part importante des personnes âgées en France. Le lien social ne se décrète pas : il faut des occasions simples de se retrouver.'
       },
       {
         num: '02',
         title: 'Charge conciergerie et équipe d\'animation',
-        description: 'Affiches, messages oraux, tableaux : l\'info se perd. L\'équipe communique au lieu d\'animer, sans visibilité sur ce qui fonctionne.',
-        markerClass: 'bg-[#ffc9b3]'
+        description: 'Relances, affiches, messages oraux, tableaux dans le hall : l\'information se perd. L\'équipe passe du temps à communiquer, pas à animer. Sans outil de suivi, impossible de savoir quelles activités méritent d\'être reconduites.'
       },
       {
         num: '03',
         title: 'Activités peu visibles, donc peu suivies',
-        description: 'Une séance bien préparée peut réunir trois personnes faute de visibilité. Les résidents oublient ou hésitent à descendre.',
-        markerClass: 'bg-[#ffa882]'
+        description: 'Une séance bien préparée peut réunir trois personnes faute de visibilité au bon moment. Les résidents oublient, hésitent, ou ne savent pas que « ce soir, c\'est café-discussions ». Résultat : découragement des proposants et baisse progressive de la dynamique collective.'
       }
     ],
     helpTitle: 'Une solution simple, du totem au dashboard',
     helpSubtitle: 'Heya relie le lieu de vie commun et chaque appartement en quatre étapes. Pas de formation complexe, pas d\'écran à apprendre.',
-    helpSteps: defaultHelpSteps,
-    helpImage: '/images/solutions/help-visual.png',
+    helpSteps: [
+      {
+        num: '01',
+        title: 'Propositions au totem',
+        description: 'Un résident ou un membre de l\'équipe propose une activité directement au totem : jeux de société, sortie, atelier manuel, moment café. Interface physique, intuitive, sans écran complexe.'
+      },
+      {
+        num: '02',
+        title: 'Signal lumineux dans chaque appartement',
+        description: 'Chaque lampe relay s\'allume dans la couleur de l\'activité : bleu, jaune, orange ou violet. Le message arrive chez le résident, sans affiche à lire ni notification sur téléphone.'
+      },
+      {
+        num: '03',
+        title: 'Participation spontanée',
+        description: 'Les résidents voient qu\'une activité est proposée et se rejoignent naturellement. Pas besoin de s\'inscrire sur une liste ou de scanner un QR code. Le geste reste léger, social, inclusif.'
+      },
+      {
+        num: '04',
+        title: 'Données pour la direction',
+        description: 'Le dashboard affiche la participation en temps réel : quelles activités mobilisent, quels créneaux fonctionnent, comment évolue la vie sociale. Vous pilotez avec des indicateurs, pas seulement des impressions.'
+      }
+    ],
+    helpImage: '/images/solutions/help-fonctionnement.png',
+    helpImageAlt: 'Schéma du fonctionnement Heya : totem, lampes relay et dashboard',
     benefitsTitle: 'Ce que votre résidence gagne concrètement',
-    benefitsSubtitle: 'Un impact concret pour les équipes de terrain et la direction.',
-    teamBenefits: defaultTeamBenefits,
-    directionMetrics: defaultDirectionMetrics,
+    benefitsLayout: 'matrix',
+    benefitRows: [
+      { title: 'Visibilité des activités', team: 'Moins de relances manuelles', direction: 'Meilleure fréquentation des animations' },
+      { title: 'Simplicité d\'usage', team: 'Moins de charge conciergerie', direction: 'Adoption rapide par les résidents' },
+      { title: 'Inclusivité', team: 'Accessible sans smartphone', direction: 'Image résidence engagée sur le lien social' },
+      { title: 'Pilotage', team: 'Retours terrain plus clairs', direction: 'Données de participation exploitables' }
+    ],
     benefitsFootnote: 'Heya ne remplace pas votre équipe d\'animation. Il amplifie ce qu\'elle fait déjà : rendre visible l\'envie de partager un moment ensemble.',
+    useCase: {
+      title: 'Exemple concret : un café-discussions un mardi soir',
+      activityLabel: 'Café / discussions',
+      activityColorClass: 'bg-activity-violet',
+      image: '/images/solutions/use-case-seniors.png',
+      imageAlt: 'Résidents seniors en discussion dans un salon commun',
+      story: 'Marie, 78 ans, propose un café-discussions au totem en fin d\'après-midi. Dans les appartements, les lampes s\'allument en violet. Robert, qui ne consulte jamais l\'affiche du hall, voit le signal depuis son fauteuil. Il descend. Deux autres résidents le rejoignent.',
+      outcome: 'Le lendemain, la directrice consulte le dashboard : l\'activité a mobilisé quatre personnes, dont deux qui ne participaient plus depuis plusieurs semaines. L\'équipe décide de reconduire le créneau. Sans Heya, cette dynamique serait restée invisible.'
+    },
     testimonials: [
       {
         quote: 'Avant Heya, on préparait des animations correctes, mais on ne savait pas pourquoi certaines ne décollaient pas. Aujourd\'hui, on voit ce qui mobilise réellement. Et surtout, des résidents proposent eux-mêmes des activités.',
         name: 'Sophie Martin',
         role: 'Directrice de résidence services seniors',
+        badge: 'Direction',
+        initials: 'SM',
         avatar: '/images/solutions/avatar-sophie.png'
       },
       {
         quote: 'Je ne lis plus les affiches, mais je vois la lumière dans mon entrée. Quand c\'est violet, je sais qu\'on se retrouve pour discuter. C\'est simple, et ça m\'a remis en lien avec les voisins.',
         name: 'Marie Dupont',
         role: 'Résidente',
+        badge: 'Résidente',
+        initials: 'MD',
         avatar: '/images/solutions/avatar-marie.png'
       }
     ],
@@ -201,346 +213,458 @@ export const solutions: Record<string, SolutionPageData> = {
       },
       {
         question: 'Heya convient-il aux résidences autonomie et services seniors ?',
-        answer: 'Oui. Heya s\'adapte aux résidences autonomie, services seniors et EHPAD selon la configuration des espaces communs et le nombre de logements.'
+        answer: 'Oui. Heya s\'adresse à tout habitat partagé où des résidents vivent en collectif et où la direction souhaite renforcer le lien social.'
       },
       {
         question: 'Combien de temps faut-il pour installer Heya ?',
-        answer: 'Comptez une demi-journée pour le totem et les lampes relay, plus 1h de formation avec l\'équipe sur site.'
+        answer: 'L\'installation est pensée pour être rapide, avec un accompagnement de l\'équipe Heya. Une période de test de 3 à 12 mois permet de valider l\'adoption sur site.'
       },
       {
         question: 'Est-ce compatible avec notre programmation d\'animations existante ?',
-        answer: 'Oui. Heya complète votre programmation : les activités planifiées et spontanées coexistent via le totem.'
+        answer: 'Oui. Heya ne remplace pas vos animations : il les rend visibles et mesurables. Jeux, sorties, ateliers, moments conviviaux : tout peut transiter par le totem.'
       },
       {
         question: 'Qui utilise le dashboard ?',
-        answer: 'La direction, la conciergerie et l\'équipe d\'animation, selon les droits que vous définissez.'
+        answer: 'La direction et, selon votre organisation, la conciergerie ou le responsable animation. Les données aident à ajuster la programmation et à valoriser l\'action sociale de la résidence.'
       },
       {
         question: 'Comment lutter contre l\'isolement sans stigmatiser les résidents ?',
-        answer: 'Le signal lumineux est discret et positif : il invite à une activité, sans cibler personne. Chacun participe à son rythme.'
+        answer: 'Heya part d\'une logique positive : proposer un moment ensemble, pas diagnostiquer un isolement. Le signal lumineux invite, il n\'interpelle pas.'
       }
     ],
     ctaTitle: 'Testez Heya dans votre résidence seniors',
     ctaSubtitle: 'Demandez une démo personnalisée ou lancez un test de 3 à 12 mois avec votre équipe sur site.',
     relatedSolutions: [
-      { label: 'Co-living', to: '/solutions/co-living', dotClass: 'bg-heya-step-green-fg' },
-      { label: 'Résidences étudiantes', to: '/solutions/residences-etudiantes', dotClass: 'bg-heya-step-blue-fg' },
-      { label: 'Habitat inclusif', to: '/solutions/habitat-inclusif', dotClass: 'bg-heya-orange' }
+      { label: 'Co-living', to: '/solutions/co-living', image: '/images/solutions/hero-coliving.png' },
+      { label: 'Résidences étudiantes', to: '/solutions/residences-etudiantes', image: '/images/solutions/hero-etudiants.png' },
+      { label: 'Habitat inclusif', to: '/solutions/habitat-inclusif', image: '/images/solutions/hero-inclusif.png' }
     ]
   },
   'co-living': {
     slug: 'co-living',
-    badge: 'HEYA POUR LE CO-LIVING',
-    title: 'Créez une vraie vie de coloc, sans dépendre des habitués',
-    subtitle: 'Heya transforme les espaces communs en lieux de rencontre spontanée. Les colocataires proposent des activités, les lampes s\'allument, la cohésion se construit naturellement.',
-    heroImage: '/images/solutions/hero-seniors.png',
+    metaTitle: 'Animer un habitat partagé | Heya — convivialité en espaces communs',
+    metaDescription: 'Heya facilite la vie collective en co-living et habitat partagé : activités visibles au totem, signal dans chaque logement, dashboard pour les gestionnaires. Demandez une démo.',
+    badge: 'Heya pour l\'habitat partagé',
+    title: 'Donnez vie à vos espaces communs, sans dépendre de quelques habitués',
+    subtitle: 'En co-living, la convivialité ne se décrète pas dans un règlement intérieur. Heya rend les propositions d\'activités visibles pour tous les colocataires, y compris les nouveaux arrivants.',
+    heroImage: '/images/solutions/hero-coliving.png',
+    heroImageAlt: 'Colocataires préparant un repas dans une cuisine partagée',
     proofChips: [
-      'Sans groupe WhatsApp ni app à imposer',
-      'Idéal pour les nouveaux arrivants',
-      'Suivi de la vie collective pour le gestionnaire'
+      'Idéal pour salles communes, cuisines partagées, halls d\'accueil',
+      'Signal discret dans chaque logement',
+      'Vision claire pour le gestionnaire ou community manager'
     ],
-    audienceTitle: 'Une solution pour les gestionnaires et les colocataires',
-    audienceSubtitle: 'Trois profils, trois freins récurrents en co-living.',
+    audienceTitle: 'Une solution pour animer l\'habitat partagé au quotidien',
+    audienceSubtitle: 'Trois publics concernés par la vie collective en co-living.',
     personas: [
       {
         icon: 'i-lucide-building-2',
-        title: 'Gestionnaire / Opérateur',
-        description: 'Pilotez la cohésion et la satisfaction des colocataires avec des indicateurs concrets.',
-        iconBgClass: 'bg-[#ffe4d9]'
+        title: 'Gestionnaire de résidence / opérateur coliving',
+        description: 'Vous cherchez à différencier votre offre par la qualité de vie collective. Heya vous aide à animer l\'espace sans recruter un community manager à temps plein.'
       },
       {
         icon: 'i-lucide-users',
-        title: 'Community manager',
-        description: 'Moins de relances : les propositions d\'activités deviennent visibles dans chaque chambre.',
-        iconBgClass: 'bg-[#ffc9b3]'
+        title: 'Community manager ou responsable vie collective',
+        description: 'Vous portez la dynamique du lieu, mais vous ne pouvez pas être partout. Heya distribue l\'information et encourage les propositions spontanées.'
       },
       {
         icon: 'i-lucide-home',
         title: 'Colocataires',
-        description: 'Un signal simple pour proposer ou rejoindre une activité, sans dépendre des habitués.',
-        iconBgClass: 'bg-[#ffa882]'
+        description: 'Ils découvrent simplement qu\'un dîner, un jeu ou une sortie est proposé. Pas d\'app, pas de groupe WhatsApp obligatoire.'
       }
     ],
-    challengesTitle: 'Les freins récurrents en co-living',
-    challengesSubtitle: 'Des problèmes concrets qui freinent la cohésion et l\'utilisation des espaces communs.',
+    challengesTitle: 'Les défis de la vie collective en habitat partagé',
+    challengesSubtitle: 'Le co-living promet du lien. En pratique, trois obstacles reviennent sans cesse.',
     challenges: [
       {
         num: '01',
-        title: 'Cohésion fragile entre colocataires',
-        description: 'Les nouveaux arrivants peinent à s\'intégrer. La vie collective repose souvent sur quelques personnes très actives.',
-        markerClass: 'bg-[#ffe4d9]'
+        title: 'Turnover et intégration des nouveaux',
+        description: 'Tous les trimestres, de nouveaux visages arrivent. Sans repères, ils restent dans leur studio. Les espaces communs semblent réservés à un noyau de colocataires déjà installés.'
       },
       {
         num: '02',
-        title: 'Communication informelle inefficace',
-        description: 'Groupes WhatsApp, affiches dans la cuisine : l\'information circule mal et crée parfois plus de bruit que de lien.',
-        markerClass: 'bg-[#ffc9b3]'
+        title: 'Espaces communs sous-utilisés',
+        description: 'Salon, cuisine, rooftop, salle de jeux : investis à la conception, souvent vides en semaine. La volonté de partager existe, mais personne ne sait qu\'un moment convivial est lancé.'
       },
       {
         num: '03',
-        title: 'Espaces communs sous-utilisés',
-        description: 'Salon, rooftop, cuisine partagée : les lieux existent mais les occasions de se retrouver manquent.',
-        markerClass: 'bg-[#ffa882]'
+        title: 'Coordination informelle et épuisante',
+        description: 'Un groupe de colocataires actifs porte l\'ambiance. Quand ils partent, la dynamique s\'effondre. Les activités dépendent de l\'énergie de quelques personnes, pas d\'un système simple et durable.'
       }
     ],
-    helpTitle: 'Heya pour fédérer vos colocataires',
-    helpSubtitle: 'Du totem commun à chaque chambre, en quatre étapes simples.',
-    helpSteps: defaultHelpSteps,
-    helpImage: '/images/solutions/help-visual.png',
-    benefitsTitle: 'Ce que votre co-living gagne concrètement',
-    benefitsSubtitle: 'Un impact concret pour les équipes et les résidents.',
-    teamBenefits: defaultTeamBenefits,
-    directionMetrics: defaultDirectionMetrics,
-    benefitsFootnote: 'Heya ne remplace pas votre community manager. Il rend visible l\'envie de partager un moment ensemble.',
+    helpTitle: 'Un fil conducteur entre le lieu commun et chaque logement',
+    helpSubtitle: 'Heya transforme un espace partagé en vrai lieu de rencontre, sans surcharger le gestionnaire.',
+    helpSteps: [
+      {
+        num: '01',
+        title: 'Propositions au totem',
+        description: 'Un colocataire propose un dîner collectif, une session jeux, une sortie running ou un café du matin au totem. L\'interface reste physique et immédiate.'
+      },
+      {
+        num: '02',
+        title: 'Signal lumineux chez chaque colocataire',
+        description: 'La lampe relay s\'allume dans la couleur de l\'activité. Même ceux qui ne lisent pas le groupe Telegram voient qu\'un moment convivial est lancé.'
+      },
+      {
+        num: '03',
+        title: 'Rencontres spontanées',
+        description: 'Les colocataires se retrouvent sans friction d\'inscription. La barrière du « je ne connais personne » baisse, surtout pour les nouveaux.'
+      },
+      {
+        num: '04',
+        title: 'Pilotage pour le gestionnaire',
+        description: 'Le dashboard montre quelles activités créent de la dynamique, quels créneaux fonctionnent, comment la vie collective évolue dans le bâtiment.'
+      }
+    ],
+    helpImage: '/images/solutions/help-fonctionnement.png',
+    helpImageAlt: 'Schéma du fonctionnement Heya : totem, lampes relay et dashboard',
+    benefitsTitle: 'Pourquoi les opérateurs choisissent Heya',
+    benefitsLayout: 'highlights',
+    benefitHighlights: [
+      { title: 'Rétention des colocataires', description: 'Une vie collective visible améliore l\'expérience et réduit le turnover perçu.' },
+      { title: 'Valorisation des espaces communs', description: 'Le ROI des aménagements partagés devient tangible.' },
+      { title: 'Charge réduite pour l\'équipe', description: 'Moins de relances, plus de propositions spontanées.' },
+      { title: 'Différenciation commerciale', description: '« Habitat partagé qui vit vraiment » devient un argument de vente.' }
+    ],
+    useCase: {
+      title: 'Exemple concret : un dîner du mardi dans la cuisine commune',
+      activityLabel: 'Activité manuelle',
+      activityColorClass: 'bg-activity-orange',
+      image: '/images/solutions/use-case-coliving.png',
+      imageAlt: 'Jeunes colocataires partageant un repas dans une cuisine rustique',
+      story: 'Lucas, colocataire depuis deux semaines, hésite à proposer quoi que ce soit. Il teste le totem : « Dîner partagé, 19h30, cuisine ». Les lampes s\'allument en orange. Emma, qui ne check jamais le Slack du coliving, voit le signal et descend avec des pâtes.',
+      outcome: 'Trois autres colocataires rejoignent. Le gestionnaire note dans le dashboard une activité spontanée réussie, sans qu\'il ait eu à organiser quoi que ce soit. Lucas se sent enfin intégré.'
+    },
     testimonials: [
       {
-        quote: 'Depuis Heya, on ne dépend plus de deux colocataires pour organiser la vie du lieu. Tout le monde peut proposer, et ça change tout.',
+        quote: 'Nos espaces communs étaient magnifiques sur le papier, mais calmes en semaine. Heya a relancé des moments spontanés. On n\'a pas recruté plus, on a mieux connecté les colocataires entre eux.',
         name: 'Thomas Leroy',
-        role: 'Gestionnaire de co-living',
-        avatar: '/images/solutions/avatar-sophie.png'
+        role: 'Responsable vie collective',
+        badge: 'Gestion',
+        initials: 'TL'
       },
       {
-        quote: 'Quand la lampe s\'allume, je descends voir ce qui se passe. C\'est devenu un réflexe, même pour les nouveaux.',
-        name: 'Léa Bernard',
+        quote: 'Je ne lisais jamais les messages du groupe. La lumière orange dans mon couloir, c\'est devenu mon signal pour descendre. J\'ai rencontré la moitié de l\'immeuble comme ça.',
+        name: 'Inès K.',
         role: 'Colocataire',
-        avatar: '/images/solutions/avatar-marie.png'
+        badge: 'Colocataire',
+        initials: 'IK'
       }
     ],
-    faqTitle: 'Questions fréquentes du co-living',
+    faqTitle: 'Questions fréquentes des opérateurs de co-living',
     faq: [
       {
-        question: 'Faut-il que les colocataires installent une application ?',
-        answer: 'Non. Heya fonctionne avec un totem et des lampes relay. Aucune app requise pour les résidents.'
+        question: 'Heya est-il réservé au co-living « nomade » ou digital ?',
+        answer: 'Non. Heya s\'adresse à tout habitat partagé en France : co-living, résidences avec espaces communs, colocations structurées, foyers avec vie collective.'
       },
       {
-        question: 'Heya convient-il aux petits et grands co-living ?',
-        answer: 'Oui, de quelques chambres à plusieurs dizaines de logements. Le déploiement s\'adapte à votre configuration.'
+        question: 'Faut-il imposer une application aux colocataires ?',
+        answer: 'Non. Le signal passe par une lampe relay dans le logement. Pas de compte, pas de notification push.'
       },
       {
-        question: 'Combien de temps pour l\'installation ?',
-        answer: 'Une demi-journée pour le totem et les lampes, plus 1h de formation avec l\'équipe.'
+        question: 'Qui peut proposer une activité ?',
+        answer: 'Tout colocataire ou membre de l\'équipe sur site. Heya encourage la participation horizontale.'
       },
       {
-        question: 'Peut-on tester avant de s\'engager ?',
-        answer: 'Oui. L\'offre Test permet de prêter le dispositif sur 3, 6 ou 12 mois.'
+        question: 'Comment gérer les nouveaux arrivants ?',
+        answer: 'Dès l\'installation de la lampe relay, le nouveau colocataire reçoit les signaux d\'activité. L\'intégration devient visible, pas seulement administrative.'
+      },
+      {
+        question: 'Le dashboard est-il utile si je n\'ai qu\'un seul bâtiment ?',
+        answer: 'Oui. Même à petite échelle, comprendre ce qui mobilise aide à ajuster les espaces, les horaires et la communication.'
       }
     ],
-    ctaTitle: 'Testez Heya dans votre co-living',
+    ctaTitle: 'Testez Heya dans votre co-living ou habitat partagé',
     ctaSubtitle: 'Demandez une démo personnalisée ou lancez un test de 3 à 12 mois.',
     relatedSolutions: [
-      { label: 'Résidences seniors', to: '/solutions/residences-seniors', dotClass: 'bg-heya-violet' },
-      { label: 'Résidences étudiantes', to: '/solutions/residences-etudiantes', dotClass: 'bg-heya-step-blue-fg' },
-      { label: 'Habitat inclusif', to: '/solutions/habitat-inclusif', dotClass: 'bg-heya-orange' }
+      { label: 'Résidences seniors', to: '/solutions/residences-seniors', image: '/images/solutions/hero-seniors.png' },
+      { label: 'Résidences étudiantes', to: '/solutions/residences-etudiantes', image: '/images/solutions/hero-etudiants.png' },
+      { label: 'Habitat inclusif', to: '/solutions/habitat-inclusif', image: '/images/solutions/hero-inclusif.png' }
     ]
   },
   'residences-etudiantes': {
     slug: 'residences-etudiantes',
-    badge: 'HEYA POUR LES RÉSIDENCES ÉTUDIANTES',
-    title: 'Fédérez vos résidents, y compris les étudiants internationaux',
-    subtitle: 'Heya crée une vraie vie de campus sans imposer une application de plus. Le totem et les lampes relay parlent à tous les profils.',
-    heroImage: '/images/solutions/hero-seniors.png',
+    metaTitle: 'Lutter contre l\'isolement en résidence étudiante | Heya',
+    metaDescription: 'Heya aide les résidences étudiantes et CROUS à créer du lien : totem convivial, signal dans chaque chambre, sans app ni barrière numérique. Demandez une démo.',
+    badge: 'Heya pour les résidences étudiantes',
+    title: 'Brisez l\'isolement en résidence, sans imposer une application de plus',
+    subtitle: 'Heya aide les étudiants à se retrouver autour d\'activités simples. Propositions au totem, signal lumineux dans chaque chambre, tableau de bord pour la gestion de résidence. Accessible à tous, y compris aux étudiants internationaux.',
+    heroImage: '/images/solutions/hero-etudiants.png',
+    heroImageAlt: 'Étudiants travaillant ensemble autour d\'une table ensoleillée',
     proofChips: [
-      'Signal universel, sans barrière de langue',
-      'Pas d\'app à installer pour les résidents',
-      'Pilotage pour la direction et le CROUS'
+      'Sans barrière de langue ni fracture numérique',
+      'Alternative à l\'affiche ignorée et au groupe silencieux',
+      'Suivi pour gestionnaires CROUS et résidences privées'
     ],
-    audienceTitle: 'Une solution pour la direction et les résidents',
-    audienceSubtitle: 'Trois profils, trois freins récurrents en résidence étudiante.',
+    audienceTitle: 'Une solution pour animer la vie de résidence, sans barrière numérique',
+    audienceSubtitle: 'Trois publics concernés par le lien social en résidence étudiante.',
     personas: [
       {
         icon: 'i-lucide-graduation-cap',
-        title: 'Direction / CROUS',
-        description: 'Pilotez la vie étudiante et l\'engagement avec des données exploitables.',
-        iconBgClass: 'bg-[#ffe4d9]'
+        title: 'Gestionnaire de résidence universitaire / CROUS',
+        description: 'Vous gérez des centaines d\'étudiants, dont beaucoup de nouveaux chaque rentrée. Heya vous aide à animer la vie sociale sans multiplier les permanences.'
       },
       {
         icon: 'i-lucide-bell',
-        title: 'Équipe vie étudiante',
-        description: 'Moins de relances manuelles : les activités deviennent visibles dans chaque chambre.',
-        iconBgClass: 'bg-[#ffc9b3]'
+        title: 'Assistant·e de vie étudiante / responsable vie sociale',
+        description: 'Vous cherchez des formats inclusifs, visibles, qui ne reposent pas sur les réseaux sociaux. Heya complète affichage et événements ponctuels.'
       },
       {
         icon: 'i-lucide-globe',
-        title: 'Résidents internationaux',
-        description: 'Un signal lumineux compris par tous, indépendamment de la langue ou du smartphone.',
-        iconBgClass: 'bg-[#ffa882]'
+        title: 'Étudiants, y compris internationaux',
+        description: 'Ils comprennent le signal lumineux sans lire un panneau en français. Le geste reste universel : proposer, voir, rejoindre.'
       }
     ],
-    challengesTitle: 'Les freins récurrents en résidence étudiante',
-    challengesSubtitle: 'Des problèmes concrets qui freinent la vie de campus et l\'intégration.',
+    challengesTitle: 'Les défis de la vie sociale en résidence étudiante',
+    challengesSubtitle: 'Entre précarité, charge de travail et turnover annuel, le lien social en résidence est fragile. Trois freins reviennent souvent.',
     challenges: [
       {
         num: '01',
-        title: 'Isolement des étudiants internationaux',
-        description: 'Barrière de langue, codes culturels différents : beaucoup d\'étudiants restent isolés dans leur chambre.',
-        markerClass: 'bg-[#ffe4d9]'
+        title: 'Arrivée en résidence et création de réseau',
+        description: 'La rentrée concentre stress académique et isolement. Beaucoup d\'étudiants ne connaissent personne dans leur bâtiment. Les espaces communs existent, mais personne ne sait comment les activer.'
       },
       {
         num: '02',
-        title: 'Turnover et vie éphémère',
-        description: 'Les résidents changent chaque année. Difficile de maintenir une dynamique collective durable.',
-        markerClass: 'bg-[#ffc9b3]'
+        title: 'Barrières linguistiques et culturelles',
+        description: 'Les étudiants internationaux peinent à s\'intégrer aux initiatives existantes, souvent portées par un noyau francophone. Affiches, groupes en ligne, permanences : autant de filtres qui excluent.'
       },
       {
         num: '03',
-        title: 'Surcharge des équipes',
-        description: 'Peu de moyens pour animer la vie sociale. Les équipes jonglent entre logistique et animation.',
-        markerClass: 'bg-[#ffa882]'
+        title: 'Animations peu visibles, faible participation',
+        description: 'Le panneau d\'affichage au RDC est ignoré. Les soirées organisées par le bureau des étudiants peinent à mobiliser au-delà des habitués. Résultat : isolement dans 10 m², parfois appelé « chambre-coucou ».'
       }
     ],
-    helpTitle: 'Une vie de campus accessible à tous',
-    helpSubtitle: 'Du totem au hall, en quatre étapes simples et inclusives.',
-    helpSteps: defaultHelpSteps,
-    helpImage: '/images/solutions/help-visual.png',
-    benefitsTitle: 'Ce que votre résidence gagne concrètement',
-    benefitsSubtitle: 'Un impact concret pour les équipes et les étudiants.',
-    teamBenefits: defaultTeamBenefits,
-    directionMetrics: defaultDirectionMetrics,
-    benefitsFootnote: 'Heya complète votre programmation : il rend visible l\'envie de se retrouver, sans imposer une app de plus.',
-    testimonials: [
+    helpTitle: 'Créer du lien, du hall d\'accueil à la chambre',
+    helpSubtitle: 'Heya rend la vie sociale visible là où les étudiants vivent vraiment : dans leur logement.',
+    helpSteps: [
       {
-        quote: 'Nos étudiants internationaux comprennent le signal lumineux immédiatement. C\'est devenu un réflexe de descendre quand la lampe s\'allume.',
-        name: 'Camille Rousseau',
-        role: 'Responsable vie étudiante',
-        avatar: '/images/solutions/avatar-sophie.png'
+        num: '01',
+        title: 'Propositions au totem',
+        description: 'Un étudiant propose un FIFA, un cours de cuisine, une session révisions ou un café multilingue au totem du hall. Pas d\'écran complexe, pas de compte à créer.'
       },
       {
-        quote: 'Je ne parlais pas bien français au début. La lampe, c\'était plus simple qu\'un message sur un groupe.',
-        name: 'Yuki Tanaka',
-        role: 'Étudiante internationale',
-        avatar: '/images/solutions/avatar-marie.png'
+        num: '02',
+        title: 'Signal lumineux dans chaque chambre',
+        description: 'La lampe relay s\'allume dans la couleur de l\'activité. L\'information traverse les barrières de langue : voir, comprendre, descendre.'
+      },
+      {
+        num: '03',
+        title: 'Participation spontanée',
+        description: 'Les étudiants se rejoignent sans s\'inscrire sur une liste. Les nouveaux et les internationaux accèdent au même signal que les anciens.'
+      },
+      {
+        num: '04',
+        title: 'Données pour la gestion de résidence',
+        description: 'Le dashboard montre quelles activités fonctionnent, quels moments de la semaine mobilisent, comment la vie sociale évolue dans le bâtiment.'
+      }
+    ],
+    helpImage: '/images/solutions/help-fonctionnement.png',
+    helpImageAlt: 'Schéma du fonctionnement Heya : totem, lampes relay et dashboard',
+    benefitsTitle: 'Impact pour la résidence et les étudiants',
+    benefitsLayout: 'highlights',
+    benefitHighlights: [
+      { title: 'Réduction de l\'isolement', description: 'Surtout en début de semestre, quand le réseau n\'existe pas encore.' },
+      { title: 'Espaces communs utilisés', description: 'Cuisine, salle détente, cour : les lieux aménagés redeviennent des lieux de rencontre.' },
+      { title: 'Inclusion des internationaux', description: 'Sans outil numérique exclusif, ni affiche à déchiffrer.' },
+      { title: 'Preuve d\'action vie sociale', description: 'Des données pour le CROUS, le bailleur ou la direction.' }
+    ],
+    useCase: {
+      title: 'Exemple concret : un café multilingue un jeudi soir',
+      activityLabel: 'Café / discussions',
+      activityColorClass: 'bg-activity-violet',
+      image: '/images/solutions/use-case-etudiants.png',
+      imageAlt: 'Étudiantes partageant un moment autour d\'un livre',
+      story: 'Sara, étudiante en échange Erasmus, ne comprend pas l\'affiche du hall. Un autre résident propose un « café langues » au totem. Les lampes s\'allument en violet. Sara voit le signal depuis sa chambre, descend, rencontre trois autres étudiants.',
+      outcome: 'Le gestionnaire de résidence constate via le dashboard une activité spontanée réussie, sans avoir mobilisé son équipe. Sara a créé son premier réseau local en une soirée.'
+    },
+    testimonials: [
+      {
+        quote: 'Chaque rentrée, même problème : des étudiants seuls dans leur chambre alors que la cuisine est à dix mètres. Heya a relancé des activités qu\'on ne voyait plus. Et surtout, ce ne sont plus toujours les mêmes qui proposent.',
+        name: 'Karim Benali',
+        role: 'Responsable vie étudiante',
+        badge: 'Vie étudiante',
+        initials: 'KB'
+      },
+      {
+        quote: 'Je ne lisais pas les affiches. Quand ma lampe s\'allume, je comprends qu\'il se passe quelque chose. C\'est comme ça que j\'ai rencontré ma colocataire de projet.',
+        name: 'Yuki T.',
+        role: 'Étudiante en échange',
+        badge: 'Étudiante',
+        initials: 'YT'
       }
     ],
     faqTitle: 'Questions fréquentes des résidences étudiantes',
     faq: [
       {
-        question: 'Faut-il un smartphone pour utiliser Heya ?',
-        answer: 'Non. Le totem et les lampes relay fonctionnent sans application pour les résidents.'
+        question: 'Heya remplace-t-il le bureau des étudiants ou le CROUS ?',
+        answer: 'Non. Heya complète la vie sociale existante. Il facilite les propositions spontanées et rend les activités visibles.'
       },
       {
-        question: 'Heya convient-il aux résidences CROUS et privées ?',
-        answer: 'Oui. Heya s\'adapte aux résidences universitaires, CROUS et opérateurs privés.'
+        question: 'Est-ce adapté aux étudiants qui ne parlent pas français ?',
+        answer: 'Oui. Le signal lumineux et le totem physique ne reposent pas sur la lecture d\'un panneau ou d\'une app en français.'
       },
       {
-        question: 'Comment gérer le turnover annuel ?',
-        answer: 'L\'onboarding des nouveaux résidents est simple : le signal lumineux se comprend en quelques minutes.'
+        question: 'Faut-il le WiFi étudiant pour que ça fonctionne ?',
+        answer: 'Heya s\'appuie sur l\'infrastructure du bâtiment. Les détails d\'installation sont validés avec l\'équipe Heya lors de la phase de déploiement.'
       },
       {
-        question: 'Peut-on tester sur une résidence pilote ?',
-        answer: 'Oui. L\'offre Test permet un déploiement progressif sur 3, 6 ou 12 mois.'
+        question: 'Comment mesurer l\'impact sur l\'isolement ?',
+        answer: 'Le dashboard de participation donne des indicateurs sur la fréquentation des activités. Couplé aux retours terrain, il aide à objectiver la dynamique sociale.'
+      },
+      {
+        question: 'Peut-on tester avant un déploiement complet ?',
+        answer: 'Oui. Heya propose des périodes de test de 3 à 12 mois pour valider l\'adoption sur un bâtiment ou une aile de résidence.'
       }
     ],
     ctaTitle: 'Testez Heya dans votre résidence étudiante',
     ctaSubtitle: 'Demandez une démo personnalisée ou lancez un test de 3 à 12 mois.',
     relatedSolutions: [
-      { label: 'Résidences seniors', to: '/solutions/residences-seniors', dotClass: 'bg-heya-violet' },
-      { label: 'Co-living', to: '/solutions/co-living', dotClass: 'bg-heya-step-green-fg' },
-      { label: 'Habitat inclusif', to: '/solutions/habitat-inclusif', dotClass: 'bg-heya-orange' }
+      { label: 'Résidences seniors', to: '/solutions/residences-seniors', image: '/images/solutions/hero-seniors.png' },
+      { label: 'Co-living', to: '/solutions/co-living', image: '/images/solutions/hero-coliving.png' },
+      { label: 'Habitat inclusif', to: '/solutions/habitat-inclusif', image: '/images/solutions/hero-inclusif.png' }
     ]
   },
   'habitat-inclusif': {
     slug: 'habitat-inclusif',
-    badge: 'HEYA POUR L\'HABITAT INCLUSIF',
-    title: 'Favorisez l\'inclusion et l\'autonomie avec des outils accessibles',
-    subtitle: 'Heya dépasse les barrières de langue, de génération, de handicap et de fracture numérique. Un signal simple pour inviter au lien.',
-    heroImage: '/images/solutions/hero-seniors.png',
+    metaTitle: 'Lien social en habitat inclusif | Heya — sans fracture numérique',
+    metaDescription: 'Heya favorise la convivialité en habitat inclusif : interface accessible, signal lumineux, dashboard pour mesurer la participation. Sans app ni QR code. Demandez une démo.',
+    badge: 'Heya pour l\'habitat inclusif',
+    title: 'Créez du lien social en habitat inclusif, sans exclure personne',
+    subtitle: 'Heya dépasse les barrières de langue, de génération et de fracture numérique. Un totem accessible, un signal lumineux chez chaque habitant, des données pour les équipes qui pilotent l\'inclusion au quotidien.',
+    heroImage: '/images/solutions/hero-inclusif.png',
+    heroImageAlt: 'Moment intergénérationnel autour d\'une table partagée',
     proofChips: [
-      'Interface physique, sans écran complexe',
-      'Accessible à tous les profils',
-      'Données pour les équipes d\'accompagnement'
+      'Sans application, sans QR code, sans écran complexe',
+      'Accessible aux profils variés (âge, langue, handicap numérique)',
+      'Dashboard pour objectiver la vie sociale partagée'
     ],
-    audienceTitle: 'Une solution pour les équipes et les résidents',
-    audienceSubtitle: 'Trois profils, trois freins récurrents en habitat inclusif.',
+    audienceTitle: 'Une solution pour les équipes d\'accompagnement et les habitants',
+    audienceSubtitle: 'Trois publics concernés par le lien social en habitat inclusif.',
     personas: [
       {
         icon: 'i-lucide-accessibility',
-        title: 'Direction / Coordinateur',
-        description: 'Pilotez l\'inclusion et la vie collective avec des indicateurs clairs.',
-        iconBgClass: 'bg-[#ffe4d9]'
+        title: 'Directeur·rice ou coordinateur·rice de structure',
+        description: 'Vous portez un projet de logement accompagné, partagé et inséré localement. Heya vous aide à mesurer et stimuler la vie sociale, au-delà des présences administratives.'
       },
       {
         icon: 'i-lucide-hand-heart',
-        title: 'Équipe d\'accompagnement',
-        description: 'Un outil simple qui encourage l\'autonomie sans surcharge administrative.',
-        iconBgClass: 'bg-[#ffc9b3]'
+        title: 'Équipe éducative, soignante ou d\'accompagnement',
+        description: 'Vous cherchez des outils simples, non stigmatisants, qui ne reposent pas sur le smartphone de chacun.'
       },
       {
         icon: 'i-lucide-users-round',
-        title: 'Résidents',
-        description: 'Proposer ou rejoindre une activité à son rythme, sans fracture numérique.',
-        iconBgClass: 'bg-[#ffa882]'
+        title: 'Habitants aux profils variés',
+        description: 'Personnes âgées, personnes en situation de handicap, colocataires valides : Heya part d\'une logique inclusive par le geste, pas par l\'écran.'
       }
     ],
-    challengesTitle: 'Les freins récurrents en habitat inclusif',
-    challengesSubtitle: 'Des problèmes concrets liés à la diversité des profils et des modes de communication.',
+    challengesTitle: 'Les défis de l\'inclusion dans les habitats mixtes',
+    challengesSubtitle: 'L\'habitat inclusif réunit des profils, des âges et des modes de communication différents. Trois obstacles reviennent régulièrement.',
     challenges: [
       {
         num: '01',
-        title: 'Diversité des profils et des modes de communication',
-        description: 'Résidents aux profils variés : comment proposer un outil qui parle à chacun sans exclure personne ?',
-        markerClass: 'bg-[#ffe4d9]'
+        title: 'Diversité des résidents, outils uniformes',
+        description: 'Applications, QR codes, groupes en ligne : autant de solutions qui excluent ceux qui ne maîtrisent pas le numérique, ne lisent pas facilement, ou ne parlent pas la langue dominante.'
       },
       {
         num: '02',
-        title: 'Autonomie vs accompagnement',
-        description: 'Encourager l\'initiative des résidents tout en soutenant les équipes d\'accompagnement.',
-        markerClass: 'bg-[#ffc9b3]'
+        title: 'Fracture numérique au cœur du logement',
+        description: 'Imposer une app pour participer à la vie collective crée une barrière invisible. L\'inclusion se joue aussi dans la simplicité du geste quotidien.'
       },
       {
         num: '03',
-        title: 'Fracture numérique',
-        description: 'Les solutions digitales excluent une partie des résidents. Il faut des interfaces physiques et intuitives.',
-        markerClass: 'bg-[#ffa882]'
+        title: 'Inclusion difficile à objectiver',
+        description: 'Les équipes savent que le lien social compte, mais disposent de peu d\'indicateurs concrets. Comment montrer qu\'un habitat « vit » vraiment ensemble ?'
       }
     ],
-    helpTitle: 'Un dispositif pensé pour l\'inclusivité',
-    helpSubtitle: 'Quatre étapes simples, du totem au tableau de bord.',
-    helpSteps: defaultHelpSteps,
-    helpImage: '/images/solutions/help-visual.png',
-    benefitsTitle: 'Ce que votre structure gagne concrètement',
-    benefitsSubtitle: 'Un impact concret pour les équipes et les résidents.',
-    teamBenefits: defaultTeamBenefits,
-    directionMetrics: defaultDirectionMetrics,
-    benefitsFootnote: 'Heya respecte l\'autonomie des résidents tout en donnant une vision claire de la vie collective.',
+    helpTitle: 'Une convivialité accessible, mesurable, partagée',
+    helpSubtitle: 'Heya s\'inscrit dans la logique de l\'habitat inclusif : chez soi, ensemble, sans seul recours au numérique.',
+    helpSteps: [
+      {
+        num: '01',
+        title: 'Propositions au totem',
+        description: 'Un habitant ou un membre de l\'équipe propose une activité au totem : café, jeux, jardinage, moment musique. Interface physique, pensée pour être comprise sans formation.'
+      },
+      {
+        num: '02',
+        title: 'Signal lumineux chez chaque habitant',
+        description: 'La lampe relay s\'allume dans la couleur de l\'activité. Le message arrive chez chacun, y compris ceux qui ne consultent pas d\'écran.'
+      },
+      {
+        num: '03',
+        title: 'Rencontres naturelles entre profils variés',
+        description: 'Les habitants se rejoignent autour d\'un moment convivial. La diversité des profils devient une force, pas un frein à la communication.'
+      },
+      {
+        num: '04',
+        title: 'Données pour piloter l\'inclusion',
+        description: 'Le dashboard montre la participation à la vie sociale. Les équipes disposent d\'indicateurs pour ajuster l\'accompagnement et valoriser le projet auprès des financeurs.'
+      }
+    ],
+    helpImage: '/images/solutions/help-fonctionnement.png',
+    helpImageAlt: 'Schéma du fonctionnement Heya : totem, lampes relay et dashboard',
+    benefitsTitle: 'Pourquoi Heya s\'intègre à un projet inclusif',
+    benefitsLayout: 'highlights',
+    benefitHighlights: [
+      { title: 'Accessibilité universelle', description: 'Pas de prérequis numérique pour participer.' },
+      { title: 'Respect des différences', description: 'Langue, génération, handicap ne bloquent plus l\'information.' },
+      { title: 'Vie sociale objectivée', description: 'Des données pour les bilans, les ARS, les financeurs.' },
+      { title: 'Cohérence avec les valeurs API', description: 'Un logement partagé qui crée du lien, pas seulement de la cohabitation.' }
+    ],
+    useCase: {
+      title: 'Exemple concret : un atelier jardinage un samedi matin',
+      activityLabel: 'Activité extérieur',
+      activityColorClass: 'bg-activity-yellow',
+      image: '/images/solutions/use-case-inclusif.png',
+      imageAlt: 'Habitants en atelier jardinage dans un habitat partagé',
+      story: 'Dans un habitat inclusif mêlant personnes âgées et colocataires en accompagnement, Paul propose un atelier jardinage au totem. Les lampes s\'allument en jaune. Anne, 72 ans, ne possède pas de smartphone : elle voit le signal depuis sa fenêtre ouverte sur le couloir.',
+      outcome: 'Quatre habitants se retrouvent. L\'équipe d\'accompagnement note une participation spontanée intergénérationnelle. Le dashboard confirme une dynamique sociale qui aurait été invisible autrement.'
+    },
     testimonials: [
       {
-        quote: 'Heya respecte l\'autonomie de nos résidents tout en nous donnant une vision claire de la vie collective. C\'est exactement ce qu\'il nous fallait.',
-        name: 'Nadia Benali',
-        role: 'Directrice d\'habitat inclusif',
-        avatar: '/images/solutions/avatar-sophie.png'
+        quote: 'Nos habitants ne voulaient pas d\'une énième application. Heya a trouvé le bon niveau : simple, visible, inclusif. On voit enfin si la vie collective décolle, au-delà des impressions de l\'équipe.',
+        name: 'Émilie Rousseau',
+        role: 'Coordinatrice de projet API',
+        badge: 'Coordination',
+        initials: 'ÉR'
       },
       {
-        quote: 'Je n\'ai pas besoin de téléphone. Quand la lampe s\'allume, je sais qu\'il y a quelque chose. C\'est rassurant.',
-        name: 'Jean-Pierre Moreau',
-        role: 'Résident',
-        avatar: '/images/solutions/avatar-marie.png'
+        quote: 'Je ne suis pas à l\'aise avec les écrans. Quand la lumière s\'allume, je sais qu\'on se retrouve. C\'est devenu mon repère dans la maison.',
+        name: 'Jean-Pierre L.',
+        role: 'Habitant',
+        badge: 'Habitant',
+        initials: 'JP',
+        avatar: '/images/solutions/avatar-resident.png'
       }
     ],
-    faqTitle: 'Questions fréquentes de l\'habitat inclusif',
+    faqTitle: 'Questions fréquentes des structures habitat inclusif',
     faq: [
       {
-        question: 'Heya est-il accessible aux personnes en situation de handicap ?',
-        answer: 'Oui. L\'interface physique au totem et le signal lumineux sont pensés pour l\'accessibilité, sans dépendre du numérique.'
+        question: 'Heya est-il compatible avec un habitat inclusif (API) ?',
+        answer: 'Oui. Heya répond à la logique de vie partagée en habitat inclusif : logement ordinaire, espaces communs, accompagnement, inclusion dans le quartier.'
       },
       {
-        question: 'Faut-il savoir lire ou utiliser un écran ?',
-        answer: 'Non. Quatre couleurs, quatre types d\'activités. Le signal est visuel et universel.'
+        question: 'Faut-il savoir utiliser un smartphone ?',
+        answer: 'Non. Le totem et la lampe relay fonctionnent sans application pour les habitants.'
       },
       {
-        question: 'Comment les équipes d\'accompagnement utilisent-ils Heya ?',
-        answer: 'Le dashboard leur donne une vision de la vie sociale pour adapter leur soutien, sans surveiller les résidents.'
+        question: 'Comment Heya traite-t-il la diversité des profils ?',
+        answer: 'Heya part d\'un signal simple (lumière + couleur) et d\'une interface physique au totem. Pas de texte obligatoire à lire pour comprendre qu\'une activité est proposée.'
       },
       {
-        question: 'Peut-on tester avant un déploiement complet ?',
-        answer: 'Oui. L\'offre Test permet un pilote sur 3, 6 ou 12 mois.'
+        question: 'Les données respectent-elles la vie privée des habitants ?',
+        answer: 'Heya mesure la participation aux activités proposées via le système, pas la surveillance individuelle. Les détails RGPD sont validés lors du déploiement avec la structure.'
+      },
+      {
+        question: 'Peut-on utiliser Heya pour valoriser un projet auprès de la CNSA ou des financeurs ?',
+        answer: 'Le dashboard aide à objectiver la dynamique sociale du lieu. Couplé aux retours qualitatifs de l\'équipe, il nourrit les bilans et les rapports d\'activité.'
       }
     ],
     ctaTitle: 'Testez Heya dans votre habitat inclusif',
-    ctaSubtitle: 'Demandez une démo personnalisée ou lancez un test de 3 à 12 mois.',
+    ctaSubtitle: 'Demandez une démo personnalisée ou lancez un test de 3 à 12 mois avec votre équipe sur site.',
     relatedSolutions: [
-      { label: 'Résidences seniors', to: '/solutions/residences-seniors', dotClass: 'bg-heya-violet' },
-      { label: 'Co-living', to: '/solutions/co-living', dotClass: 'bg-heya-step-green-fg' },
-      { label: 'Résidences étudiantes', to: '/solutions/residences-etudiantes', dotClass: 'bg-heya-step-blue-fg' }
+      { label: 'Résidences seniors', to: '/solutions/residences-seniors', image: '/images/solutions/hero-seniors.png' },
+      { label: 'Co-living', to: '/solutions/co-living', image: '/images/solutions/hero-coliving.png' },
+      { label: 'Résidences étudiantes', to: '/solutions/residences-etudiantes', image: '/images/solutions/hero-etudiants.png' }
     ]
   }
 }

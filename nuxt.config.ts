@@ -28,6 +28,9 @@ export default defineNuxtConfig({
   },
 
   fonts: {
+    families: [
+      { name: 'DM Sans', provider: 'google', weights: [400, 500, 600, 700] }
+    ],
     defaults: {
       weights: [400, 500, 600, 700]
     }
@@ -45,7 +48,8 @@ export default defineNuxtConfig({
     '/a-propos': { prerender: true },
     '/contact': { prerender: true },
     '/blog': { prerender: true },
-    '/blog/**': { prerender: true },
+    '/mentions-legales': { prerender: true },
+    '/politique-de-confidentialite': { prerender: true },
     '/solutions/**': { prerender: true }
   },
 

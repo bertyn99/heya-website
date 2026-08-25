@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { solutions } from '~/data/solutions'
 
-const data = solutions['co-living']
+const data = solutions['co-living']!
 
 useSeoMeta({
-  title: 'Heya pour le co-living | Créer du lien entre colocataires',
-  description: data.subtitle
+  title: data.metaTitle,
+  description: data.metaDescription
 })
 </script>
 

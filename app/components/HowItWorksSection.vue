@@ -43,41 +43,49 @@ const activityLegend = [
     headline="Comment ça marche"
     title="Une méthode propre, un accompagnement humain"
     description="Un résident propose une activité au totem. Les lampes s'allument chez chacun. Il n'y a plus qu'à se retrouver dans le salon."
+    :ui="{
+      description: 'max-w-[40rem]'
+    }"
   >
-    <div class="flex flex-col gap-5">
-      <UPageCard
-        v-for="step in steps"
+    <div class="flex w-full flex-col gap-5">
+      <article
+        v-for="(step, index) in steps"
         :key="step.num"
-        :title="step.title"
-        :description="step.description"
-        orientation="horizontal"
-        variant="soft"
+        class="grid items-center gap-6 rounded-[1.25rem] p-7 sm:grid-cols-2 sm:gap-10 sm:p-9"
         :class="step.cardClass"
-        :ui="{
-          root: 'rounded-[20px] ring-0',
-          container: 'items-center p-7 sm:p-9',
-          title: 'text-xl font-bold text-highlighted',
-          description: 'text-sm text-muted max-w-lg'
-        }"
       >
-        <template #header>
-          <UBadge
-            :label="step.num"
-            variant="soft"
-            class="rounded-full"
-            :class="step.accentClass"
-          />
-        </template>
-
-        <img
-          :src="step.image"
-          :alt="step.imageAlt"
-          class="h-auto w-full rounded-xl object-contain sm:w-[300px]"
-          width="300"
-          height="148"
-          loading="lazy"
+        <div
+          class="space-y-4"
+          :class="index % 2 === 1 ? 'sm:order-2' : ''"
         >
-      </UPageCard>
+          <span
+            class="inline-flex size-10 items-center justify-center rounded-full text-sm font-semibold tabular"
+            :class="step.accentClass"
+          >
+            {{ step.num }}
+          </span>
+          <h3 class="text-xl font-bold tracking-tight text-highlighted">
+            {{ step.title }}
+          </h3>
+          <p class="max-w-lg text-sm leading-relaxed text-muted">
+            {{ step.description }}
+          </p>
+        </div>
+
+        <div
+          class="flex min-h-44 items-center justify-center"
+          :class="index % 2 === 1 ? 'sm:order-1' : ''"
+        >
+          <img
+            :src="step.image"
+            :alt="step.imageAlt"
+            class="mx-auto block h-auto max-h-48 w-auto max-w-full object-contain"
+            width="300"
+            height="200"
+            loading="lazy"
+          >
+        </div>
+      </article>
     </div>
 
     <template #footer>

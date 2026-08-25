@@ -135,8 +135,8 @@ const ctaLinks: ButtonProps[] = [
       :links="ctaLinks"
       class="rounded-none"
       :ui="{
-        root: 'bg-inverted py-16',
-        title: 'text-3xl font-semibold text-inverted'
+        root: 'bg-heya-dark-footer py-16',
+        title: 'text-3xl font-semibold text-white'
       }"
     />
   </article>

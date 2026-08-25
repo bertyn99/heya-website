@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { solutions } from '~/data/solutions'
 
-const data = solutions['habitat-inclusif']
+const data = solutions['habitat-inclusif']!
 
 useSeoMeta({
-  title: 'Heya pour l\'habitat inclusif',
-  description: data.subtitle
+  title: data.metaTitle,
+  description: data.metaDescription
 })
 </script>
 
