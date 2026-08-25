@@ -48,9 +48,18 @@ export default defineNuxtConfig({
     '/a-propos': { prerender: true },
     '/contact': { prerender: true },
     '/blog': { prerender: true },
+    '/blog/**': { prerender: true },
     '/mentions-legales': { prerender: true },
     '/politique-de-confidentialite': { prerender: true },
     '/solutions/**': { prerender: true }
+  },
+
+  nitro: {
+    preset: 'cloudflare_pages',
+    prerender: {
+      autoSubfolderIndex: false,
+      crawlLinks: true
+    }
   },
 
   compatibilityDate: '2026-06-30',

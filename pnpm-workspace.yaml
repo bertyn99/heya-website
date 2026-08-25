@@ -4,6 +4,7 @@ allowBuilds:
   esbuild: false
   unrs-resolver: false
   vue-demi: false
+  workerd: true
 
 overrides:
   '@vueuse/core': '14.3.0'

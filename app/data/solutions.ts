@@ -1,7 +1,18 @@
+export type HelpStepSceneKind = 'totem' | 'lamp' | 'gather' | 'dashboard'
+
+export type ActivityAccent = 'blue' | 'yellow' | 'orange' | 'violet'
+
+export type SolutionAudience =
+  | 'residences-seniors'
+  | 'co-living'
+  | 'residences-etudiantes'
+  | 'habitat-inclusif'
+
 export interface SolutionStep {
   num: string
   title: string
   description: string
+  scene: HelpStepSceneKind
 }
 
 export interface SolutionChallenge {
@@ -73,9 +84,8 @@ export interface SolutionPageData {
   challenges: SolutionChallenge[]
   helpTitle: string
   helpSubtitle: string
+  helpAccent: ActivityAccent
   helpSteps: SolutionStep[]
-  helpImage: string
-  helpImageAlt: string
   benefitsTitle: string
   benefitsLayout: 'matrix' | 'highlights'
   benefitRows?: SolutionBenefitRow[]
@@ -149,30 +159,33 @@ export const solutions: Record<string, SolutionPageData> = {
     ],
     helpTitle: 'Une solution simple, du totem au dashboard',
     helpSubtitle: 'Heya relie le lieu de vie commun et chaque appartement en quatre étapes. Pas de formation complexe, pas d\'écran à apprendre.',
+    helpAccent: 'violet',
     helpSteps: [
       {
         num: '01',
         title: 'Propositions au totem',
-        description: 'Un résident ou un membre de l\'équipe propose une activité directement au totem : jeux de société, sortie, atelier manuel, moment café. Interface physique, intuitive, sans écran complexe.'
+        description: 'Un résident ou un membre de l\'équipe propose une activité directement au totem : jeux de société, sortie, atelier manuel, moment café. Interface physique, intuitive, sans écran complexe.',
+        scene: 'totem',
       },
       {
         num: '02',
         title: 'Signal lumineux dans chaque appartement',
-        description: 'Chaque lampe relay s\'allume dans la couleur de l\'activité : bleu, jaune, orange ou violet. Le message arrive chez le résident, sans affiche à lire ni notification sur téléphone.'
+        description: 'Chaque lampe relay s\'allume dans la couleur de l\'activité : bleu, jaune, orange ou violet. Le message arrive chez le résident, sans affiche à lire ni notification sur téléphone.',
+        scene: 'lamp',
       },
       {
         num: '03',
         title: 'Participation spontanée',
-        description: 'Les résidents voient qu\'une activité est proposée et se rejoignent naturellement. Pas besoin de s\'inscrire sur une liste ou de scanner un QR code. Le geste reste léger, social, inclusif.'
+        description: 'Les résidents voient qu\'une activité est proposée et se rejoignent naturellement. Pas besoin de s\'inscrire sur une liste ou de scanner un QR code. Le geste reste léger, social, inclusif.',
+        scene: 'gather',
       },
       {
         num: '04',
         title: 'Données pour la direction',
-        description: 'Le dashboard affiche la participation en temps réel : quelles activités mobilisent, quels créneaux fonctionnent, comment évolue la vie sociale. Vous pilotez avec des indicateurs, pas seulement des impressions.'
+        description: 'Le dashboard affiche la participation en temps réel : quelles activités mobilisent, quels créneaux fonctionnent, comment évolue la vie sociale. Vous pilotez avec des indicateurs, pas seulement des impressions.',
+        scene: 'dashboard',
       }
     ],
-    helpImage: '/images/solutions/help-fonctionnement.png',
-    helpImageAlt: 'Schéma du fonctionnement Heya : totem, lampes relay et dashboard',
     benefitsTitle: 'Ce que votre résidence gagne concrètement',
     benefitsLayout: 'matrix',
     benefitRows: [
@@ -298,30 +311,33 @@ export const solutions: Record<string, SolutionPageData> = {
     ],
     helpTitle: 'Un fil conducteur entre le lieu commun et chaque logement',
     helpSubtitle: 'Heya transforme un espace partagé en vrai lieu de rencontre, sans surcharger le gestionnaire.',
+    helpAccent: 'orange',
     helpSteps: [
       {
         num: '01',
         title: 'Propositions au totem',
-        description: 'Un colocataire propose un dîner collectif, une session jeux, une sortie running ou un café du matin au totem. L\'interface reste physique et immédiate.'
+        description: 'Un colocataire propose un dîner collectif, une session jeux, une sortie running ou un café du matin au totem. L\'interface reste physique et immédiate.',
+        scene: 'totem',
       },
       {
         num: '02',
         title: 'Signal lumineux chez chaque colocataire',
-        description: 'La lampe relay s\'allume dans la couleur de l\'activité. Même ceux qui ne lisent pas le groupe Telegram voient qu\'un moment convivial est lancé.'
+        description: 'La lampe relay s\'allume dans la couleur de l\'activité. Même ceux qui ne lisent pas le groupe Telegram voient qu\'un moment convivial est lancé.',
+        scene: 'lamp',
       },
       {
         num: '03',
         title: 'Rencontres spontanées',
-        description: 'Les colocataires se retrouvent sans friction d\'inscription. La barrière du « je ne connais personne » baisse, surtout pour les nouveaux.'
+        description: 'Les colocataires se retrouvent sans friction d\'inscription. La barrière du « je ne connais personne » baisse, surtout pour les nouveaux.',
+        scene: 'gather',
       },
       {
         num: '04',
         title: 'Pilotage pour le gestionnaire',
-        description: 'Le dashboard montre quelles activités créent de la dynamique, quels créneaux fonctionnent, comment la vie collective évolue dans le bâtiment.'
+        description: 'Le dashboard montre quelles activités créent de la dynamique, quels créneaux fonctionnent, comment la vie collective évolue dans le bâtiment.',
+        scene: 'dashboard',
       }
     ],
-    helpImage: '/images/solutions/help-fonctionnement.png',
-    helpImageAlt: 'Schéma du fonctionnement Heya : totem, lampes relay et dashboard',
     benefitsTitle: 'Pourquoi les opérateurs choisissent Heya',
     benefitsLayout: 'highlights',
     benefitHighlights: [
@@ -440,30 +456,33 @@ export const solutions: Record<string, SolutionPageData> = {
     ],
     helpTitle: 'Créer du lien, du hall d\'accueil à la chambre',
     helpSubtitle: 'Heya rend la vie sociale visible là où les étudiants vivent vraiment : dans leur logement.',
+    helpAccent: 'blue',
     helpSteps: [
       {
         num: '01',
         title: 'Propositions au totem',
-        description: 'Un étudiant propose un FIFA, un cours de cuisine, une session révisions ou un café multilingue au totem du hall. Pas d\'écran complexe, pas de compte à créer.'
+        description: 'Un étudiant propose un FIFA, un cours de cuisine, une session révisions ou un café multilingue au totem du hall. Pas d\'écran complexe, pas de compte à créer.',
+        scene: 'totem',
       },
       {
         num: '02',
         title: 'Signal lumineux dans chaque chambre',
-        description: 'La lampe relay s\'allume dans la couleur de l\'activité. L\'information traverse les barrières de langue : voir, comprendre, descendre.'
+        description: 'La lampe relay s\'allume dans la couleur de l\'activité. L\'information traverse les barrières de langue : voir, comprendre, descendre.',
+        scene: 'lamp',
       },
       {
         num: '03',
         title: 'Participation spontanée',
-        description: 'Les étudiants se rejoignent sans s\'inscrire sur une liste. Les nouveaux et les internationaux accèdent au même signal que les anciens.'
+        description: 'Les étudiants se rejoignent sans s\'inscrire sur une liste. Les nouveaux et les internationaux accèdent au même signal que les anciens.',
+        scene: 'gather',
       },
       {
         num: '04',
         title: 'Données pour la gestion de résidence',
-        description: 'Le dashboard montre quelles activités fonctionnent, quels moments de la semaine mobilisent, comment la vie sociale évolue dans le bâtiment.'
+        description: 'Le dashboard montre quelles activités fonctionnent, quels moments de la semaine mobilisent, comment la vie sociale évolue dans le bâtiment.',
+        scene: 'dashboard',
       }
     ],
-    helpImage: '/images/solutions/help-fonctionnement.png',
-    helpImageAlt: 'Schéma du fonctionnement Heya : totem, lampes relay et dashboard',
     benefitsTitle: 'Impact pour la résidence et les étudiants',
     benefitsLayout: 'highlights',
     benefitHighlights: [
@@ -582,30 +601,33 @@ export const solutions: Record<string, SolutionPageData> = {
     ],
     helpTitle: 'Une convivialité accessible, mesurable, partagée',
     helpSubtitle: 'Heya s\'inscrit dans la logique de l\'habitat inclusif : chez soi, ensemble, sans seul recours au numérique.',
+    helpAccent: 'yellow',
     helpSteps: [
       {
         num: '01',
         title: 'Propositions au totem',
-        description: 'Un habitant ou un membre de l\'équipe propose une activité au totem : café, jeux, jardinage, moment musique. Interface physique, pensée pour être comprise sans formation.'
+        description: 'Un habitant ou un membre de l\'équipe propose une activité au totem : café, jeux, jardinage, moment musique. Interface physique, pensée pour être comprise sans formation.',
+        scene: 'totem',
       },
       {
         num: '02',
         title: 'Signal lumineux chez chaque habitant',
-        description: 'La lampe relay s\'allume dans la couleur de l\'activité. Le message arrive chez chacun, y compris ceux qui ne consultent pas d\'écran.'
+        description: 'La lampe relay s\'allume dans la couleur de l\'activité. Le message arrive chez chacun, y compris ceux qui ne consultent pas d\'écran.',
+        scene: 'lamp',
       },
       {
         num: '03',
         title: 'Rencontres naturelles entre profils variés',
-        description: 'Les habitants se rejoignent autour d\'un moment convivial. La diversité des profils devient une force, pas un frein à la communication.'
+        description: 'Les habitants se rejoignent autour d\'un moment convivial. La diversité des profils devient une force, pas un frein à la communication.',
+        scene: 'gather',
       },
       {
         num: '04',
         title: 'Données pour piloter l\'inclusion',
-        description: 'Le dashboard montre la participation à la vie sociale. Les équipes disposent d\'indicateurs pour ajuster l\'accompagnement et valoriser le projet auprès des financeurs.'
+        description: 'Le dashboard montre la participation à la vie sociale. Les équipes disposent d\'indicateurs pour ajuster l\'accompagnement et valoriser le projet auprès des financeurs.',
+        scene: 'dashboard',
       }
     ],
-    helpImage: '/images/solutions/help-fonctionnement.png',
-    helpImageAlt: 'Schéma du fonctionnement Heya : totem, lampes relay et dashboard',
     benefitsTitle: 'Pourquoi Heya s\'intègre à un projet inclusif',
     benefitsLayout: 'highlights',
     benefitHighlights: [

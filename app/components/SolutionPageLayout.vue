@@ -13,6 +13,7 @@ const MotionArticle = motion.article
 const MotionP = motion.p
 const MotionButton = motion.button
 const MotionSpan = motion.span
+const MotionDiv = motion.div
 
 const activeHelpStep = ref(0)
 const activeTestimonial = ref(0)
@@ -47,6 +48,10 @@ const highlightSurfaces = [
 ] as const
 
 const highlightOffsets = ['', 'lg:mt-10', '', 'lg:mt-10'] as const
+
+const currentHelpStep = computed(() => {
+  return props.data.helpSteps[activeHelpStep.value] ?? props.data.helpSteps[0]!
+})
 
 const currentTestimonial = computed(() => {
   return props.data.testimonials[activeTestimonial.value] ?? props.data.testimonials[0]!
@@ -278,13 +283,21 @@ function nextTestimonial() {
           </div>
 
           <div class="flex min-h-[22rem] items-center justify-center rounded-[1.25rem] bg-muted p-6 sm:min-h-[28rem] sm:p-10 lg:sticky lg:top-28">
-            <img
-              :src="data.helpImage"
-              :alt="data.helpImageAlt"
-              class="w-full object-contain"
-              width="640"
-              height="360"
+            <MotionDiv
+              :key="currentHelpStep.num"
+              class="w-full"
+              :initial="{ opacity: 0, y: 16 }"
+              :animate="{ opacity: 1, y: 0 }"
+              :transition="{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }"
             >
+              <HelpStepScene
+                :scene="currentHelpStep.scene"
+                :num="currentHelpStep.num"
+                :title="currentHelpStep.title"
+                :audience="data.slug"
+                :accent="data.helpAccent"
+              />
+            </MotionDiv>
           </div>
         </div>
       </UContainer>
