@@ -2,14 +2,17 @@ import type { ContentAction } from '#shared/schemas/content'
 import type { PageRow, PostRow } from '#shared/types/db'
 import { statusTimestamps } from '../utils/status-timestamps'
 
-export function actionToStatusFields(action: ContentAction) {
+export function actionToStatusFields(
+  action: ContentAction,
+  current?: Pick<PageRow, 'status' | 'publishedAt'> | Pick<PostRow, 'status' | 'publishedAt'> | null
+) {
   switch (action.action) {
     case 'publish':
-      return statusTimestamps('published', null)
+      return statusTimestamps('published', null, current)
     case 'unpublish':
-      return statusTimestamps('draft', null)
+      return statusTimestamps('draft', null, current)
     case 'schedule':
-      return statusTimestamps('scheduled', action.scheduledAt)
+      return statusTimestamps('scheduled', action.scheduledAt, current)
     default: {
       const exhaustive: never = action
       throw new Error(`Action inconnue: ${JSON.stringify(exhaustive)}`)

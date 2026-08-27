@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   const body = await validateBody(event, contentActionSchema)
   log.set({ cms: { entity: 'page', action: body.action, id } })
 
-  const updated = await updatePage(id, actionToStatusFields(body))
+  const updated = await updatePage(id, actionToStatusFields(body, current))
 
   if (!updated) {
     throw notFound('Page introuvable', { type: 'page', id })

@@ -1,22 +1,26 @@
 <script setup lang="ts">
 import type { ContentStatus } from '#shared/types/content'
 import type { CalendarContentType } from '#shared/calendar'
-import { CALENDAR_TIME_ZONE, DEFAULT_PUBLISH_HOUR } from '#shared/calendar'
-import { scheduledAtIsoForDay } from '~/composables/useMockPublishingCalendar'
+import { CALENDAR_TIME_ZONE, DEFAULT_PUBLISH_HOUR, calendarDayKeyFromIso, dateKeyAddDays } from '#shared/calendar'
+import { scheduledAtIsoForDay } from '~/utils/calendar-schedule'
+import { apiErrorMessage } from '~/utils/api-error'
+import { toIsoString } from '~/utils/serialize-date'
+import type { AdminPageApi, AdminPostApi } from '~/utils/admin-mappers'
 
 const props = defineProps<{
   contentType: CalendarContentType
   contentId?: string
   status: ContentStatus
-  onSave: () => Promise<boolean>
+  onSave: (options?: { silent?: boolean }) => Promise<boolean>
 }>()
 
 const emit = defineEmits<{
-  'update:status': [status: ContentStatus]
+  'update:status': [status: ContentStatus, scheduledAt?: string | null]
+  'committed': [row: AdminPageApi | AdminPostApi]
 }>()
 
 const toast = useToast()
-const store = useAdminMockStore()
+const { updateContentStatus } = useAdminContentApi()
 
 const publishing = ref(false)
 const scheduling = ref(false)
@@ -26,27 +30,39 @@ const scheduleOpen = ref(false)
 const isPublished = computed(() => props.status === 'published')
 const showActions = computed(() => Boolean(props.contentId))
 
-async function applyStatus(status: ContentStatus, scheduledAt?: string | null) {
+async function applyStatus(action: 'publish' | 'unpublish' | 'schedule', scheduledAt?: string) {
   if (!props.contentId) {
     return
   }
-  if (props.contentType === 'page') {
-    store.setPageStatus(props.contentId, status, { scheduledAt })
-  } else {
-    store.setPostStatus(props.contentId, status, { scheduledAt })
-  }
-  emit('update:status', status)
+
+  const body = action === 'schedule'
+    ? { action: 'schedule' as const, scheduledAt: new Date(scheduledAt!) }
+    : { action }
+
+  const updated = await updateContentStatus(props.contentType, props.contentId, body)
+  emit(
+    'update:status',
+    updated.status,
+    toIsoString(updated.scheduledAt) ?? scheduledAt ?? null
+  )
+  emit('committed', updated)
 }
 
 async function onPublishNow() {
   publishing.value = true
   try {
-    const saved = await props.onSave()
+    const saved = await props.onSave({ silent: true })
     if (!saved) {
       return
     }
-    await applyStatus('published')
+    await applyStatus('publish')
     toast.add({ title: 'Publié', description: 'Le contenu est en ligne.', color: 'success' })
+  } catch (error) {
+    toast.add({
+      title: 'Publication impossible',
+      description: apiErrorMessage(error),
+      color: 'error'
+    })
   } finally {
     publishing.value = false
   }
@@ -55,8 +71,14 @@ async function onPublishNow() {
 async function onUnpublish() {
   unpublishing.value = true
   try {
-    await applyStatus('draft')
+    await applyStatus('unpublish')
     toast.add({ title: 'Dépublié', description: 'Le contenu est repassé en brouillon.', color: 'warning' })
+  } catch (error) {
+    toast.add({
+      title: 'Dépublication impossible',
+      description: apiErrorMessage(error),
+      color: 'error'
+    })
   } finally {
     unpublishing.value = false
   }
@@ -65,12 +87,12 @@ async function onUnpublish() {
 async function onConfirmSchedule(dayKey: string) {
   scheduling.value = true
   try {
-    const saved = await props.onSave()
+    const saved = await props.onSave({ silent: true })
     if (!saved) {
       return
     }
     const scheduledAt = scheduledAtIsoForDay(dayKey)
-    await applyStatus('scheduled', scheduledAt)
+    await applyStatus('schedule', scheduledAt)
     scheduleOpen.value = false
     const date = new Date(scheduledAt)
     toast.add({
@@ -78,19 +100,27 @@ async function onConfirmSchedule(dayKey: string) {
       description: `Prévu le ${date.toLocaleDateString('fr-FR', { timeZone: CALENDAR_TIME_ZONE })} à ${DEFAULT_PUBLISH_HOUR}h`,
       color: 'success'
     })
+  } catch (error) {
+    toast.add({
+      title: 'Planification impossible',
+      description: apiErrorMessage(error),
+      color: 'error'
+    })
   } finally {
     scheduling.value = false
   }
 }
 
-const todayKey = computed(() => {
-  const now = new Date()
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-})
+const todayKey = computed(() => calendarDayKeyFromIso(new Date().toISOString()))
+
+const tomorrowKey = computed(() => dateKeyAddDays(todayKey.value, 1))
 </script>
 
 <template>
-  <div v-if="showActions" class="contents">
+  <div
+    v-if="showActions"
+    class="contents"
+  >
     <UButton
       v-if="isPublished"
       type="button"
@@ -145,7 +175,7 @@ const todayKey = computed(() => {
               color="neutral"
               variant="soft"
               label="Demain"
-              @click="onConfirmSchedule(todayKey)"
+              @click="onConfirmSchedule(tomorrowKey)"
             />
           </div>
           <p class="mt-2 text-xs text-muted">

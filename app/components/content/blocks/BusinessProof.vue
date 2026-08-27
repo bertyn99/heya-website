@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<BusinessProofBlock>(), {
   <UPageSection>
     <UPageLogos :title="props.title">
       <div class="flex flex-wrap items-center justify-center gap-8">
-        <NuxtImg
+        <img
           v-for="partner in props.partners"
           :key="partner.name"
           :src="partner.logo"
@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<BusinessProofBlock>(), {
           class="h-12 w-auto max-w-28 object-contain opacity-70 grayscale transition-opacity duration-200 hover:opacity-100 hover:grayscale-0"
           width="120"
           height="60"
-        />
+        >
       </div>
     </UPageLogos>
   </UPageSection>

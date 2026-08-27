@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@comark/nuxt',
-    '@nuxt/image',
     'evlog/nuxt'
   ],
 
@@ -91,20 +90,6 @@ export default defineNuxtConfig({
     '/solutions/**': { prerender: true }
   },
 
-  image: {
-    provider: 'jsquash',
-    quality: 80,
-    format: ['webp'],
-    providers: {
-      jsquash: {
-        provider: '~/providers/jsquash',
-        options: {
-          baseURL: '/api/media/'
-        }
-      }
-    }
-  },
-
   vite: {
     optimizeDeps: {
       exclude: [
@@ -117,7 +102,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'cloudflare_pages',
+    preset: 'cloudflare_module',
     experimental: {
       tasks: true,
       wasm: true
@@ -127,6 +112,9 @@ export default defineNuxtConfig({
     },
     externals: {
       inline: ['@jsquash/jpeg', '@jsquash/png', '@jsquash/webp', '@jsquash/resize']
+    },
+    scheduledTasks: {
+      '*/5 * * * *': ['publish-scheduled']
     },
     prerender: {
       autoSubfolderIndex: false,

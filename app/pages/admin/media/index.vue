@@ -12,12 +12,7 @@ definePageMeta({
     </template>
 
     <template #body>
-      <UAlert
-        color="info"
-        variant="subtle"
-        title="À venir"
-        description="Médiathèque R2 + picker pour le CMS."
-      />
+      <AdminMediaLibrary />
     </template>
   </AppDashboardPanel>
 </template>

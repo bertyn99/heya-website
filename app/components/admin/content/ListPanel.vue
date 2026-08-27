@@ -4,6 +4,9 @@ import type { AdminListRow } from '#shared/types/admin'
 import type { ContentStatus } from '#shared/types/content'
 import { DASHBOARD_TABLE_UI } from '~/utils/dashboard-shell'
 import { contentStatusBadgeColor, contentStatusLabel } from '~/utils/content-status'
+import { refDebounced } from '@vueuse/core'
+import { apiErrorMessage } from '~/utils/api-error'
+import { ADMIN_LIST_LIMIT, mapAdminListRow, type AdminPageApi } from '~/utils/admin-mappers'
 
 const props = withDefaults(defineProps<{
   title: string
@@ -16,45 +19,63 @@ const props = withDefaults(defineProps<{
 })
 
 const router = useRouter()
-const store = useAdminMockStore()
+const toast = useToast()
+const { loggedIn } = useUserSession()
+const { createPageDraft, createPostDraft } = useAdminContentApi()
 
 const UBadge = resolveComponent('UBadge')
 const UButton = resolveComponent('UButton')
 
 const basePath = computed(() => props.contentType === 'page' ? '/admin/pages' : '/admin/blog')
+const listUrl = computed(() => props.contentType === 'page' ? '/api/admin/pages' : '/api/admin/posts')
 
 const search = ref('')
+const q = refDebounced(search, 300)
 const statusFilter = ref<'all' | ContentStatus>('all')
 const pagination = ref({ pageIndex: 0, pageSize: 10 })
+const creating = ref(false)
 
-const listData = computed(() =>
-  props.contentType === 'page'
-    ? store.listPages(pagination.value.pageIndex + 1, pagination.value.pageSize)
-    : store.listPosts(pagination.value.pageIndex + 1, pagination.value.pageSize)
-)
+const query = computed(() => ({
+  ...(q.value.trim() ? { q: q.value.trim() } : {}),
+  ...(statusFilter.value !== 'all' ? { status: statusFilter.value } : {}),
+  limit: ADMIN_LIST_LIMIT
+}))
 
-const rows = computed(() => {
-  let items = listData.value.data
-
-  if (search.value) {
-    const q = search.value.toLowerCase()
-    items = items.filter(item =>
-      item.title.toLowerCase().includes(q) || item.slug.toLowerCase().includes(q)
-    )
-  }
-
-  if (statusFilter.value !== 'all') {
-    items = items.filter(item => item.status === statusFilter.value)
-  }
-
-  return items
+const { data, status, error, refresh } = useFetch<AdminPageApi[]>(listUrl, {
+  query,
+  server: false,
+  default: () => []
 })
 
-function createDraft() {
-  const created = props.contentType === 'page'
-    ? store.createPageDraft()
-    : store.createPostDraft()
-  router.push(`${basePath.value}/${created.id}`)
+watch(loggedIn, (value) => {
+  if (value) {
+    void refresh()
+  }
+}, { immediate: true })
+
+const allRows = computed(() => (data.value ?? []).map(mapAdminListRow))
+
+const pagedRows = computed(() => {
+  const start = pagination.value.pageIndex * pagination.value.pageSize
+  return allRows.value.slice(start, start + pagination.value.pageSize)
+})
+
+async function createDraft() {
+  creating.value = true
+  try {
+    const created = props.contentType === 'page'
+      ? await createPageDraft()
+      : await createPostDraft()
+    await router.push(`${basePath.value}/${created.id}`)
+  } catch (createError) {
+    toast.add({
+      title: 'Création impossible',
+      description: apiErrorMessage(createError),
+      color: 'error'
+    })
+  } finally {
+    creating.value = false
+  }
 }
 
 const columns = computed<TableColumn<AdminListRow>[]>(() => {
@@ -93,7 +114,7 @@ const columns = computed<TableColumn<AdminListRow>[]>(() => {
   return cols
 })
 
-watch([search, statusFilter], () => {
+watch([q, statusFilter], () => {
   pagination.value.pageIndex = 0
 })
 </script>
@@ -106,6 +127,7 @@ watch([search, statusFilter], () => {
           <UButton
             :label="createLabel ?? 'Nouveau'"
             icon="i-lucide-plus"
+            :loading="creating"
             @click="createDraft"
           />
         </template>
@@ -113,15 +135,6 @@ watch([search, statusFilter], () => {
     </template>
 
     <template #body>
-      <UAlert
-        color="info"
-        variant="subtle"
-        icon="i-lucide-flask-conical"
-        title="Données de démonstration"
-        description="Cette liste utilise des fixtures locales. Le branchement API viendra à l'étape suivante."
-        class="mb-2"
-      />
-
       <div class="flex flex-wrap items-center justify-between gap-1.5">
         <UInput
           v-model="search"
@@ -142,26 +155,45 @@ watch([search, statusFilter], () => {
         />
       </div>
 
-      <UTable
-        v-model:pagination="pagination"
-        class="mt-4 shrink-0"
-        :data="rows"
-        :columns="columns"
-        :ui="DASHBOARD_TABLE_UI"
+      <div
+        v-if="status === 'pending' && allRows.length === 0"
+        class="mt-4 space-y-2"
+      >
+        <USkeleton class="h-10 w-full" />
+        <USkeleton class="h-10 w-full" />
+        <USkeleton class="h-10 w-full" />
+      </div>
+
+      <UAlert
+        v-else-if="error"
+        color="error"
+        class="mt-4"
+        title="Liste indisponible"
+        :description="apiErrorMessage(error)"
       />
 
-      <div class="mt-4 flex items-center justify-between gap-3 pt-2">
-        <p class="text-sm text-muted">
-          {{ listData.meta.pagination.total }} élément(s) au total
-        </p>
-
-        <UPagination
-          :default-page="pagination.pageIndex + 1"
-          :items-per-page="pagination.pageSize"
-          :total="listData.meta.pagination.total"
-          @update:page="(p: number) => { pagination.pageIndex = p - 1 }"
+      <template v-else>
+        <UTable
+          v-model:pagination="pagination"
+          class="mt-4 shrink-0"
+          :data="pagedRows"
+          :columns="columns"
+          :ui="DASHBOARD_TABLE_UI"
         />
-      </div>
+
+        <div class="mt-4 flex items-center justify-between gap-3 pt-2">
+          <p class="text-sm text-muted">
+            {{ allRows.length }} élément(s)
+          </p>
+
+          <UPagination
+            :default-page="pagination.pageIndex + 1"
+            :items-per-page="pagination.pageSize"
+            :total="allRows.length"
+            @update:page="(p: number) => { pagination.pageIndex = p - 1 }"
+          />
+        </div>
+      </template>
     </template>
   </AppDashboardPanel>
 </template>

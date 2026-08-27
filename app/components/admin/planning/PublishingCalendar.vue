@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { CalendarDate, DateValue } from '@internationalized/date'
-import { getLocalTimeZone, isSameDay, today } from '@internationalized/date'
 import type { CalendarItem } from '#shared/calendar'
 import { calendarDayKeyFromParts } from '#shared/calendar'
 
@@ -48,13 +47,13 @@ function onDragOver(day: DateValue, event: DragEvent) {
   dropTargetDay.value = dayKey(day)
 }
 
-function onDragLeave(day: CalendarDate) {
+function onDragLeave(day: DateValue) {
   if (dropTargetDay.value === dayKey(day)) {
     dropTargetDay.value = null
   }
 }
 
-function onDrop(day: CalendarDate, event: DragEvent) {
+function onDrop(day: DateValue, event: DragEvent) {
   event.preventDefault()
   const key = resolveDragKey(event)
   dropTargetDay.value = null

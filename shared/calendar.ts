@@ -4,6 +4,11 @@ export const CALENDAR_CONTENT_TYPES = ['page', 'post'] as const
 
 export type CalendarContentType = (typeof CALENDAR_CONTENT_TYPES)[number]
 
+export const CALENDAR_TYPE_OPTIONS = [
+  { label: 'Pages', value: 'page' as CalendarContentType },
+  { label: 'Articles', value: 'post' as CalendarContentType }
+]
+
 export type CalendarContentStatus = ContentStatus
 
 export interface CalendarItem {

@@ -5,6 +5,6 @@ import { CONTENT_EDITOR_SECTION_NAV_ID } from '~/utils/content-editor-toolbar'
 <template>
   <div
     :id="CONTENT_EDITOR_SECTION_NAV_ID"
-    class="mx-auto w-full max-w-4xl min-h-0 px-2 sm:px-3"
+    class="mx-auto w-full max-w-4xl min-h-0 border-b border-default px-2 sm:px-3"
   />
 </template>

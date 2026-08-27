@@ -3,11 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build --preset=cloudflare_pages",
+    "build": "nuxt build --preset=cloudflare_module",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "deploy": "nuxt build --preset=cloudflare_pages && wrangler pages deploy dist",
+    "deploy": "nuxt build --preset=cloudflare_module && wrangler deploy --cwd .output",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
@@ -27,13 +27,17 @@
     "@jsquash/resize": "^2.1.1",
     "@jsquash/webp": "^1.5.0",
     "@libsql/client": "^0.17.4",
-    "@nuxt/image": "2.1.0",
     "@nuxt/ui": "^4.9.0",
     "@nuxthub/core": "^0.10.8",
     "@nuxtjs/better-auth": "^0.2.0",
     "@nuxtjs/seo": "5.3.14",
     "@takumi-rs/core": "^2.11.0",
     "@takumi-rs/wasm": "^2.12.0",
+    "@tiptap/core": "^3.30.5",
+    "@tiptap/extension-drag-handle-vue-3": "^3.30.5",
+    "@tiptap/extension-image": "^3.30.5",
+    "@tiptap/pm": "^3.30.5",
+    "@tiptap/vue-3": "^3.30.5",
     "@vueuse/core": "14.3.0",
     "better-auth": "^1.7.1",
     "comark": "^0.6.2",
@@ -42,7 +46,6 @@
     "motion-v": "^2.4.0",
     "nuxt": "^4.5.2",
     "tailwindcss": "^4.3.1",
-    "ufo": "^1.6.4",
     "wasm-feature-detect": "^1.9.0",
     "zod": "^4.4.3"
   },
@@ -53,6 +56,11 @@
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.5",
     "wrangler": "^4.125.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "prosemirror-model": "1.25.11"
+    }
   },
   "packageManager": "pnpm@11.9.0"
 }

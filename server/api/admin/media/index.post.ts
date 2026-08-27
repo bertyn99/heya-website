@@ -1,11 +1,11 @@
-import { optimizeImageBuffer } from '#shared/image-optimize-pipeline'
+import { createError, type AuditableLogger } from 'evlog'
+import type { BlobRow } from '#shared/types/db'
 import { deleteBlob, insertBlob } from '../../../queries/blobs'
 import { createAdminContext } from '../../../utils/admin-context'
+import { optimizeImageBuffer } from '../../../utils/image-ingest'
 import { toLogError } from '../../../utils/log-error'
-import type { BlobRow } from '#shared/types/db'
-import type { AuditableLogger } from 'evlog'
 
-const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'] as const
+const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'] as const
 
 async function rollbackUploadedMedia(pathnames: string[], log: AuditableLogger) {
   log.set({ cms: { media: { rollbackPathnames: pathnames } } })
@@ -29,12 +29,21 @@ async function persistOptimizedUpload(file: { pathname: string, contentType?: st
     pathname: file.pathname
   })
 
-  if (!optimized) {
+  if (optimized.kind === 'skipped') {
     return {
       pathname: file.pathname,
       contentType: sourceType,
       size: file.size ?? sourceBuffer.byteLength
     }
+  }
+
+  if (optimized.kind === 'failed') {
+    throw createError({
+      message: 'Optimisation image impossible',
+      status: 422,
+      why: optimized.error.message,
+      fix: 'Envoyer un JPEG, PNG ou WebP valide (max 8 Mo)'
+    })
   }
 
   const dest = optimized.pathname ?? file.pathname

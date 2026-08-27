@@ -16,25 +16,19 @@ export default defineEventHandler(async (event) => {
     throw notFound('Média introuvable', { type: 'media', id: pathname })
   }
 
-  await deleteBlob(pathname)
-
-  let orphanBlob = false
-
   try {
     await blob.del(pathname)
   } catch (error) {
-    orphanBlob = true
-    log.error(toLogError(error), {
-      step: 'blob.del',
-      cms: { media: { pathname, dbDeleted: true, orphanBlob: true } }
-    })
+    log.error(toLogError(error), { step: 'blob.del', cms: { media: { pathname } } })
+    throw error
   }
+
+  await deleteBlob(pathname)
 
   auditCms('cms.media.delete', {
     type: 'media',
-    id: pathname,
-    orphanBlob
+    id: pathname
   })
 
-  return { ok: true, pathname, orphanBlob }
+  return { ok: true, pathname }
 })

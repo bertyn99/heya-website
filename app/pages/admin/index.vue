@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DashboardSummary } from '#shared/dashboard'
+import { apiErrorMessage } from '~/utils/api-error'
 
 definePageMeta({
   layout: 'admin',
@@ -7,6 +8,28 @@ definePageMeta({
 })
 
 const { loggedIn } = useUserSession()
+const router = useRouter()
+const toast = useToast()
+const { createPageDraft, createPostDraft } = useAdminContentApi()
+const creating = ref<'page' | 'post' | null>(null)
+
+async function createDraft(kind: 'page' | 'post') {
+  creating.value = kind
+  try {
+    const created = kind === 'page'
+      ? await createPageDraft()
+      : await createPostDraft()
+    await router.push(kind === 'page' ? `/admin/pages/${created.id}` : `/admin/blog/${created.id}`)
+  } catch (error) {
+    toast.add({
+      title: 'Création impossible',
+      description: apiErrorMessage(error),
+      color: 'error'
+    })
+  } finally {
+    creating.value = null
+  }
+}
 
 const todayLabel = computed(() =>
   new Date().toLocaleDateString('fr-FR', {
@@ -37,27 +60,30 @@ watch(loggedIn, (value) => {
         <template #right>
           <div class="flex flex-wrap items-center gap-2">
             <UButton
-              to="/admin/blog"
               size="sm"
               icon="i-lucide-plus"
               label="Article"
               class="max-sm:hidden"
+              :loading="creating === 'post'"
+              @click="createDraft('post')"
             />
             <UButton
-              to="/admin/pages"
               size="sm"
               color="neutral"
               variant="soft"
               icon="i-lucide-plus"
               label="Page"
               class="max-sm:hidden"
+              :loading="creating === 'page'"
+              @click="createDraft('page')"
             />
             <UButton
-              to="/admin/blog"
               size="sm"
               icon="i-lucide-plus"
               aria-label="Nouvel article"
               class="sm:hidden"
+              :loading="creating === 'post'"
+              @click="createDraft('post')"
             />
           </div>
         </template>
@@ -65,7 +91,10 @@ watch(loggedIn, (value) => {
     </template>
 
     <template #body>
-      <div v-if="status === 'pending' && !dashboard" class="space-y-4">
+      <div
+        v-if="status === 'pending' && !dashboard"
+        class="space-y-4"
+      >
         <USkeleton class="h-8 w-64" />
         <div class="grid gap-4 lg:grid-cols-2">
           <USkeleton class="h-48 w-full" />
@@ -85,18 +114,20 @@ watch(loggedIn, (value) => {
           </div>
           <div class="flex flex-wrap gap-2">
             <UButton
-              to="/admin/blog"
               icon="i-lucide-newspaper"
               label="Nouvel article"
               size="sm"
+              :loading="creating === 'post'"
+              @click="createDraft('post')"
             />
             <UButton
-              to="/admin/pages"
               icon="i-lucide-file-text"
               label="Nouvelle page"
               size="sm"
               color="neutral"
               variant="soft"
+              :loading="creating === 'page'"
+              @click="createDraft('page')"
             />
             <UButton
               to="/admin/planning"

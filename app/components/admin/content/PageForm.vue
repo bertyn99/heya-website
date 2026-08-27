@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import type { EditorNavSection } from '#shared/types/admin'
-import type { AdminPageRecord } from '#shared/types/admin'
+import type { EditorNavSection, AdminPageRecord } from '#shared/types/admin'
 import type { ContentStatus } from '#shared/types/content'
 import { pageInputSchema } from '#shared/schemas/content'
+import { apiErrorMessage } from '~/utils/api-error'
+import { mapAdminPage, type AdminPageApi, type AdminPostApi } from '~/utils/admin-mappers'
 
 const props = defineProps<{
   pageId: string
   initial: AdminPageRecord
 }>()
 
-const store = useAdminMockStore()
+const emit = defineEmits<{
+  saved: [page: AdminPageRecord]
+}>()
+
 const toast = useToast()
 
 const state = reactive({
@@ -17,6 +21,7 @@ const state = reactive({
   slug: props.initial.slug,
   status: props.initial.status as ContentStatus,
   contentMd: props.initial.contentMd,
+  scheduledAt: props.initial.scheduledAt,
   metaTitle: props.initial.seo?.metaTitle ?? '',
   metaDescription: props.initial.seo?.metaDescription ?? '',
   ogImage: props.initial.seo?.ogImage ?? null
@@ -30,20 +35,41 @@ const sections: EditorNavSection[] = [
 
 const saving = ref(false)
 
-async function save(): Promise<boolean> {
+function applyRecord(page: AdminPageRecord) {
+  state.title = page.title
+  state.slug = page.slug
+  state.status = page.status
+  state.contentMd = page.contentMd
+  state.scheduledAt = page.scheduledAt
+  state.metaTitle = page.seo?.metaTitle ?? ''
+  state.metaDescription = page.seo?.metaDescription ?? ''
+  state.ogImage = page.seo?.ogImage ?? null
+}
+
+watch(() => props.initial, (page) => {
+  applyRecord(page)
+})
+
+function seoPayload() {
+  if (!state.metaTitle && !state.metaDescription && !state.ogImage && !props.initial.seo) {
+    return undefined
+  }
+
+  return {
+    metaTitle: state.metaTitle,
+    metaDescription: state.metaDescription,
+    ogImage: state.ogImage
+  }
+}
+
+async function save(options?: { silent?: boolean }): Promise<boolean> {
   const payload = {
     title: state.title,
     slug: state.slug,
     status: state.status,
     contentMd: state.contentMd,
-    scheduledAt: props.initial.scheduledAt ? new Date(props.initial.scheduledAt) : null,
-    seo: state.metaTitle || state.metaDescription || state.ogImage
-      ? {
-          metaTitle: state.metaTitle,
-          metaDescription: state.metaDescription,
-          ogImage: state.ogImage
-        }
-      : null
+    scheduledAt: state.scheduledAt ? new Date(state.scheduledAt) : null,
+    seo: seoPayload()
   }
 
   const parsed = pageInputSchema.safeParse(payload)
@@ -58,23 +84,39 @@ async function save(): Promise<boolean> {
 
   saving.value = true
   try {
-    store.updatePage(props.pageId, {
-      title: parsed.data.title,
-      slug: parsed.data.slug,
-      status: parsed.data.status,
-      contentMd: parsed.data.contentMd,
-      scheduledAt: props.initial.scheduledAt,
-      seo: parsed.data.seo ?? null
-    })
-    toast.add({ title: 'Enregistré', description: 'Page mise à jour (fixture locale).', color: 'success' })
+    const updated = mapAdminPage(await $fetch<AdminPageApi>(`/api/admin/pages/${props.pageId}`, {
+      method: 'PUT',
+      body: parsed.data
+    }))
+    applyRecord(updated)
+    if (!options?.silent) {
+      emit('saved', updated)
+      toast.add({ title: 'Enregistré', description: 'Page mise à jour.', color: 'success' })
+    }
     return true
+  } catch (error) {
+    toast.add({
+      title: 'Enregistrement impossible',
+      description: apiErrorMessage(error),
+      color: 'error'
+    })
+    return false
   } finally {
     saving.value = false
   }
 }
 
-function onStatusUpdate(status: ContentStatus) {
+function onStatusUpdate(status: ContentStatus, scheduledAt?: string | null) {
   state.status = status
+  if (scheduledAt !== undefined) {
+    state.scheduledAt = scheduledAt
+  }
+}
+
+function onCommitted(row: AdminPageApi | AdminPostApi) {
+  const mapped = mapAdminPage(row)
+  applyRecord(mapped)
+  emit('saved', mapped)
 }
 </script>
 
@@ -91,11 +133,20 @@ function onStatusUpdate(status: ContentStatus) {
         surface
       >
         <div class="space-y-4">
-          <UFormField label="Titre" name="title" required>
+          <UFormField
+            label="Titre"
+            name="title"
+            required
+          >
             <UInput v-model="state.title" />
           </UFormField>
 
-          <UFormField label="Slug" name="slug" required hint="Chemin public, ex. concept ou solutions/residences-seniors">
+          <UFormField
+            label="Slug"
+            name="slug"
+            required
+            hint="Chemin public, ex. concept ou solutions/residences-seniors"
+          >
             <UInput v-model="state.slug" />
           </UFormField>
 
@@ -114,7 +165,7 @@ function onStatusUpdate(status: ContentStatus) {
         anchor="section-seo"
       />
 
-      <AdminContentPageBlocksPanel :content-md="state.contentMd" />
+      <AdminContentPageBlocksPanel v-model:content-md="state.contentMd" />
 
       <AdminContentEditorFormActions>
         <AdminContentStatusBadge :status="state.status" />
@@ -130,6 +181,7 @@ function onStatusUpdate(status: ContentStatus) {
           :status="state.status"
           :on-save="save"
           @update:status="onStatusUpdate"
+          @committed="onCommitted"
         />
       </AdminContentEditorFormActions>
     </UForm>

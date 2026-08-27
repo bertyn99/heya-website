@@ -2,15 +2,19 @@ import { auditOnly } from 'evlog'
 import { createFsDrain } from 'evlog/fs'
 
 export default defineNitroPlugin((nitroApp) => {
+  if (!import.meta.dev) {
+    return
+  }
+
   const allLogs = createFsDrain({
     dir: '.evlog/logs',
-    pretty: import.meta.dev,
+    pretty: true,
     maxFiles: 14
   })
 
   const auditLogs = auditOnly(createFsDrain({
     dir: '.evlog/audit',
-    pretty: import.meta.dev,
+    pretty: true,
     maxFiles: 90
   }))
 

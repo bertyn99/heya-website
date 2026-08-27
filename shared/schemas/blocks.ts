@@ -109,3 +109,32 @@ export type OffersBlock = z.infer<typeof offersBlockSchema>
 export type ContactCtaBlock = z.infer<typeof contactCtaBlockSchema>
 export type SolutionBlock = z.infer<typeof solutionBlockSchema>
 export type RichtextBlock = z.infer<typeof richtextBlockSchema>
+
+export const blockSchemas = {
+  'hero': heroBlockSchema,
+  'business-proof': businessProofBlockSchema,
+  'problem': problemBlockSchema,
+  'how-it-works': howItWorksBlockSchema,
+  'values': valuesBlockSchema,
+  'use-cases': useCasesBlockSchema,
+  'testimonials': testimonialsBlockSchema,
+  'offers': offersBlockSchema,
+  'contact-cta': contactCtaBlockSchema,
+  'solution': solutionBlockSchema,
+  'richtext': richtextBlockSchema
+} as const
+
+export type BlockType = keyof typeof blockSchemas
+
+export type PageBlock
+  = { type: 'hero', props: HeroBlock, body?: string }
+    | { type: 'business-proof', props: BusinessProofBlock, body?: string }
+    | { type: 'problem', props: ProblemBlock, body?: string }
+    | { type: 'how-it-works', props: HowItWorksBlock, body?: string }
+    | { type: 'values', props: ValuesBlock, body?: string }
+    | { type: 'use-cases', props: UseCasesBlock, body?: string }
+    | { type: 'testimonials', props: TestimonialsBlock, body?: string }
+    | { type: 'offers', props: OffersBlock, body?: string }
+    | { type: 'contact-cta', props: ContactCtaBlock, body?: string }
+    | { type: 'solution', props: SolutionBlock, body?: string }
+    | { type: 'richtext', props: RichtextBlock, body?: string }

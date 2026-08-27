@@ -77,10 +77,10 @@ onMounted(async () => {
         v-for="section in sections"
         :key="section.id"
         type="button"
-        class="shrink-0 rounded-md px-3 py-1.5 text-sm transition-[color,background-color,box-shadow] active:scale-[0.98]"
+        class="shrink-0 rounded-none border-b-2 px-3 py-2 text-sm transition-colors active:scale-[0.98]"
         :class="activeId === section.id
-          ? 'bg-elevated font-medium text-primary shadow-sm ring-1 ring-primary/20'
-          : 'text-muted hover:bg-elevated/50 hover:text-default'"
+          ? 'border-primary font-medium text-primary'
+          : 'border-transparent text-muted hover:text-default'"
         @click="scrollToSection(section.id)"
       >
         {{ section.label }}

@@ -1,17 +1,23 @@
 <script setup lang="ts">
-import type { EditorNavSection } from '#shared/types/admin'
-import type { AdminPostRecord } from '#shared/types/admin'
+import type { EditorNavSection, AdminPostRecord } from '#shared/types/admin'
 import type { ContentStatus } from '#shared/types/content'
 import { postInputSchema } from '#shared/schemas/content'
 import { mockPostCategories } from '#shared/fixtures/admin-content'
+import { slugifyString } from '#shared/slug'
+import { apiErrorMessage } from '~/utils/api-error'
+import { mapAdminPost, type AdminPageApi, type AdminPostApi } from '~/utils/admin-mappers'
 
 const props = defineProps<{
   postId: string
   initial: AdminPostRecord
 }>()
 
-const store = useAdminMockStore()
+const emit = defineEmits<{
+  saved: [post: AdminPostRecord]
+}>()
+
 const toast = useToast()
+const slugTouched = ref(true)
 
 const state = reactive({
   title: props.initial.title,
@@ -21,6 +27,7 @@ const state = reactive({
   coverPathname: props.initial.coverPathname,
   category: props.initial.category,
   status: props.initial.status as ContentStatus,
+  scheduledAt: props.initial.scheduledAt,
   metaTitle: props.initial.seo?.metaTitle ?? '',
   metaDescription: props.initial.seo?.metaDescription ?? '',
   ogImage: props.initial.seo?.ogImage ?? null
@@ -37,7 +44,48 @@ const saving = ref(false)
 
 const categoryItems = mockPostCategories.map(category => ({ label: category, value: category }))
 
-async function save(): Promise<boolean> {
+function applyRecord(post: AdminPostRecord) {
+  state.title = post.title
+  state.slug = post.slug
+  state.excerpt = post.excerpt
+  state.contentMd = post.contentMd
+  state.coverPathname = post.coverPathname
+  state.category = post.category
+  state.status = post.status
+  state.scheduledAt = post.scheduledAt
+  state.metaTitle = post.seo?.metaTitle ?? ''
+  state.metaDescription = post.seo?.metaDescription ?? ''
+  state.ogImage = post.seo?.ogImage ?? null
+  slugTouched.value = true
+}
+
+watch(() => props.initial, (post) => {
+  applyRecord(post)
+})
+
+watch(() => state.title, (title) => {
+  if (slugTouched.value) {
+    return
+  }
+  const next = slugifyString(title)
+  if (next) {
+    state.slug = next
+  }
+})
+
+function seoPayload() {
+  if (!state.metaTitle && !state.metaDescription && !state.ogImage && !props.initial.seo) {
+    return undefined
+  }
+
+  return {
+    metaTitle: state.metaTitle,
+    metaDescription: state.metaDescription,
+    ogImage: state.ogImage
+  }
+}
+
+async function save(options?: { silent?: boolean }): Promise<boolean> {
   const payload = {
     title: state.title,
     slug: state.slug,
@@ -46,14 +94,8 @@ async function save(): Promise<boolean> {
     coverPathname: state.coverPathname,
     category: state.category,
     status: state.status,
-    scheduledAt: props.initial.scheduledAt ? new Date(props.initial.scheduledAt) : null,
-    seo: state.metaTitle || state.metaDescription || state.ogImage
-      ? {
-          metaTitle: state.metaTitle,
-          metaDescription: state.metaDescription,
-          ogImage: state.ogImage
-        }
-      : null
+    scheduledAt: state.scheduledAt ? new Date(state.scheduledAt) : null,
+    seo: seoPayload()
   }
 
   const parsed = postInputSchema.safeParse(payload)
@@ -68,26 +110,52 @@ async function save(): Promise<boolean> {
 
   saving.value = true
   try {
-    store.updatePost(props.postId, {
-      title: parsed.data.title,
-      slug: parsed.data.slug,
-      excerpt: parsed.data.excerpt,
-      contentMd: parsed.data.contentMd,
-      coverPathname: parsed.data.coverPathname ?? null,
-      category: parsed.data.category,
-      status: parsed.data.status,
-      scheduledAt: props.initial.scheduledAt,
-      seo: parsed.data.seo ?? null
-    })
-    toast.add({ title: 'Enregistré', description: 'Article mis à jour (fixture locale).', color: 'success' })
+    const updated = mapAdminPost(await $fetch<AdminPostApi>(`/api/admin/posts/${props.postId}`, {
+      method: 'PUT',
+      body: parsed.data
+    }))
+    applyRecord(updated)
+    if (!options?.silent) {
+      emit('saved', updated)
+      toast.add({ title: 'Enregistré', description: 'Article mis à jour.', color: 'success' })
+    }
     return true
+  } catch (error) {
+    toast.add({
+      title: 'Enregistrement impossible',
+      description: apiErrorMessage(error),
+      color: 'error'
+    })
+    return false
   } finally {
     saving.value = false
   }
 }
 
-function onStatusUpdate(status: ContentStatus) {
+function onStatusUpdate(status: ContentStatus, scheduledAt?: string | null) {
   state.status = status
+  if (scheduledAt !== undefined) {
+    state.scheduledAt = scheduledAt
+  }
+}
+
+function onCommitted(row: AdminPageApi | AdminPostApi) {
+  const mapped = mapAdminPost(row as AdminPostApi)
+  applyRecord(mapped)
+  emit('saved', mapped)
+}
+
+function onSlugInput(value: string) {
+  slugTouched.value = true
+  state.slug = value
+}
+
+function regenerateSlug() {
+  slugTouched.value = false
+  const next = slugifyString(state.title)
+  if (next) {
+    state.slug = next
+  }
 }
 </script>
 
@@ -104,20 +172,57 @@ function onStatusUpdate(status: ContentStatus) {
         surface
       >
         <div class="space-y-4">
-          <UFormField label="Titre" name="title" required>
+          <UFormField
+            label="Titre"
+            name="title"
+            required
+          >
             <UInput v-model="state.title" />
           </UFormField>
 
-          <UFormField label="Slug" name="slug" required>
-            <UInput v-model="state.slug" />
+          <UFormField
+            label="Slug"
+            name="slug"
+            required
+          >
+            <div class="flex gap-2">
+              <UInput
+                :model-value="state.slug"
+                class="min-w-0 flex-1"
+                @update:model-value="onSlugInput($event)"
+              />
+              <UButton
+                type="button"
+                color="neutral"
+                variant="outline"
+                icon="i-lucide-refresh-cw"
+                label="Depuis le titre"
+                class="shrink-0"
+                @click="regenerateSlug"
+              />
+            </div>
           </UFormField>
 
-          <UFormField label="Extrait" name="excerpt">
-            <UTextarea v-model="state.excerpt" :rows="3" autoresize />
+          <UFormField
+            label="Extrait"
+            name="excerpt"
+          >
+            <UTextarea
+              v-model="state.excerpt"
+              :rows="3"
+              autoresize
+            />
           </UFormField>
 
-          <UFormField label="Catégorie" name="category">
-            <USelect v-model="state.category" :items="categoryItems" class="w-full" />
+          <UFormField
+            label="Catégorie"
+            name="category"
+          >
+            <USelect
+              v-model="state.category"
+              :items="categoryItems"
+              class="w-full"
+            />
           </UFormField>
 
           <div class="flex items-center gap-2 text-sm text-muted">
@@ -131,25 +236,12 @@ function onStatusUpdate(status: ContentStatus) {
         label="cover"
         anchor="section-cover"
         surface
-        description="Chemin R2 ou asset public (mock)."
+        description="Image stockée dans la médiathèque (R2) ou asset public /images/."
       >
-        <UFormField label="Image de couverture" name="coverPathname">
-          <UInput
-            :model-value="state.coverPathname ?? ''"
-            placeholder="/images/blog/featured.png"
-            @update:model-value="state.coverPathname = $event || null"
-          />
-        </UFormField>
-        <div
-          v-if="state.coverPathname"
-          class="mt-3 overflow-hidden rounded-lg border border-default"
-        >
-          <img
-            :src="state.coverPathname"
-            :alt="state.title"
-            class="max-h-48 w-full object-cover"
-          >
-        </div>
+        <AdminContentCoverField
+          v-model="state.coverPathname"
+          :content-title="state.title"
+        />
       </AdminContentEditorSection>
 
       <AdminContentSeoPanel
@@ -163,17 +255,11 @@ function onStatusUpdate(status: ContentStatus) {
       <AdminContentEditorSection
         label="content"
         anchor="section-content"
-        description="Éditeur TipTap (UEditor) à brancher — markdown pour l'instant."
+        description="Éditeur TipTap (UEditor) : images, liens, encadrés et grilles. Markdown en sortie."
         flush-surface
       >
         <AdminContentEditorSurface flush>
-          <UTextarea
-            v-model="state.contentMd"
-            :rows="16"
-            autoresize
-            placeholder="## Titre de section&#10;&#10;Contenu markdown..."
-            class="font-mono text-sm"
-          />
+          <AdminContentMarkdownEditor v-model="state.contentMd" />
         </AdminContentEditorSurface>
       </AdminContentEditorSection>
 
@@ -191,8 +277,10 @@ function onStatusUpdate(status: ContentStatus) {
           :status="state.status"
           :on-save="save"
           @update:status="onStatusUpdate"
+          @committed="onCommitted"
         />
       </AdminContentEditorFormActions>
     </UForm>
+
   </AdminContentEditorBodyLayout>
 </template>

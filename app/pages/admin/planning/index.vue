@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { CalendarContentType } from '#shared/calendar'
-import { CALENDAR_CONTENT_TYPES } from '#shared/calendar'
-import { CALENDAR_TYPE_OPTIONS } from '~/composables/useMockPublishingCalendar'
+import { CALENDAR_CONTENT_TYPES, CALENDAR_TYPE_OPTIONS } from '#shared/calendar'
 
 definePageMeta({
   layout: 'admin',
@@ -18,7 +17,7 @@ const {
   rescheduling,
   findItem,
   rescheduleItem
-} = useMockPublishingCalendar()
+} = usePublishingCalendar()
 
 const selectedTypes = computed({
   get: () => filters.types,
@@ -36,7 +35,7 @@ function handleReschedule(payload: { key: string, dayKey: string }) {
   if (!item?.draggable) {
     return
   }
-  rescheduleItem(item, payload.dayKey)
+  void rescheduleItem(item, payload.dayKey)
 }
 </script>
 
@@ -47,17 +46,11 @@ function handleReschedule(payload: { key: string, dayKey: string }) {
     </template>
 
     <template #body>
-      <UAlert
-        color="info"
-        variant="subtle"
-        icon="i-lucide-flask-conical"
-        title="Données de démonstration"
-        description="Calendrier alimenté par les fixtures locales. Le drag-and-drop met à jour le store mock."
-        class="mb-4"
-      />
-
       <div class="mb-4 flex flex-wrap items-end gap-3">
-        <UFormField label="Types de contenu" class="min-w-48">
+        <UFormField
+          label="Types de contenu"
+          class="min-w-48"
+        >
           <USelectMenu
             v-model="selectedTypes"
             :items="CALENDAR_TYPE_OPTIONS"
@@ -69,7 +62,10 @@ function handleReschedule(payload: { key: string, dayKey: string }) {
           />
         </UFormField>
 
-        <UFormField label="Affichage" class="min-w-48">
+        <UFormField
+          label="Affichage"
+          class="min-w-48"
+        >
           <USwitch
             v-model="filters.includePublished"
             label="Inclure les contenus publiés"

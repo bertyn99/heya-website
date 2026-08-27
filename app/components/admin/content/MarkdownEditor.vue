@@ -1,0 +1,365 @@
+<script setup lang="ts">
+import type { Editor } from '@tiptap/vue-3'
+import type { EditorToolbarItem } from '@nuxt/ui'
+import { DragHandle } from '@tiptap/extension-drag-handle-vue-3'
+import { mediaPublicUrl } from '#shared/media-url'
+import { mediaAltFromPathname } from '~/utils/media'
+import { ContentCallout } from '~/utils/editor-callout-extension'
+import { ContentGridColumn } from '~/utils/editor-grid-column-extension'
+import { ContentGrid } from '~/utils/editor-grid-extension'
+import { ContentImage } from '~/utils/editor-image-extension'
+
+const model = defineModel<string>({ required: true })
+
+const preview = ref(false)
+const mediaPickerOpen = ref(false)
+const linkPickerOpen = ref(false)
+const imageSettingsOpen = ref(false)
+const pickerMode = ref<'insert' | 'replace'>('insert')
+const activeEditor = shallowRef<Editor | null>(null)
+
+function openMediaPicker(mode: 'insert' | 'replace', editor: Editor) {
+  activeEditor.value = editor
+  pickerMode.value = mode
+  mediaPickerOpen.value = true
+}
+
+function applyMediaToEditor(pathname: string) {
+  const src = pathname.startsWith('/images/') || pathname.startsWith('http')
+    ? pathname
+    : mediaPublicUrl(pathname)
+  applyImageToEditor(src, mediaAltFromPathname(pathname))
+}
+
+function applyImageToEditor(src: string, alt: string) {
+  const editor = activeEditor.value
+  if (!editor) {
+    return
+  }
+
+  const currentTitle = pickerMode.value === 'replace' && editor.isActive('image')
+    ? (editor.getAttributes('image').title as string | null | undefined) ?? null
+    : null
+
+  if (pickerMode.value === 'replace' && editor.isActive('image')) {
+    editor.chain().focus().updateAttributes('image', {
+      src,
+      alt,
+      'data-broken': null,
+      ...(currentTitle ? { title: currentTitle } : {})
+    }).run()
+  } else {
+    editor.chain().focus().setImage({ src, alt }).run()
+  }
+
+  activeEditor.value = null
+}
+
+const fixedToolbarItems = computed(() => [[{
+  icon: 'i-lucide-heading',
+  tooltip: { text: 'Titres' },
+  content: { align: 'start' as const },
+  items: [
+    { kind: 'paragraph' as const, label: 'Paragraphe' },
+    { kind: 'heading' as const, level: 2 as const, label: 'Titre 2' },
+    { kind: 'heading' as const, level: 3 as const, label: 'Titre 3' },
+    { kind: 'heading' as const, level: 4 as const, label: 'Titre 4' }
+  ]
+}], [{
+  kind: 'mark' as const,
+  mark: 'bold' as const,
+  icon: 'i-lucide-bold',
+  tooltip: { text: 'Gras' }
+}, {
+  kind: 'mark' as const,
+  mark: 'italic' as const,
+  icon: 'i-lucide-italic',
+  tooltip: { text: 'Italique' }
+}, {
+  kind: 'mark' as const,
+  mark: 'underline' as const,
+  icon: 'i-lucide-underline',
+  tooltip: { text: 'Souligné' }
+}, {
+  kind: 'mark' as const,
+  mark: 'strike' as const,
+  icon: 'i-lucide-strikethrough',
+  tooltip: { text: 'Barré' }
+}], [{
+  kind: 'bulletList' as const,
+  icon: 'i-lucide-list',
+  tooltip: { text: 'Liste à puces' }
+}, {
+  kind: 'orderedList' as const,
+  icon: 'i-lucide-list-ordered',
+  tooltip: { text: 'Liste numérotée' }
+}, {
+  kind: 'codeBlock' as const,
+  icon: 'i-lucide-code',
+  tooltip: { text: 'Bloc de code' }
+}, {
+  slot: 'media' as const,
+  icon: 'i-lucide-image',
+  tooltip: { text: 'Insérer une image (médiathèque)' }
+}, {
+  slot: 'link' as const,
+  icon: 'i-lucide-link'
+}, {
+  kind: 'blockquote' as const,
+  icon: 'i-lucide-quote',
+  tooltip: { text: 'Citation' }
+}], [{
+  slot: 'callout' as const,
+  icon: 'i-lucide-message-square-warning',
+  tooltip: { text: 'Encadré (callout)' }
+}, {
+  slot: 'grid' as const,
+  icon: 'i-lucide-layout-grid',
+  tooltip: { text: 'Grille (colonnes)' }
+}]] satisfies EditorToolbarItem[][])
+
+const bubbleToolbarItems = computed(() => [[{
+  kind: 'mark' as const,
+  mark: 'bold' as const,
+  icon: 'i-lucide-bold',
+  tooltip: { text: 'Gras' }
+}, {
+  kind: 'mark' as const,
+  mark: 'italic' as const,
+  icon: 'i-lucide-italic',
+  tooltip: { text: 'Italique' }
+}, {
+  kind: 'mark' as const,
+  mark: 'underline' as const,
+  icon: 'i-lucide-underline',
+  tooltip: { text: 'Souligné' }
+}, {
+  kind: 'mark' as const,
+  mark: 'strike' as const,
+  icon: 'i-lucide-strikethrough',
+  tooltip: { text: 'Barré' }
+}], [{
+  icon: 'i-lucide-link',
+  tooltip: { text: 'Lien' },
+  onClick: () => {
+    linkPickerOpen.value = true
+  }
+}]] satisfies EditorToolbarItem[][])
+
+function textBubbleShouldShow({
+  editor,
+  view,
+  state
+}: {
+  editor: Editor
+  view: { hasFocus: () => boolean }
+  state: Editor['state']
+}) {
+  if (editor.isActive('image')) {
+    return false
+  }
+  const { selection } = state
+  if (!view.hasFocus()) {
+    return false
+  }
+  return !selection.empty || editor.isActive('link')
+}
+
+const imageBubbleItems = (editor: Editor): EditorToolbarItem[][] => [
+  [{
+    icon: 'i-lucide-captions',
+    label: 'Alt / format',
+    onClick: () => {
+      activeEditor.value = editor
+      imageSettingsOpen.value = true
+    }
+  }],
+  [{
+    icon: 'i-lucide-image-plus',
+    label: 'Remplacer',
+    onClick: () => openMediaPicker('replace', editor)
+  }, {
+    icon: 'i-lucide-trash-2',
+    label: 'Supprimer',
+    color: 'error',
+    onClick: () => {
+      if (editor.isActive('image')) {
+        editor.chain().focus().deleteNode('image').run()
+      } else {
+        editor.chain().focus().deleteSelection().run()
+      }
+    }
+  }]
+]
+
+function imageBubbleShouldShow({ editor, view }: { editor: Editor, view: { hasFocus: () => boolean } }) {
+  return editor.isActive('image') && view.hasFocus()
+}
+</script>
+
+<template>
+  <div
+    class="cms-markdown-editor cms-markdown-editor--embedded overflow-hidden rounded-xl border border-default bg-elevated"
+    :class="preview ? 'cms-markdown-editor--preview' : ''"
+  >
+    <ClientOnly>
+      <UEditor
+        v-slot="{ editor }"
+        v-model="model"
+        content-type="markdown"
+        :editable="!preview"
+        placeholder="Rédigez le contenu…"
+        class="w-full min-h-[20rem]"
+        :starter-kit="{
+          heading: { levels: [2, 3, 4] },
+          link: { openOnClick: false }
+        }"
+        :image="false"
+        :extensions="[ContentImage, ContentCallout, ContentGridColumn, ContentGrid]"
+        :ui="{
+          root: 'flex min-h-0 flex-1 flex-col',
+          content: 'min-h-0 flex-1',
+          base: [
+            preview ? 'pointer-events-none opacity-90' : '',
+            '!px-4 !pt-4 !pb-6 sm:!px-5'
+          ].filter(Boolean).join(' ')
+        }"
+      >
+        <DragHandle
+          v-if="editor && !preview"
+          :editor="editor"
+          :nested="{
+            allowedContainers: ['gridColumn'],
+            edgeDetection: { threshold: 16, strength: 400 }
+          }"
+          class="cms-editor-drag-handle"
+        >
+          <div
+            class="flex size-6 items-center justify-center rounded-md border border-default bg-default text-muted shadow-sm hover:text-default"
+            title="Déplacer le bloc"
+          >
+            <UIcon
+              name="i-lucide-grip-vertical"
+              class="size-3.5"
+            />
+          </div>
+        </DragHandle>
+
+        <div
+          class="sticky top-0 z-[1] flex flex-wrap items-center gap-1 border-b border-default bg-heya-neutral-50/90 px-2 py-2 backdrop-blur-sm sm:px-3"
+          :class="preview ? 'opacity-70' : ''"
+        >
+          <UEditorToolbar
+            v-if="!preview"
+            :editor="editor"
+            :items="fixedToolbarItems"
+            layout="fixed"
+            class="flex-1 overflow-x-auto"
+          >
+            <template #link>
+              <AdminEditorLinkPopover
+                v-model:open="linkPickerOpen"
+                :editor="editor"
+                auto-open
+              />
+            </template>
+            <template #media>
+              <UTooltip text="Insérer une image (médiathèque)">
+                <UButton
+                  icon="i-lucide-image"
+                  color="neutral"
+                  variant="ghost"
+                  size="sm"
+                  @click="openMediaPicker('insert', editor)"
+                />
+              </UTooltip>
+            </template>
+            <template #callout>
+              <UTooltip text="Encadré (callout)">
+                <UButton
+                  icon="i-lucide-message-square-warning"
+                  color="neutral"
+                  variant="ghost"
+                  size="sm"
+                  @click="editor.chain().focus().setCallout({ type: 'info' }).run()"
+                />
+              </UTooltip>
+            </template>
+            <template #grid>
+              <UTooltip text="Grille (colonnes)">
+                <UButton
+                  icon="i-lucide-layout-grid"
+                  color="neutral"
+                  variant="ghost"
+                  size="sm"
+                  @click="editor.chain().focus().setGrid({ cols: 2 }).run()"
+                />
+              </UTooltip>
+            </template>
+          </UEditorToolbar>
+
+          <UButton
+            v-if="!preview"
+            class="ml-auto shrink-0"
+            size="xs"
+            color="neutral"
+            variant="ghost"
+            icon="i-lucide-eye"
+            aria-label="Aperçu"
+            @click="preview = true"
+          >
+            <span class="hidden sm:inline">Aperçu</span>
+          </UButton>
+          <UButton
+            v-else
+            class="ml-auto shrink-0"
+            size="xs"
+            color="primary"
+            variant="soft"
+            icon="i-lucide-pencil"
+            aria-label="Modifier"
+            @click="preview = false"
+          >
+            <span class="hidden sm:inline">Modifier</span>
+          </UButton>
+        </div>
+
+        <UEditorToolbar
+          v-if="!preview"
+          :editor="editor"
+          :items="bubbleToolbarItems"
+          layout="bubble"
+          :should-show="textBubbleShouldShow"
+        />
+
+        <UEditorToolbar
+          v-if="!preview"
+          :editor="editor"
+          :items="imageBubbleItems(editor)"
+          layout="bubble"
+          :should-show="imageBubbleShouldShow"
+        />
+      </UEditor>
+
+      <AdminEditorImageSettings
+        v-model:open="imageSettingsOpen"
+        :editor="activeEditor"
+      />
+
+      <AdminEditorMediaPickerModal
+        v-model:open="mediaPickerOpen"
+        :title="pickerMode === 'replace' ? 'Remplacer l\'image' : 'Insérer une image'"
+        @select="applyMediaToEditor"
+      />
+
+      <template #fallback>
+        <UTextarea
+          v-model="model"
+          :rows="18"
+          class="min-h-[22rem] w-full font-mono"
+          placeholder="Chargement de l'éditeur…"
+        />
+      </template>
+    </ClientOnly>
+  </div>
+</template>

@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   const body = await validateBody(event, contentActionSchema)
   log.set({ cms: { entity: 'post', action: body.action, id } })
 
-  const updated = await updatePost(id, actionToStatusFields(body))
+  const updated = await updatePost(id, actionToStatusFields(body, current))
 
   if (!updated) {
     throw notFound('Article introuvable', { type: 'post', id })
