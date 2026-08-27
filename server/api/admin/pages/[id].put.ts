@@ -1,8 +1,8 @@
 import { pageInputSchema } from '#shared/schemas/content'
 import { toPageInsert } from '../../../queries/mappers'
-import { findPageById, updatePage } from '../../../queries/pages'
+import { findPageById, updatePage, wouldCreateParentCycle } from '../../../queries/pages'
 import { createAdminContext } from '../../../utils/admin-context'
-import { notFound, withUniqueConflict } from '../../../utils/http-errors'
+import { badRequest, notFound, withUniqueConflict } from '../../../utils/http-errors'
 import { requireRouteParam } from '../../../utils/require-admin'
 import { validateBody } from '../../../utils/validate'
 
@@ -17,6 +17,22 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await validateBody(event, pageInputSchema)
+
+  if (body.parentId) {
+    if (body.parentId === id) {
+      throw badRequest('Une page ne peut pas être son propre parent')
+    }
+
+    const parent = await findPageById(body.parentId)
+    if (!parent) {
+      throw badRequest('Page parente introuvable')
+    }
+
+    if (await wouldCreateParentCycle(id, body.parentId)) {
+      throw badRequest('Ce parent créerait une boucle dans l\'arborescence')
+    }
+  }
+
   log.set({ cms: { entity: 'page', action: 'update', id, slug: body.slug } })
 
   const updated = await withUniqueConflict(

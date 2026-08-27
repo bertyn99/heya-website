@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ContentStatus } from '#shared/types/content'
 import type { CalendarContentType } from '#shared/calendar'
-import { CALENDAR_TIME_ZONE, DEFAULT_PUBLISH_HOUR, calendarDayKeyFromIso, dateKeyAddDays } from '#shared/calendar'
+import { CALENDAR_TIME_ZONE, DEFAULT_PUBLISH_HOUR } from '#shared/calendar'
 import { scheduledAtIsoForDay } from '~/utils/calendar-schedule'
 import { apiErrorMessage } from '~/utils/api-error'
 import { toIsoString } from '~/utils/serialize-date'
@@ -111,9 +111,6 @@ async function onConfirmSchedule(dayKey: string) {
   }
 }
 
-const todayKey = computed(() => calendarDayKeyFromIso(new Date().toISOString()))
-
-const tomorrowKey = computed(() => dateKeyAddDays(todayKey.value, 1))
 </script>
 
 <template>
@@ -134,7 +131,7 @@ const tomorrowKey = computed(() => dateKeyAddDays(todayKey.value, 1))
 
     <div
       v-else
-      class="inline-flex items-stretch shadow-sm"
+      class="inline-flex items-stretch overflow-hidden rounded-full shadow-sm ring-1 ring-success/35"
     >
       <UButton
         type="button"
@@ -144,55 +141,37 @@ const tomorrowKey = computed(() => dateKeyAddDays(todayKey.value, 1))
         variant="solid"
         :loading="publishing"
         :disabled="scheduling"
-        class="rounded-r-none"
+        :ui="{ base: 'rounded-none shadow-none' }"
         @click="onPublishNow"
       />
 
-      <UButton
-        type="button"
-        icon="i-lucide-calendar-clock"
-        color="success"
-        variant="outline"
-        square
-        aria-label="Planifier la publication"
-        :loading="scheduling"
-        :disabled="publishing"
-        class="rounded-l-none -ml-px"
-        @click="scheduleOpen = true"
-      />
-    </div>
-
-    <Teleport to="body">
-      <UModal
+      <UPopover
         v-model:open="scheduleOpen"
-        title="Planifier la publication"
-        description="Publication à 9h, fuseau Paris."
-        :ui="{ content: 'sm:max-w-sm' }"
+        :content="{ side: 'bottom', align: 'end' }"
+        :ui="{ content: 'p-0' }"
       >
-        <template #body>
-          <p class="text-sm text-muted">
-            Choisissez le jour. Vous pouvez aussi glisser le contenu sur le calendrier dans Planning.
-          </p>
+        <UButton
+          type="button"
+          icon="i-lucide-calendar-clock"
+          color="success"
+          variant="soft"
+          square
+          aria-label="Planifier la publication"
+          title="Planifier la publication"
+          :loading="scheduling"
+          :disabled="publishing"
+          :ui="{ base: 'rounded-none shadow-none ring-0 border-s border-success/25' }"
+        />
+
+        <template #content>
+          <AdminContentSchedulePublicationPicker
+            v-if="scheduleOpen"
+            :loading="scheduling"
+            @confirm="onConfirmSchedule"
+            @cancel="scheduleOpen = false"
+          />
         </template>
-        <template #footer>
-          <div class="flex w-full justify-end gap-2">
-            <UButton
-              type="button"
-              color="neutral"
-              variant="ghost"
-              label="Annuler"
-              @click="scheduleOpen = false"
-            />
-            <UButton
-              type="button"
-              color="primary"
-              label="Demain à 9h"
-              :loading="scheduling"
-              @click="onConfirmSchedule(tomorrowKey)"
-            />
-          </div>
-        </template>
-      </UModal>
-    </Teleport>
+      </UPopover>
+    </div>
   </div>
 </template>

@@ -20,6 +20,8 @@ export function badRequest(message: string, why?: string) {
     why: why ?? message
   })
 }
+
+export function conflict(message: string) {
   return createError({
     message,
     status: 409,

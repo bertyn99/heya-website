@@ -12,6 +12,7 @@ export {
   findPageBySlug,
   getPageWithSeo,
   getPublishedPageBySlug,
+  wouldCreateParentCycle,
   insertPage,
   listPages,
   publishDuePages,

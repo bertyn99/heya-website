@@ -4,6 +4,11 @@ export interface NestedPageParent {
   parent?: NestedPageParent | null
 }
 
+export function normalizePublicPath(slugOrPath: string): string {
+  const parts = slugOrPath.replace(/^\/+/u, '').split('/').filter(Boolean)
+  return `/${parts.join('/')}`
+}
+
 export function pagePublicPath(slug: string, parent?: NestedPageParent | null): string {
   const trimmed = slug.replace(/^\/+/u, '').trim()
 

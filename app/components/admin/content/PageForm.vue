@@ -26,6 +26,7 @@ const state = reactive({
   slug: props.initial.slug,
   status: props.initial.status as ContentStatus,
   contentMd: props.initial.contentMd,
+  parentId: props.initial.parentId,
   scheduledAt: props.initial.scheduledAt,
   metaTitle: props.initial.seo?.metaTitle ?? '',
   metaDescription: props.initial.seo?.metaDescription ?? '',
@@ -40,6 +41,7 @@ function applyRecord(page: AdminPageRecord, options?: { keepBlocks?: boolean }) 
   state.slug = page.slug
   state.status = page.status
   state.contentMd = page.contentMd
+  state.parentId = page.parentId
   state.scheduledAt = page.scheduledAt
   state.metaTitle = page.seo?.metaTitle ?? ''
   state.metaDescription = page.seo?.metaDescription ?? ''
@@ -75,6 +77,7 @@ async function save(options?: { silent?: boolean }): Promise<boolean> {
     slug: state.slug,
     status: state.status,
     contentMd: editorBlocksToMarkdown(editorBlocks.value),
+    parentId: state.parentId ?? null,
     scheduledAt: state.scheduledAt ? new Date(state.scheduledAt) : null,
     seo: seoPayload()
   }
@@ -141,6 +144,8 @@ function onCommitted(row: AdminPageApi | AdminPostApi) {
       v-model:meta-title="state.metaTitle"
       v-model:meta-description="state.metaDescription"
       v-model:og-image="state.ogImage"
+      v-model:parent-id="state.parentId"
+      :page-id="pageId"
       :has-seo-entry="Boolean(initial.seo)"
     />
 

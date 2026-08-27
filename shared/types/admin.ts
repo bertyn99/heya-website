@@ -13,6 +13,7 @@ export interface AdminPageRecord {
   title: string
   status: ContentStatus
   contentMd: string
+  parentId: string | null
   scheduledAt: string | null
   publishedAt: string | null
   updatedAt: string
@@ -39,6 +40,7 @@ export interface AdminListRow {
   title: string
   slug: string
   status: ContentStatus
+  parentId?: string | null
   publishedAt: string | null
   updatedAt: string
 }
@@ -65,6 +67,7 @@ export type AdminPageInput = {
   slug: string
   status: ContentStatus
   contentMd: string
+  parentId: string | null
   scheduledAt: string | null
   seo: SeoInput | null
 }

@@ -19,9 +19,11 @@ const slug = defineModel<string>('slug', { required: true })
 const metaTitle = defineModel<string>('metaTitle', { default: '' })
 const metaDescription = defineModel<string>('metaDescription', { default: '' })
 const ogImage = defineModel<string | null>('ogImage', { default: null })
+const parentId = defineModel<string | null>('parentId', { default: null })
 
 const props = defineProps<{
   hasSeoEntry?: boolean
+  pageId?: string
 }>()
 
 type PanelTab = 'blocks' | 'edit' | 'page'
@@ -365,7 +367,7 @@ watch(ogImage, (value) => {
           <UFormField
             label="Adresse de la page"
             name="slug"
-            hint="Chemin public, ex. concept"
+            :hint="parentId ? 'Dernier segment, ex. co-living' : 'Racine : concept. Ou chemin legacy solutions/…'"
             required
           >
             <UInput
@@ -373,6 +375,12 @@ watch(ogImage, (value) => {
               class="w-full"
             />
           </UFormField>
+
+          <AdminPageBuilderParentField
+            v-model="parentId"
+            :exclude-page-id="pageId"
+            :page-slug="slug"
+          />
 
           <div class="border-t border-default pt-4">
             <p class="mb-3 text-sm font-medium text-highlighted">

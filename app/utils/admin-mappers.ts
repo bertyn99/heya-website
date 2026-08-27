@@ -27,6 +27,7 @@ export type AdminPageApi = {
   title: string
   status: ContentStatus
   contentMd: string
+  parentId?: string | null
   scheduledAt?: unknown
   publishedAt?: unknown
   updatedAt?: unknown
@@ -57,6 +58,7 @@ export function mapAdminListRow(row: AdminPageApi): AdminListRow {
     title: row.title,
     slug: row.slug,
     status: row.status,
+    parentId: row.parentId ?? null,
     publishedAt: toIsoString(row.publishedAt),
     updatedAt: toIsoString(row.updatedAt) ?? new Date(0).toISOString()
   }
@@ -69,6 +71,7 @@ export function mapAdminPage(row: AdminPageApi): AdminPageRecord {
     title: row.title,
     status: row.status,
     contentMd: row.contentMd ?? '',
+    parentId: row.parentId ?? null,
     scheduledAt: toIsoString(row.scheduledAt),
     publishedAt: toIsoString(row.publishedAt),
     updatedAt: toIsoString(row.updatedAt) ?? new Date(0).toISOString(),

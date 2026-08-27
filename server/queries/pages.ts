@@ -1,4 +1,5 @@
 import { and, desc, eq, like, lte, or } from 'drizzle-orm'
+import { normalizePublicPath, orderPagesAsTree } from '#shared/page-hierarchy'
 import type { ContentListFilter, NewPage, PagePatch, PageRow, PageWithSeo } from '#shared/types/db'
 import type { SeoInput } from '#shared/schemas/content'
 import { deleteSeo, findSeo, upsertSeo } from './seo'
@@ -61,12 +62,20 @@ export async function getPageWithSeo(id: string): Promise<PageWithSeo | null> {
 }
 
 export async function getPublishedPageBySlug(slug: string): Promise<PageWithSeo | null> {
-  const page = await findPageBySlug(slug)
+  const published = await db
+    .select()
+    .from(schema.pages)
+    .where(eq(schema.pages.status, 'published'))
 
-  if (!page || page.status !== 'published') {
+  const publicPath = normalizePublicPath(slug)
+  const match = orderPagesAsTree(published).find(row => row.publicPath === publicPath)
+    ?? published.find(page => normalizePublicPath(page.slug) === publicPath)
+
+  if (!match) {
     return null
   }
 
+  const page = published.find(row => row.id === match.id) ?? match
   const seo = await findSeo('page', page.id)
   return { ...page, seo }
 }
@@ -112,6 +121,37 @@ export async function deletePage(id: string): Promise<PageRow | null> {
     .returning()
 
   return deleted ?? null
+}
+
+export async function wouldCreateParentCycle(pageId: string, newParentId: string | null): Promise<boolean> {
+  if (!newParentId) {
+    return false
+  }
+  if (newParentId === pageId) {
+    return true
+  }
+
+  let current: string | null = newParentId
+  const visited = new Set<string>([pageId])
+
+  while (current !== null) {
+    if (visited.has(current)) {
+      return true
+    }
+    visited.add(current)
+
+    const parent = await db.query.pages.findFirst({
+      where: eq(schema.pages.id, current),
+      columns: { parentId: true }
+    })
+
+    if (!parent) {
+      break
+    }
+    current = parent.parentId ?? null
+  }
+
+  return false
 }
 
 export async function publishDuePages(now = new Date()): Promise<string[]> {

@@ -26,6 +26,7 @@ export function toPageInsert(
     slug: string
     status: PageRow['status']
     contentMd: string
+    parentId?: string | null
     scheduledAt?: Date | null
   },
   current?: Pick<PageRow, 'status' | 'publishedAt'> | null
@@ -34,6 +35,7 @@ export function toPageInsert(
     title: input.title,
     slug: input.slug,
     contentMd: input.contentMd,
+    parentId: input.parentId ?? null,
     ...statusTimestamps(input.status, input.scheduledAt, current)
   }
 }

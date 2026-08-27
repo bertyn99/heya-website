@@ -6,10 +6,5 @@ definePageMeta({
 </script>
 
 <template>
-  <AdminContentListPanel
-    title="Pages"
-    panel-id="pages"
-    content-type="page"
-    create-label="Nouvelle page"
-  />
+  <AdminContentPagesListPanel />
 </template>
