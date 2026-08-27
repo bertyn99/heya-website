@@ -103,7 +103,10 @@ export default defineAppConfig({
     },
     dashboardSidebar: {
       slots: {
-        root: 'bg-heya-neutral-50/80'
+        root: 'bg-heya-neutral-50/80',
+        header: 'px-2.5!',
+        body: 'px-2.5!',
+        footer: 'px-2.5!'
       }
     }
   }

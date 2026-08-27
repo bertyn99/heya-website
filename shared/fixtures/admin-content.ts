@@ -188,14 +188,25 @@ export const mockPostCategories = [
 
 export const mockPageBlockTypes = [
   { type: 'hero', label: 'Hero', icon: 'i-lucide-sparkles' },
-  { type: 'business-proof', label: 'Preuve sociale', icon: 'i-lucide-badge-check' },
-  { type: 'problem', label: 'Problème', icon: 'i-lucide-circle-alert' },
-  { type: 'how-it-works', label: 'Comment ça marche', icon: 'i-lucide-list-ordered' },
+  { type: 'business-proof', label: 'Partenaires', icon: 'i-lucide-badge-check' },
+  { type: 'problem', label: 'Constat', icon: 'i-lucide-circle-alert' },
+  { type: 'how-it-works', label: 'Étapes', icon: 'i-lucide-list-ordered' },
   { type: 'values', label: 'Valeurs', icon: 'i-lucide-heart-handshake' },
-  { type: 'use-cases', label: 'Cas d\'usage', icon: 'i-lucide-building-2' },
+  { type: 'use-cases', label: 'Pour qui', icon: 'i-lucide-building-2' },
   { type: 'testimonials', label: 'Témoignages', icon: 'i-lucide-quote' },
   { type: 'offers', label: 'Offres', icon: 'i-lucide-tags' },
-  { type: 'contact-cta', label: 'CTA contact', icon: 'i-lucide-mail' },
-  { type: 'solution', label: 'Solution', icon: 'i-lucide-lightbulb' },
-  { type: 'richtext', label: 'Texte libre', icon: 'i-lucide-align-left' }
+  { type: 'contact-cta', label: 'Appel à l\'action', icon: 'i-lucide-mail' },
+  { type: 'solution', label: 'Page solution', icon: 'i-lucide-lightbulb' },
+  { type: 'richtext', label: 'Texte libre', icon: 'i-lucide-align-left' },
+  { type: 'products', label: 'Produits', icon: 'i-lucide-box' },
+  { type: 'media', label: 'Image large', icon: 'i-lucide-monitor' },
+  { type: 'stats', label: 'Chiffres', icon: 'i-lucide-chart-column' },
+  { type: 'activities', label: 'Activités', icon: 'i-lucide-palette' },
+  { type: 'install', label: 'Installation', icon: 'i-lucide-wrench' },
+  { type: 'timeline', label: 'Parcours', icon: 'i-lucide-milestone' },
+  { type: 'missions', label: 'Missions', icon: 'i-lucide-target' },
+  { type: 'founder', label: 'Fondatrice', icon: 'i-lucide-user-round' },
+  { type: 'awards', label: 'Prix', icon: 'i-lucide-trophy' },
+  { type: 'faq', label: 'FAQ', icon: 'i-lucide-circle-help' },
+  { type: 'contact-form', label: 'Formulaire', icon: 'i-lucide-clipboard-list' }
 ] as const

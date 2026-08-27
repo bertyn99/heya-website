@@ -19,7 +19,9 @@
   "dependencies": {
     "@comark/nuxt": "^0.6.2",
     "@comark/vue": "^0.6.2",
+    "@iconify-json/heroicons": "^1.2.3",
     "@iconify-json/lucide": "^1.2.114",
+    "@iconify-json/ph": "^1.2.2",
     "@iconify-json/simple-icons": "^1.2.87",
     "@internationalized/date": "^3.12.3",
     "@jsquash/jpeg": "^1.6.0",
@@ -56,11 +58,6 @@
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.5",
     "wrangler": "^4.125.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "prosemirror-model": "1.25.11"
-    }
   },
   "packageManager": "pnpm@11.9.0"
 }

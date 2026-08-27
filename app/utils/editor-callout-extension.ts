@@ -1,4 +1,4 @@
-import { mergeAttributes, Node } from '@tiptap/core'
+import { mergeAttributes, Node, type Extension } from '@tiptap/core'
 import { VueNodeViewRenderer } from '@tiptap/vue-3'
 import CalloutNodeView from '~/components/admin/editor/CalloutNodeView.vue'
 import { createMdcContainerMarkdownSpec } from '~/utils/editor-mdc-container'
@@ -63,10 +63,10 @@ export const ContentCallout = Node.create({
   },
 
   addNodeView() {
-    return VueNodeViewRenderer(CalloutNodeView)
+    return VueNodeViewRenderer(CalloutNodeView as never)
   },
 
   parseMarkdown: markdown.parseMarkdown as never,
   markdownTokenizer: markdown.markdownTokenizer as never,
   renderMarkdown: markdown.renderMarkdown as never
-})
+}) as Extension

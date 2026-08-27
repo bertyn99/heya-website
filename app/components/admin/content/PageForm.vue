@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import type { EditorNavSection, AdminPageRecord } from '#shared/types/admin'
+import type { AdminPageRecord } from '#shared/types/admin'
 import type { ContentStatus } from '#shared/types/content'
 import { pageInputSchema } from '#shared/schemas/content'
 import { apiErrorMessage } from '~/utils/api-error'
 import { mapAdminPage, type AdminPageApi, type AdminPostApi } from '~/utils/admin-mappers'
+import {
+  editorBlocksToMarkdown,
+  markdownToEditorBlocks,
+  type EditorBlock
+} from '~/utils/page-builder'
 
 const props = defineProps<{
   pageId: string
@@ -27,15 +32,10 @@ const state = reactive({
   ogImage: props.initial.seo?.ogImage ?? null
 })
 
-const sections: EditorNavSection[] = [
-  { id: 'section-general', label: 'Général' },
-  { id: 'section-seo', label: 'SEO' },
-  { id: 'section-blocks', label: 'Blocs' }
-]
-
+const editorBlocks = ref<EditorBlock[]>(markdownToEditorBlocks(props.initial.contentMd))
 const saving = ref(false)
 
-function applyRecord(page: AdminPageRecord) {
+function applyRecord(page: AdminPageRecord, options?: { keepBlocks?: boolean }) {
   state.title = page.title
   state.slug = page.slug
   state.status = page.status
@@ -44,11 +44,18 @@ function applyRecord(page: AdminPageRecord) {
   state.metaTitle = page.seo?.metaTitle ?? ''
   state.metaDescription = page.seo?.metaDescription ?? ''
   state.ogImage = page.seo?.ogImage ?? null
+  if (!options?.keepBlocks) {
+    editorBlocks.value = markdownToEditorBlocks(page.contentMd)
+  }
 }
 
 watch(() => props.initial, (page) => {
   applyRecord(page)
 })
+
+watch(editorBlocks, (blocks) => {
+  state.contentMd = editorBlocksToMarkdown(blocks)
+}, { deep: true })
 
 function seoPayload() {
   if (!state.metaTitle && !state.metaDescription && !state.ogImage && !props.initial.seo) {
@@ -67,7 +74,7 @@ async function save(options?: { silent?: boolean }): Promise<boolean> {
     title: state.title,
     slug: state.slug,
     status: state.status,
-    contentMd: state.contentMd,
+    contentMd: editorBlocksToMarkdown(editorBlocks.value),
     scheduledAt: state.scheduledAt ? new Date(state.scheduledAt) : null,
     seo: seoPayload()
   }
@@ -88,7 +95,7 @@ async function save(options?: { silent?: boolean }): Promise<boolean> {
       method: 'PUT',
       body: parsed.data
     }))
-    applyRecord(updated)
+    applyRecord(updated, { keepBlocks: true })
     if (!options?.silent) {
       emit('saved', updated)
       toast.add({ title: 'Enregistré', description: 'Page mise à jour.', color: 'success' })
@@ -121,69 +128,40 @@ function onCommitted(row: AdminPageApi | AdminPostApi) {
 </script>
 
 <template>
-  <AdminContentEditorBodyLayout :sections="sections">
-    <UForm
-      :state="state"
-      class="space-y-8"
-      @submit.prevent="() => { void save() }"
-    >
-      <AdminContentEditorSection
-        label="general"
-        anchor="section-general"
-        surface
-      >
-        <div class="space-y-4">
-          <UFormField
-            label="Titre"
-            name="title"
-            required
-          >
-            <UInput v-model="state.title" />
-          </UFormField>
+  <UForm
+    id="heya-cms-page-form"
+    :state="state"
+    class="flex h-full min-h-0 flex-1 flex-col"
+    @submit.prevent="() => { void save() }"
+  >
+    <AdminPageBuilder
+      v-model:blocks="editorBlocks"
+      v-model:title="state.title"
+      v-model:slug="state.slug"
+      v-model:meta-title="state.metaTitle"
+      v-model:meta-description="state.metaDescription"
+      v-model:og-image="state.ogImage"
+      :has-seo-entry="Boolean(initial.seo)"
+    />
 
-          <UFormField
-            label="Slug"
-            name="slug"
-            required
-            hint="Chemin public, ex. concept ou solutions/residences-seniors"
-          >
-            <UInput v-model="state.slug" />
-          </UFormField>
-
-          <div class="flex items-center gap-2 text-sm text-muted">
-            <span>Statut :</span>
-            <AdminContentStatusBadge :status="state.status" />
-          </div>
-        </div>
-      </AdminContentEditorSection>
-
-      <AdminContentSeoPanel
-        v-model:meta-title="state.metaTitle"
-        v-model:meta-description="state.metaDescription"
-        v-model:og-image="state.ogImage"
-        :has-entry="Boolean(initial.seo)"
-        anchor="section-seo"
+    <AdminContentEditorFormActions>
+      <AdminContentStatusBadge :status="state.status" />
+      <UButton
+        type="button"
+        form="heya-cms-page-form"
+        icon="i-lucide-save"
+        label="Enregistrer"
+        :loading="saving"
+        @click="() => { void save() }"
       />
-
-      <AdminContentPageBlocksPanel v-model:content-md="state.contentMd" />
-
-      <AdminContentEditorFormActions>
-        <AdminContentStatusBadge :status="state.status" />
-        <UButton
-          type="submit"
-          icon="i-lucide-save"
-          label="Enregistrer"
-          :loading="saving"
-        />
-        <AdminContentPublishScheduleActions
-          content-type="page"
-          :content-id="pageId"
-          :status="state.status"
-          :on-save="save"
-          @update:status="onStatusUpdate"
-          @committed="onCommitted"
-        />
-      </AdminContentEditorFormActions>
-    </UForm>
-  </AdminContentEditorBodyLayout>
+      <AdminContentPublishScheduleActions
+        content-type="page"
+        :content-id="pageId"
+        :status="state.status"
+        :on-save="save"
+        @update:status="onStatusUpdate"
+        @committed="onCommitted"
+      />
+    </AdminContentEditorFormActions>
+  </UForm>
 </template>

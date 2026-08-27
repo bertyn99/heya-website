@@ -62,7 +62,9 @@ const groups = computed(() => [{
       resizable
       :ui="{
         root: 'bg-heya-neutral-50/80 border-default/70',
-        footer: 'lg:border-t lg:border-default/60'
+        header: 'px-2.5!',
+        body: 'px-2.5!',
+        footer: 'lg:border-t lg:border-default/60 px-2.5!'
       }"
     >
       <template #header="{ collapsed }">

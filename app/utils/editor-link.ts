@@ -1,14 +1,5 @@
 import type { Editor } from '@tiptap/vue-3'
 
-declare module '@tiptap/core' {
-  interface Commands<ReturnType> {
-    link: {
-      setLink: (attributes: { href: string }) => ReturnType
-      unsetLink: () => ReturnType
-    }
-  }
-}
-
 export interface EditorLinkPayload {
   href: string
   title?: string

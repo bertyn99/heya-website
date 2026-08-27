@@ -1,4 +1,4 @@
-import { mergeAttributes, Node } from '@tiptap/core'
+import { mergeAttributes, Node, type Extension } from '@tiptap/core'
 import { VueNodeViewRenderer } from '@tiptap/vue-3'
 import GridColumnNodeView from '~/components/admin/editor/GridColumnNodeView.vue'
 
@@ -23,8 +23,8 @@ export const ContentGridColumn = Node.create({
   },
 
   addNodeView() {
-    return VueNodeViewRenderer(GridColumnNodeView)
+    return VueNodeViewRenderer(GridColumnNodeView as never)
   },
 
   renderMarkdown: (node, h) => h.renderChildren(node.content || [], '\n\n')
-})
+}) as Extension

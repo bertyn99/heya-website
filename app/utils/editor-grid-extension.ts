@@ -1,4 +1,4 @@
-import { mergeAttributes, Node } from '@tiptap/core'
+import { mergeAttributes, Node, type Extension } from '@tiptap/core'
 import { VueNodeViewRenderer } from '@tiptap/vue-3'
 import GridNodeView from '~/components/admin/editor/GridNodeView.vue'
 import {
@@ -103,12 +103,12 @@ export const ContentGrid = Node.create({
   },
 
   addNodeView() {
-    return VueNodeViewRenderer(GridNodeView)
+    return VueNodeViewRenderer(GridNodeView as never)
   },
 
   markdownTokenizer: baseMarkdown.markdownTokenizer as never,
 
-  parseMarkdown: (token, h) => parseGridMarkdownToken(token, h) as never,
+  parseMarkdown: ((token: never, h: never) => parseGridMarkdownToken(token, h)) as never,
 
-  renderMarkdown: (node, h) => renderGridMarkdownNode(node, h)
-})
+  renderMarkdown: ((node: { attrs?: Record<string, unknown>, content?: unknown[] }, h: { renderChildren: (content: unknown[], separator?: string) => string }) => renderGridMarkdownNode(node, h)) as never
+}) as Extension

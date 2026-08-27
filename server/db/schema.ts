@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { index, integer, sqliteTable, text, uniqueIndex, type AnySQLiteColumn } from 'drizzle-orm/sqlite-core'
 import { contentStatuses, seoEntityTypes } from '../../shared/types/content'
 
 export const pages = sqliteTable('pages', {
@@ -7,13 +7,16 @@ export const pages = sqliteTable('pages', {
   title: text('title').notNull(),
   status: text('status', { enum: contentStatuses }).notNull().default('draft'),
   contentMd: text('content_md').notNull().default(''),
+  parentId: text('parent_id').references((): AnySQLiteColumn => pages.id, { onDelete: 'set null' }),
   scheduledAt: integer('scheduled_at', { mode: 'timestamp' }),
   publishedAt: integer('published_at', { mode: 'timestamp' }),
   updatedAt: integer('updated_at', { mode: 'timestamp' })
     .notNull()
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date())
-})
+}, table => [
+  index('pages_parent_id_idx').on(table.parentId)
+])
 
 export const posts = sqliteTable('posts', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),

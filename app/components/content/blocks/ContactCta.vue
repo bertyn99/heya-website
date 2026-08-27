@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ButtonProps } from '@nuxt/ui'
-import type { ContactCtaBlock } from '#shared/schemas/blocks'
+import type { ContactCtaBlock } from '#shared/types/blocks'
 import { CAL_COM_URL } from '~/utils/navigation'
 
 const props = withDefaults(defineProps<ContactCtaBlock>(), {

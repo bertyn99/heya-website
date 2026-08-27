@@ -13,7 +13,13 @@ export function notFound(message = 'Introuvable', resource?: { type?: string, id
   })
 }
 
-export function conflict(message: string) {
+export function badRequest(message: string, why?: string) {
+  return createError({
+    message,
+    status: 400,
+    why: why ?? message
+  })
+}
   return createError({
     message,
     status: 409,

@@ -162,6 +162,7 @@ function regenerateSlug() {
 <template>
   <AdminContentEditorBodyLayout :sections="sections">
     <UForm
+      id="heya-cms-post-form"
       :state="state"
       class="space-y-8"
       @submit.prevent="() => { void save() }"
@@ -266,10 +267,12 @@ function regenerateSlug() {
       <AdminContentEditorFormActions>
         <AdminContentStatusBadge :status="state.status" />
         <UButton
-          type="submit"
+          type="button"
+          form="heya-cms-post-form"
           icon="i-lucide-save"
           label="Enregistrer"
           :loading="saving"
+          @click="() => { void save() }"
         />
         <AdminContentPublishScheduleActions
           content-type="post"

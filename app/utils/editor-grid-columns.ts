@@ -73,7 +73,9 @@ export function syncGridColumnCount(options: {
       tr.insert(insertAt, empty)
       insertAt += empty.nodeSize
     }
-    dispatch?.(tr)
+    if (typeof dispatch === 'function') {
+      dispatch(tr)
+    }
     return true
   }
 

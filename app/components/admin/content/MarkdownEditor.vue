@@ -329,7 +329,7 @@ function imageBubbleShouldShow({ editor, view }: { editor: Editor, view: { hasFo
           :editor="editor"
           :items="bubbleToolbarItems"
           layout="bubble"
-          :should-show="textBubbleShouldShow"
+          :should-show="textBubbleShouldShow as never"
         />
 
         <UEditorToolbar
@@ -337,7 +337,7 @@ function imageBubbleShouldShow({ editor, view }: { editor: Editor, view: { hasFo
           :editor="editor"
           :items="imageBubbleItems(editor)"
           layout="bubble"
-          :should-show="imageBubbleShouldShow"
+          :should-show="imageBubbleShouldShow as never"
         />
       </UEditor>
 

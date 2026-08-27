@@ -39,6 +39,8 @@ function onSaved(record: AdminPageRecord) {
     :title="page?.title"
     :subtitle="page?.slug"
     :loading="status === 'pending' && !page"
+    flush
+    hide-section-nav
   >
     <AdminContentPageForm
       v-if="page"

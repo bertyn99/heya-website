@@ -5,6 +5,8 @@ const props = defineProps<{
   title?: string
   subtitle?: string
   loading?: boolean
+  flush?: boolean
+  hideSectionNav?: boolean
 }>()
 
 const breadcrumbCurrent = computed(() => {
@@ -19,7 +21,7 @@ const breadcrumbCurrent = computed(() => {
 </script>
 
 <template>
-  <AppDashboardPanel>
+  <AppDashboardPanel :flush="flush">
     <template #header>
       <AppDashboardNavbar :toggle="false">
         <template #leading>
@@ -61,7 +63,7 @@ const breadcrumbCurrent = computed(() => {
         </template>
       </AppDashboardNavbar>
 
-      <AdminContentEditorSectionNavTarget />
+      <AdminContentEditorSectionNavTarget v-if="!hideSectionNav" />
     </template>
 
     <template #body>

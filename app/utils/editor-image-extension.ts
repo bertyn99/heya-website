@@ -1,4 +1,4 @@
-import { mergeAttributes } from '@tiptap/core'
+import { mergeAttributes, type Extension } from '@tiptap/core'
 import Image from '@tiptap/extension-image'
 import { VueNodeViewRenderer } from '@tiptap/vue-3'
 import ImageNodeView from '~/components/admin/editor/ImageNodeView.vue'
@@ -28,7 +28,7 @@ export const ContentImage = Image.extend({
   },
 
   addNodeView() {
-    return VueNodeViewRenderer(ImageNodeView)
+    return VueNodeViewRenderer(ImageNodeView as never)
   },
 
   renderHTML({ HTMLAttributes }) {
@@ -50,4 +50,4 @@ export const ContentImage = Image.extend({
       })
     ]
   }
-})
+}) as Extension

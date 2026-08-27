@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RichtextBlock } from '#shared/schemas/blocks'
+import type { RichtextBlock } from '#shared/types/blocks'
 
 const props = defineProps<RichtextBlock>()
 </script>

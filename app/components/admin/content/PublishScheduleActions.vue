@@ -148,41 +148,51 @@ const tomorrowKey = computed(() => dateKeyAddDays(todayKey.value, 1))
         @click="onPublishNow"
       />
 
-      <UPopover
-        v-model:open="scheduleOpen"
-        :content="{ side: 'bottom', align: 'end' }"
-        :ui="{ content: 'p-4 w-72' }"
-      >
-        <UButton
-          type="button"
-          icon="i-lucide-calendar-clock"
-          color="success"
-          variant="outline"
-          square
-          aria-label="Planifier la publication"
-          :loading="scheduling"
-          :disabled="publishing"
-          class="rounded-l-none -ml-px"
-        />
+      <UButton
+        type="button"
+        icon="i-lucide-calendar-clock"
+        color="success"
+        variant="outline"
+        square
+        aria-label="Planifier la publication"
+        :loading="scheduling"
+        :disabled="publishing"
+        class="rounded-l-none -ml-px"
+        @click="scheduleOpen = true"
+      />
+    </div>
 
-        <template #content>
-          <p class="mb-3 text-sm font-medium text-highlighted">
-            Planifier à 9h (Paris)
+    <Teleport to="body">
+      <UModal
+        v-model:open="scheduleOpen"
+        title="Planifier la publication"
+        description="Publication à 9h, fuseau Paris."
+        :ui="{ content: 'sm:max-w-sm' }"
+      >
+        <template #body>
+          <p class="text-sm text-muted">
+            Choisissez le jour. Vous pouvez aussi glisser le contenu sur le calendrier dans Planning.
           </p>
-          <div class="flex flex-wrap gap-2">
+        </template>
+        <template #footer>
+          <div class="flex w-full justify-end gap-2">
             <UButton
-              size="sm"
+              type="button"
               color="neutral"
-              variant="soft"
-              label="Demain"
+              variant="ghost"
+              label="Annuler"
+              @click="scheduleOpen = false"
+            />
+            <UButton
+              type="button"
+              color="primary"
+              label="Demain à 9h"
+              :loading="scheduling"
               @click="onConfirmSchedule(tomorrowKey)"
             />
           </div>
-          <p class="mt-2 text-xs text-muted">
-            Glissez aussi le contenu sur le calendrier dans Planning.
-          </p>
         </template>
-      </UPopover>
-    </div>
+      </UModal>
+    </Teleport>
   </div>
 </template>

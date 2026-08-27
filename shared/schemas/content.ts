@@ -31,7 +31,9 @@ export const seoSchema = z.object({
   metaTitle: z.string().trim().max(70, '70 caractères maximum').default(''),
   metaDescription: z.string().trim().max(160, '160 caractères maximum').default(''),
   ogImage: z
-    .union([z.string().trim().url('URL invalide'), z.literal(''), z.null()])
+    .string()
+    .trim()
+    .nullable()
     .optional()
     .transform(value => value || null)
 })
@@ -52,7 +54,7 @@ function requireScheduleWhenScheduled(
 export const contentListQuerySchema = z.object({
   status: contentStatusSchema.optional(),
   q: z.string().trim().max(120).optional(),
-  limit: z.coerce.number().int().min(1).max(100).default(50)
+  limit: z.coerce.number().int().min(1).max(100).default(100)
 })
 
 export const pageInputSchema = z.object({
@@ -60,9 +62,20 @@ export const pageInputSchema = z.object({
   slug: pageSlugSchema,
   status: contentStatusSchema.default('draft'),
   contentMd: z.string().default(''),
+  parentId: z.string().uuid().nullable().optional(),
   scheduledAt: z.coerce.date().optional().nullable(),
   seo: seoSchema.optional()
-}).superRefine(requireScheduleWhenScheduled)
+}).superRefine((data, ctx) => {
+  requireScheduleWhenScheduled(data, ctx)
+
+  if (data.parentId && data.slug.includes('/')) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['slug'],
+      message: 'Avec un parent, le slug est le dernier segment (sans /)'
+    })
+  }
+})
 
 export const postInputSchema = z.object({
   title: z.string().trim().min(1, 'Le titre est requis').max(200),

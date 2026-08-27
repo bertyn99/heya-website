@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { ValuesBlock } from '#shared/schemas/blocks'
+import type { BlockTone, ValuesBlock } from '#shared/types/blocks'
 
 const props = defineProps<ValuesBlock>()
 
-const toneClasses: Record<ValuesBlock['items'][number]['tone'], { bg: string, offset: string }> = {
+const toneClasses: Record<BlockTone, { bg: string, offset: string }> = {
   blue: { bg: 'bg-heya-step-blue', offset: '' },
   gold: { bg: 'bg-heya-step-gold', offset: 'md:mt-10' },
   green: { bg: 'bg-heya-step-green', offset: 'md:mt-20' }
