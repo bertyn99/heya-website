@@ -23,13 +23,7 @@ const items = computed<NavigationMenuItem[]>(() =>
 <template>
   <UHeader title="Heya">
     <template #title>
-      <img
-        src="/images/brand/heya-wordmark.png"
-        alt="Heya"
-        class="h-9 w-auto"
-        width="49"
-        height="36"
-      >
+      <AppLogo class="h-9 w-auto" />
     </template>
 
     <UNavigationMenu

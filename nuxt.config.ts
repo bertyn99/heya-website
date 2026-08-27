@@ -1,11 +1,46 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
+    '@nuxthub/core',
+    '@nuxtjs/better-auth',
     '@nuxtjs/seo',
     '@nuxt/eslint',
     '@nuxt/ui',
-    '@nuxt/image'
+    '@comark/nuxt',
+    '@nuxt/image',
+    'evlog/nuxt'
   ],
+
+  evlog: {
+    env: { service: 'heya-cms' },
+    include: ['/api/**'],
+    routes: {
+      '/api/admin/**': { service: 'heya-cms-admin' }
+    },
+    redact: true
+  },
+
+  hub: {
+    db: 'sqlite',
+    kv: true,
+    blob: true,
+    dir: '.data',
+    remote: false
+  },
+
+  auth: {
+    redirects: {
+      login: '/admin/login',
+      guest: '/admin'
+    },
+    preserveRedirect: true
+  },
+
+  runtimeConfig: {
+    public: {
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    }
+  },
 
   site: {
     url: 'https://heyaconvivialite.fr',
@@ -43,6 +78,8 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    '/admin/**': { auth: { only: 'user', redirectTo: '/admin/login' }, ssr: true },
+    '/admin/login': { auth: { only: 'guest', redirectTo: '/admin' }, ssr: true },
     '/': { prerender: true },
     '/concept': { prerender: true },
     '/a-propos': { prerender: true },
@@ -54,8 +91,43 @@ export default defineNuxtConfig({
     '/solutions/**': { prerender: true }
   },
 
+  image: {
+    provider: 'jsquash',
+    quality: 80,
+    format: ['webp'],
+    providers: {
+      jsquash: {
+        provider: '~/providers/jsquash',
+        options: {
+          baseURL: '/api/media/'
+        }
+      }
+    }
+  },
+
+  vite: {
+    optimizeDeps: {
+      exclude: [
+        '@jsquash/jpeg',
+        '@jsquash/png',
+        '@jsquash/resize',
+        '@jsquash/webp'
+      ]
+    }
+  },
+
   nitro: {
     preset: 'cloudflare_pages',
+    experimental: {
+      tasks: true,
+      wasm: true
+    },
+    wasm: {
+      esmImport: true
+    },
+    externals: {
+      inline: ['@jsquash/jpeg', '@jsquash/png', '@jsquash/webp', '@jsquash/resize']
+    },
     prerender: {
       autoSubfolderIndex: false,
       crawlLinks: true

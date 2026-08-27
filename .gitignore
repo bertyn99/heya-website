@@ -12,11 +12,13 @@ node_modules
 # Logs
 logs
 *.log
+.evlog
 
 # Misc
 .DS_Store
 .fleet
 .idea
+.wrangler
 
 # Local env files
 .env

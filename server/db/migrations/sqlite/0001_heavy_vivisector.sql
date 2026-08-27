@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `seo_entity_unique` ON `seo` (`entity_type`,`entity_id`);

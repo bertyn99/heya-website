@@ -49,13 +49,10 @@ function subscribe() {
               to="/"
               aria-label="Heya — Accueil"
             >
-              <img
-                src="/images/brand/heya-logo-lockup.png"
-                alt="Heya"
-                class="h-[50px] w-[68px] object-contain"
-                width="68"
-                height="50"
-              >
+              <AppLogo
+                variant="lockup"
+                class="h-[50px] w-[68px]"
+              />
             </NuxtLink>
             <p class="text-xs italic text-[#aaa293]">
               La convivialité au quotidien

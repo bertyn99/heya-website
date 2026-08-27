@@ -84,6 +84,27 @@ export default defineAppConfig({
         title: 'text-4xl sm:text-5xl text-pretty tracking-tight font-bold text-highlighted leading-[1.1]',
         description: 'text-base sm:text-lg text-muted leading-relaxed max-w-[40rem]'
       }
+    },
+    dashboardNavbar: {
+      slots: {
+        root:
+          'min-h-14 shrink-0 flex items-center justify-between border-b-0 px-2 sm:px-3 gap-2',
+        left: 'flex items-center gap-1 min-w-0',
+        title:
+          'flex items-center gap-1.5 font-semibold text-highlighted truncate text-sm sm:text-base',
+        right: 'flex items-center shrink-0 gap-2'
+      }
+    },
+    dashboardPanel: {
+      slots: {
+        body:
+          'flex flex-col gap-4 flex-1 overflow-y-auto bg-heya-neutral-50/50 p-4 sm:p-5'
+      }
+    },
+    dashboardSidebar: {
+      slots: {
+        root: 'bg-heya-neutral-50/80'
+      }
     }
   }
 })
