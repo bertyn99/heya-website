@@ -1,20 +1,17 @@
 <script setup lang="ts">
-import type { FormError, FormSubmitEvent } from '@nuxt/ui'
-
-interface DemoRequest {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  structureType: string
-  testDuration: string
-  message: string
-}
+import type { FormSubmitEvent } from '@nuxt/ui'
+import {
+  contactRequestSchema,
+  structureTypes,
+  testDurations,
+  type ContactRequest,
+  type ContactRequestForm
+} from '#shared/schemas/contact'
 
 const toast = useToast()
 const loading = ref(false)
 
-const state = reactive<DemoRequest>({
+const state = reactive<ContactRequestForm>({
   firstName: '',
   lastName: '',
   email: '',
@@ -24,19 +21,14 @@ const state = reactive<DemoRequest>({
   message: ''
 })
 
-const structureTypes = [
-  'Résidence seniors',
-  'Résidence étudiante',
-  'Co-living',
-  'Habitat inclusif',
-  'Foyer jeunes travailleurs',
-  'Copropriété',
-  'Autre'
-]
+const remainingChars = computed(() => 180 - (state.message?.length ?? 0))
 
-const testDurations = ['3 mois', '6 mois', '12 mois']
-
-const remainingChars = computed(() => 180 - state.message.length)
+const structureTypeModel = computed({
+  get: () => state.structureType as (typeof structureTypes)[number] | undefined,
+  set: (value: (typeof structureTypes)[number] | undefined) => {
+    state.structureType = value ?? ''
+  }
+})
 
 const fieldUi = {
   label: 'text-[#f1ede6] font-medium',
@@ -49,48 +41,7 @@ const creamUi = {
   base: 'bg-[#faf6f0] text-[#3d3833] ring-[#ece6dc] placeholder:text-[#9a948c] rounded-lg'
 }
 
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
-
-function validate(formState: Partial<DemoRequest>): FormError[] {
-  const errors: FormError[] = []
-  const firstName = formState.firstName?.trim() ?? ''
-  const lastName = formState.lastName?.trim() ?? ''
-  const email = formState.email?.trim() ?? ''
-  const phone = formState.phone?.trim() ?? ''
-  const digits = phone.replace(/\D/g, '')
-
-  if (!firstName) {
-    errors.push({ name: 'firstName', message: 'Indiquez votre prénom' })
-  }
-
-  if (!lastName) {
-    errors.push({ name: 'lastName', message: 'Indiquez votre nom' })
-  }
-
-  if (!email) {
-    errors.push({ name: 'email', message: 'Indiquez votre email' })
-  } else if (!isValidEmail(email)) {
-    errors.push({ name: 'email', message: 'Cet email ne semble pas valide' })
-  }
-
-  if (phone && digits.length < 8) {
-    errors.push({ name: 'phone', message: 'Indiquez un numéro plus complet' })
-  }
-
-  if (!formState.structureType) {
-    errors.push({ name: 'structureType', message: 'Choisissez un type de résidence' })
-  }
-
-  if ((formState.message?.length ?? 0) > 180) {
-    errors.push({ name: 'message', message: '180 caractères maximum' })
-  }
-
-  return errors
-}
-
-async function onSubmit(_event: FormSubmitEvent<DemoRequest>) {
+async function onSubmit(_event: FormSubmitEvent<ContactRequest>) {
   loading.value = true
 
   await new Promise(resolve => setTimeout(resolve, 400))
@@ -116,8 +67,8 @@ async function onSubmit(_event: FormSubmitEvent<DemoRequest>) {
 <template>
   <UForm
     class="contact-form-dark space-y-5"
+    :schema="contactRequestSchema"
     :state="state"
-    :validate="validate"
     :validate-on="['blur', 'change']"
     @submit="onSubmit"
   >
@@ -196,9 +147,9 @@ async function onSubmit(_event: FormSubmitEvent<DemoRequest>) {
       :ui="fieldUi"
     >
       <USelect
-        v-model="state.structureType"
+        v-model="structureTypeModel"
         placeholder="Sélectionnez"
-        :items="structureTypes"
+        :items="[...structureTypes]"
         size="lg"
         color="neutral"
         trailing-icon="i-lucide-chevron-down"
@@ -214,7 +165,7 @@ async function onSubmit(_event: FormSubmitEvent<DemoRequest>) {
     >
       <URadioGroup
         v-model="state.testDuration"
-        :items="testDurations"
+        :items="[...testDurations]"
         orientation="horizontal"
         color="primary"
         size="lg"
