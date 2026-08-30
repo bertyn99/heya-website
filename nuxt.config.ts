@@ -10,36 +10,11 @@ export default defineNuxtConfig({
     'evlog/nuxt'
   ],
 
-  evlog: {
-    env: { service: 'heya-cms' },
-    include: ['/api/**'],
-    routes: {
-      '/api/admin/**': { service: 'heya-cms-admin' }
-    },
-    redact: true
+  devtools: {
+    enabled: true
   },
 
-  hub: {
-    db: 'sqlite',
-    kv: true,
-    blob: true,
-    dir: '.data',
-    remote: false
-  },
-
-  auth: {
-    redirects: {
-      login: '/admin/login',
-      guest: '/admin'
-    },
-    preserveRedirect: true
-  },
-
-  runtimeConfig: {
-    public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    }
-  },
+  css: ['~/assets/css/main.css'],
 
   site: {
     url: 'https://heyaconvivialite.fr',
@@ -49,25 +24,10 @@ export default defineNuxtConfig({
     indexable: true
   },
 
-  devtools: {
-    enabled: true
-  },
-
-  css: ['~/assets/css/main.css'],
-
   colorMode: {
     preference: 'light',
     fallback: 'light',
     storage: null
-  },
-
-  fonts: {
-    families: [
-      { name: 'DM Sans', provider: 'google', weights: [400, 500, 600, 700] }
-    ],
-    defaults: {
-      weights: [400, 500, 600, 700]
-    }
   },
 
   ui: {
@@ -76,30 +36,23 @@ export default defineNuxtConfig({
     }
   },
 
-  routeRules: {
-    '/admin/**': { auth: { only: 'user', redirectTo: '/admin/login' }, ssr: true },
-    '/admin/login': { auth: { only: 'guest', redirectTo: '/admin' }, ssr: true },
-    '/': { prerender: true },
-    '/concept': { prerender: true },
-    '/a-propos': { prerender: true },
-    '/contact': { prerender: true },
-    '/blog': { prerender: true },
-    '/blog/**': { prerender: true },
-    '/mentions-legales': { prerender: true },
-    '/politique-de-confidentialite': { prerender: true },
-    '/solutions/**': { prerender: true }
-  },
-
-  vite: {
-    optimizeDeps: {
-      exclude: [
-        '@jsquash/jpeg',
-        '@jsquash/png',
-        '@jsquash/resize',
-        '@jsquash/webp'
-      ]
+  runtimeConfig: {
+    public: {
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     }
   },
+
+  routeRules: {
+    '/admin/**': {
+      auth: { only: 'user', redirectTo: '/admin/login' },
+      ssr: true,
+      robots: 'noindex, nofollow',
+      sitemap: false
+    },
+    '/admin/login': { auth: { only: 'guest', redirectTo: '/admin' }, ssr: true }
+  },
+
+  compatibilityDate: '2026-06-30',
 
   nitro: {
     preset: 'cloudflare_module',
@@ -118,11 +71,36 @@ export default defineNuxtConfig({
     },
     prerender: {
       autoSubfolderIndex: false,
-      crawlLinks: true
+      crawlLinks: false
     }
   },
 
-  compatibilityDate: '2026-06-30',
+  hub: {
+    db: 'sqlite',
+    kv: true,
+    blob: true,
+    dir: '.data',
+    remote: false
+  },
+
+  vite: {
+    optimizeDeps: {
+      exclude: [
+        '@jsquash/jpeg',
+        '@jsquash/png',
+        '@jsquash/resize',
+        '@jsquash/webp'
+      ]
+    }
+  },
+
+  auth: {
+    redirects: {
+      login: '/admin/login',
+      guest: '/admin'
+    },
+    preserveRedirect: true
+  },
 
   eslint: {
     config: {
@@ -131,5 +109,34 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  evlog: {
+    env: { service: 'heya-cms' },
+    include: ['/api/**'],
+    routes: {
+      '/api/admin/**': { service: 'heya-cms-admin' }
+    },
+    redact: true
+  },
+
+  fonts: {
+    families: [
+      { name: 'DM Sans', provider: 'google', weights: [400, 500, 600, 700] }
+    ],
+    defaults: {
+      weights: [400, 500, 600, 700]
+    }
+  },
+
+  robots: {
+    groups: [
+      { userAgent: '*', disallow: ['/admin'] }
+    ]
+  },
+
+  sitemap: {
+    exclude: ['/admin/**', '/accueil'],
+    sources: ['/api/__sitemap__/urls']
   }
 })

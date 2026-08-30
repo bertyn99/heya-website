@@ -1,5 +1,5 @@
 import { and, desc, eq, like, lte, or } from 'drizzle-orm'
-import { normalizePublicPath, orderPagesAsTree } from '#shared/page-hierarchy'
+import { lookupPublicPath, orderPagesAsTree } from '#shared/page-hierarchy'
 import type { ContentListFilter, NewPage, PagePatch, PageRow, PageWithSeo } from '#shared/types/db'
 import type { SeoInput } from '#shared/schemas/content'
 import { deleteSeo, findSeo, upsertSeo } from './seo'
@@ -61,15 +61,19 @@ export async function getPageWithSeo(id: string): Promise<PageWithSeo | null> {
   return { ...page, seo }
 }
 
-export async function getPublishedPageBySlug(slug: string): Promise<PageWithSeo | null> {
-  const published = await db
+export async function listPublishedPages(): Promise<PageRow[]> {
+  return db
     .select()
     .from(schema.pages)
     .where(eq(schema.pages.status, 'published'))
+}
 
-  const publicPath = normalizePublicPath(slug)
-  const match = orderPagesAsTree(published).find(row => row.publicPath === publicPath)
-    ?? published.find(page => normalizePublicPath(page.slug) === publicPath)
+export async function getPublishedPageBySlug(slug: string): Promise<PageWithSeo | null> {
+  const published = await listPublishedPages()
+
+  const publicPath = lookupPublicPath(slug)
+  const match = orderPagesAsTree(published).find(row => lookupPublicPath(row.publicPath) === publicPath)
+    ?? published.find(page => lookupPublicPath(page.slug) === publicPath)
 
   if (!match) {
     return null

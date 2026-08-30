@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { ButtonProps } from '@nuxt/ui'
-import { blogCategories, blogPosts } from '~/data/blog'
+import type { PublicPostListItem } from '#shared/types/public'
+import { contentAssetUrl } from '#shared/media-url'
+import { BLOG_AUTHOR } from '~/utils/blog-author'
+import { formatFrDate } from '~/utils/format-date'
 import { CAL_COM_URL } from '~/utils/navigation'
 import { heyaHeroCentered } from '~/utils/heya-ui'
 
@@ -9,20 +12,53 @@ useSeoMeta({
   description: 'Actualités Heya, retours d\'expérience, conseils pour animer une résidence ou un habitat partagé.'
 })
 
+const { data: posts, error } = await useFetch<PublicPostListItem[]>('/api/posts')
+
+if (error.value) {
+  throw createError({
+    statusCode: error.value.statusCode || 500,
+    statusMessage: 'Impossible de charger le blog',
+    fatal: true
+  })
+}
+
 const activeCategory = ref('Tous')
 const page = ref(1)
+const perPage = 6
 
-const featuredPost = computed(() => blogPosts.find(p => p.featured))
+const allPosts = computed(() => posts.value ?? [])
+
+const blogCategories = computed(() => {
+  const names = [...new Set(allPosts.value.map(post => post.category).filter(Boolean))]
+  return ['Tous', ...names]
+})
+
+const featuredPost = computed(() => allPosts.value[0] ?? null)
 
 const filteredPosts = computed(() => {
-  const nonFeatured = blogPosts.filter(p => !p.featured)
-  if (activeCategory.value === 'Tous') return nonFeatured
-  return nonFeatured.filter(p => p.category === activeCategory.value)
+  const rest = allPosts.value.slice(1)
+  if (activeCategory.value === 'Tous') {
+    return rest
+  }
+  return rest.filter(post => post.category === activeCategory.value)
+})
+
+const pagedPosts = computed(() => {
+  const start = (page.value - 1) * perPage
+  return filteredPosts.value.slice(start, start + perPage)
+})
+
+watch(activeCategory, () => {
+  page.value = 1
 })
 
 const ctaLinks: ButtonProps[] = [
   { label: 'Prendre rendez-vous', to: CAL_COM_URL, target: '_blank' }
 ]
+
+function coverOf(post: PublicPostListItem) {
+  return contentAssetUrl(post.coverPathname) || '/images/blog/featured.png'
+}
 </script>
 
 <template>
@@ -82,16 +118,16 @@ const ctaLinks: ButtonProps[] = [
         <template #footer>
           <div class="flex items-center gap-3">
             <UAvatar
-              src="/images/blog/elise.png"
-              :alt="featuredPost.author"
+              :src="BLOG_AUTHOR.avatar"
+              :alt="BLOG_AUTHOR.name"
               size="sm"
             />
             <div>
               <p class="text-sm font-semibold">
-                {{ featuredPost.author }}
+                {{ BLOG_AUTHOR.name }}
               </p>
               <p class="text-xs text-muted">
-                {{ featuredPost.date }} · {{ featuredPost.readTime }} de lecture
+                {{ formatFrDate(featuredPost.publishedAt) }}
               </p>
             </div>
           </div>
@@ -104,7 +140,7 @@ const ctaLinks: ButtonProps[] = [
           </UButton>
         </template>
         <img
-          :src="featuredPost.image"
+          :src="coverOf(featuredPost)"
           :alt="featuredPost.title"
           class="h-full min-h-[280px] w-full object-cover sm:w-[560px]"
           width="560"
@@ -114,14 +150,23 @@ const ctaLinks: ButtonProps[] = [
     </UPageSection>
 
     <UPageSection :ui="{ root: 'bg-default pt-8' }">
-      <div class="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <p
+        v-if="allPosts.length === 0"
+        class="w-full text-center text-muted"
+      >
+        Les premiers articles seront bientôt en ligne.
+      </p>
+      <div
+        v-else
+        class="grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <UBlogPost
-          v-for="post in filteredPosts"
+          v-for="post in pagedPosts"
           :key="post.slug"
           :title="post.title"
           :description="post.excerpt"
-          :date="`${post.date} · ${post.readTime}`"
-          :image="{ src: post.image, alt: post.title }"
+          :date="formatFrDate(post.publishedAt)"
+          :image="{ src: coverOf(post), alt: post.title }"
           :to="`/blog/${post.slug}`"
           :badge="{ label: post.category, color: 'neutral', variant: 'solid', class: 'bg-inverted' }"
           variant="outline"
@@ -140,10 +185,10 @@ const ctaLinks: ButtonProps[] = [
       </div>
 
       <UPagination
-        v-if="filteredPosts.length > 6"
+        v-if="filteredPosts.length > perPage"
         v-model:page="page"
         :total="filteredPosts.length"
-        :items-per-page="6"
+        :items-per-page="perPage"
         class="mt-8"
       />
     </UPageSection>

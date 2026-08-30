@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { AdminPageRecord } from '#shared/types/admin'
 import type { ContentStatus } from '#shared/types/content'
+import { HOME_PAGE_SLUG, isHomePageSlug } from '#shared/page-hierarchy'
 import { pageInputSchema } from '#shared/schemas/content'
 import { apiErrorMessage } from '~/utils/api-error'
 import { mapAdminPage, type AdminPageApi, type AdminPostApi } from '~/utils/admin-mappers'
@@ -74,10 +75,10 @@ function seoPayload() {
 async function save(options?: { silent?: boolean }): Promise<boolean> {
   const payload = {
     title: state.title,
-    slug: state.slug,
+    slug: isHomePageSlug(props.initial.slug, props.initial.parentId) ? HOME_PAGE_SLUG : state.slug,
     status: state.status,
     contentMd: editorBlocksToMarkdown(editorBlocks.value),
-    parentId: state.parentId ?? null,
+    parentId: isHomePageSlug(props.initial.slug, props.initial.parentId) ? null : (state.parentId ?? null),
     scheduledAt: state.scheduledAt ? new Date(state.scheduledAt) : null,
     seo: seoPayload()
   }

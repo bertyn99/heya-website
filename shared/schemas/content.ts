@@ -1,3 +1,4 @@
+import { HOME_PAGE_SLUG, isReservedPageSegment, pageSlugSegments } from '../page-hierarchy'
 import { contentStatuses, seoEntityTypes, type ContentStatus } from '../types/content'
 import * as z from 'zod'
 
@@ -22,10 +23,18 @@ export const pageSlugSchema = z
   .trim()
   .min(1, 'Le slug est requis')
   .max(120, '120 caractères maximum')
+  .refine(value => value !== '/', {
+    message: 'L\'accueil public est /. Le slug interne de cette page est accueil.'
+  })
   .regex(
     new RegExp(`^${slugSegment}(?:/${slugSegment})*$`),
     'Slug invalide (segments en minuscules, tirets et / uniquement)'
   )
+  .refine((value) => {
+    return !pageSlugSegments(value).some(segment => isReservedPageSegment(segment))
+  }, {
+    message: 'Le segment « index » est réservé'
+  })
 
 export const seoSchema = z.object({
   metaTitle: z.string().trim().max(70, '70 caractères maximum').default(''),
@@ -73,6 +82,23 @@ export const pageInputSchema = z.object({
       code: 'custom',
       path: ['slug'],
       message: 'Avec un parent, le slug est le dernier segment (sans /)'
+    })
+  }
+
+  const lastSegment = pageSlugSegments(data.slug).at(-1)
+  if (lastSegment === HOME_PAGE_SLUG && data.slug !== HOME_PAGE_SLUG) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['slug'],
+      message: `« ${HOME_PAGE_SLUG} » est réservé à la page d'accueil (URL /)`
+    })
+  }
+
+  if (data.slug === HOME_PAGE_SLUG && data.parentId) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['parentId'],
+      message: 'La page d\'accueil n\'a pas de parent. Son URL publique est /.'
     })
   }
 })

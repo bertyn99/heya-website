@@ -2,6 +2,7 @@
 import { apiErrorMessage } from '~/utils/api-error'
 import { mapAdminPage, type AdminPageApi } from '~/utils/admin-mappers'
 import type { AdminPageRecord } from '#shared/types/admin'
+import { isHomePageSlug, pagePublicPath } from '#shared/page-hierarchy'
 
 definePageMeta({
   layout: 'admin',
@@ -37,7 +38,7 @@ function onSaved(record: AdminPageRecord) {
     resource-label="Pages"
     resource-to="/admin/pages"
     :title="page?.title"
-    :subtitle="page?.slug"
+    :subtitle="page ? (isHomePageSlug(page.slug, page.parentId) ? '/' : pagePublicPath(page.slug)) : undefined"
     :loading="status === 'pending' && !page"
     flush
     hide-section-nav

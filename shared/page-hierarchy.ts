@@ -4,25 +4,67 @@ export interface NestedPageParent {
   parent?: NestedPageParent | null
 }
 
+export const HOME_PAGE_SLUG = 'accueil'
+
+/** Path segments that must never appear in a page slug (filesystem / pretty-URL traps). */
+export const RESERVED_PAGE_SEGMENTS = ['index'] as const
+
+export function pageSlugSegments(slug: string): string[] {
+  return slug.replace(/^\/+/u, '').split('/').filter(Boolean)
+}
+
+export function isReservedPageSegment(segment: string): boolean {
+  return (RESERVED_PAGE_SEGMENTS as readonly string[]).includes(segment)
+}
+
+export function isHomePageSlug(
+  slug: string,
+  parent?: NestedPageParent | string | null
+): boolean {
+  const hasParent = parent != null && parent !== ''
+    && (typeof parent === 'string' || Boolean(parent.slug))
+
+  return pageSlugSegments(slug).join('/') === HOME_PAGE_SLUG && !hasParent
+}
+
 export function normalizePublicPath(slugOrPath: string): string {
   const parts = slugOrPath.replace(/^\/+/u, '').split('/').filter(Boolean)
   return `/${parts.join('/')}`
 }
 
+export function lookupPublicPath(slugOrPath: string): string {
+  const path = normalizePublicPath(slugOrPath)
+  if (path === '/' || path === `/${HOME_PAGE_SLUG}`) {
+    return `/${HOME_PAGE_SLUG}`
+  }
+  return path
+}
+
+export function publicPathToUrl(publicPath: string): string {
+  if (publicPath === `/${HOME_PAGE_SLUG}` || publicPath === '/') {
+    return '/'
+  }
+  return publicPath
+}
+
 export function pagePublicPath(slug: string, parent?: NestedPageParent | null): string {
   const trimmed = slug.replace(/^\/+/u, '').trim()
 
-  if (trimmed.includes('/')) {
-    return `/${trimmed}`
+  if (isHomePageSlug(trimmed, parent)) {
+    return '/'
   }
 
-  if (!parent?.slug) {
+  if (trimmed.includes('/')) {
     return `/${trimmed}`
   }
 
   const buildParentPath = (currentParent: NestedPageParent | null | undefined): string => {
     if (!currentParent?.slug) {
       return ''
+    }
+
+    if (isHomePageSlug(currentParent.slug, currentParent.parent ?? null)) {
+      return buildParentPath(currentParent.parent)
     }
 
     const ancestorPath = buildParentPath(currentParent.parent)

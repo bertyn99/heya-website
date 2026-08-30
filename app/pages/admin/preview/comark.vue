@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { comarkPreviewMarkdown } from '#shared/content/comark-preview'
+import HeyaMarkdown from '~/components/content/HeyaMarkdown.vue'
 
 definePageMeta({
   layout: 'admin',

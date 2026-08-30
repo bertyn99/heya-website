@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
+import { isHomePageSlug } from '#shared/page-hierarchy'
 import { BLOCK_LIBRARY, getBlockDefinition } from '#shared/content/block-catalog'
 import type { BlockType } from '#shared/schemas/blocks'
 import {
@@ -38,6 +39,7 @@ const dragType = ref<BlockType | null>(null)
 const dropIndex = ref<number | null>(null)
 const dropEdge = ref<'before' | 'after'>('before')
 const showSeo = ref(Boolean(props.hasSeoEntry))
+const isHomePage = computed(() => isHomePageSlug(slug.value, parentId.value))
 
 const panelItems: TabsItem[] = [
   { label: 'Blocs', value: 'blocks', slot: 'blocks' },
@@ -365,6 +367,19 @@ watch(ogImage, (value) => {
           </UFormField>
 
           <UFormField
+            v-if="isHomePage"
+            label="URL publique"
+            hint="Page d'accueil du site. L'identifiant interne reste accueil, non renommable."
+          >
+            <UInput
+              model-value="/"
+              disabled
+              class="w-full"
+            />
+          </UFormField>
+
+          <UFormField
+            v-else
             label="Adresse de la page"
             name="slug"
             :hint="parentId ? 'Dernier segment, ex. co-living' : 'Racine : concept. Ou chemin legacy solutions/…'"
@@ -377,6 +392,7 @@ watch(ogImage, (value) => {
           </UFormField>
 
           <AdminPageBuilderParentField
+            v-if="!isHomePage"
             v-model="parentId"
             :exclude-page-id="pageId"
             :page-slug="slug"

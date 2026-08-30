@@ -1,5 +1,6 @@
 import { getPublishedPostBySlug } from '../../queries/posts'
 import { notFound } from '../../utils/http-errors'
+import { toPublicPost } from '../../utils/public-content'
 import { requireRouteParam } from '../../utils/require-admin'
 
 export default defineEventHandler(async (event) => {
@@ -14,5 +15,5 @@ export default defineEventHandler(async (event) => {
     throw notFound('Article introuvable', { type: 'post', id: slug })
   }
 
-  return post
+  return toPublicPost(post)
 })

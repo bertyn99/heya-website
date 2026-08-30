@@ -91,7 +91,7 @@ export type SeedPostDef = {
 
 export const SEED_PAGES: SeedPageDef[] = [
   {
-    slug: 'accueil',
+    slug: 'accueil', // identifiant interne ; URL publique = /
     title: 'Accueil',
     contentMd: composeTypes(
       'hero',

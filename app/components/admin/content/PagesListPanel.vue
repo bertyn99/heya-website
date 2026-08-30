@@ -3,6 +3,7 @@ import type { TableColumn } from '@nuxt/ui'
 import type { AdminListRow } from '#shared/types/admin'
 import type { ContentStatus } from '#shared/types/content'
 import {
+  isHomePageSlug,
   orderPagesAsTree,
   pageHierarchyLabel,
   type PageTreeRow
@@ -269,12 +270,12 @@ const columns = computed((): TableColumn<PageTreeRow<AdminListRow>>[] => {
     {
       id: 'actions',
       cell: ({ row }) => h(UButton, {
-        icon: 'i-lucide-pencil',
-        color: 'neutral',
-        variant: 'ghost',
-        size: 'sm',
+        'icon': 'i-lucide-pencil',
+        'color': 'neutral',
+        'variant': 'ghost',
+        'size': 'sm',
         'aria-label': `Modifier ${pageHierarchyLabel(row.original)}`,
-        onClick: () => router.push(`/admin/pages/${row.original.id}`)
+        'onClick': () => router.push(`/admin/pages/${row.original.id}`)
       })
     }
   )
@@ -317,7 +318,7 @@ async function createDraft() {
     <template #body>
       <p class="mb-4 max-w-3xl text-sm leading-relaxed text-muted">
         L'arborescence suit le parent enregistré. Le slug est le dernier segment ; le chemin public
-        se calcule avec les ancêtres.
+        se calcule avec les ancêtres. L'accueil s'affiche en / (slug interne accueil).
       </p>
 
       <div class="flex flex-wrap items-center justify-between gap-2">
@@ -469,6 +470,15 @@ async function createDraft() {
                       </span>
                       {{ pageHierarchyLabel(row.original) }}
                     </p>
+                    <UBadge
+                      v-if="isHomePageSlug(row.original.slug, row.original.parentId)"
+                      color="primary"
+                      variant="subtle"
+                      size="xs"
+                      class="shrink-0 font-normal"
+                    >
+                      Accueil
+                    </UBadge>
                   </div>
                   <p
                     v-if="viewMode === 'tree' && directParentLabel(row.original)"

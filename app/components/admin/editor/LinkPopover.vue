@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
+import { isHomePageSlug } from '#shared/page-hierarchy'
 import type { AdminPageApi, AdminPostApi } from '~/utils/admin-mappers'
 import { applyEditorLink, isExternalHref, removeEditorLink } from '~/utils/editor-link'
 
@@ -16,6 +17,7 @@ interface ListRow {
   id: string
   title: string
   slug: string
+  parentId?: string | null
   status?: string
 }
 
@@ -42,7 +44,15 @@ const modeItems = [
 ]
 
 function rowHref(kind: Exclude<LinkMode, 'external'>, row: ListRow): string {
-  return kind === 'posts' ? `/blog/${row.slug}` : `/${row.slug}`
+  if (kind === 'posts') {
+    return `/blog/${row.slug}`
+  }
+
+  if (isHomePageSlug(row.slug, row.parentId ?? null)) {
+    return '/'
+  }
+
+  return `/${row.slug}`
 }
 
 const currentRows = computed(() => {

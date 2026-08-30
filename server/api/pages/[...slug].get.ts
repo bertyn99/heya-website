@@ -1,5 +1,6 @@
 import { getPublishedPageBySlug } from '../../queries/pages'
 import { notFound } from '../../utils/http-errors'
+import { toPublicPage } from '../../utils/public-content'
 import { requireCatchallParam } from '../../utils/require-admin'
 
 export default defineEventHandler(async (event) => {
@@ -14,5 +15,5 @@ export default defineEventHandler(async (event) => {
     throw notFound('Page introuvable', { type: 'page', id: slug })
   }
 
-  return page
+  return toPublicPage(page)
 })

@@ -15,6 +15,7 @@ export {
   wouldCreateParentCycle,
   insertPage,
   listPages,
+  listPublishedPages,
   publishDuePages,
   updatePage
 } from './pages'
